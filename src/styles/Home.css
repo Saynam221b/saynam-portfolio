@@ -1,0 +1,111 @@
+/* src/styles/Home.css */
+.home-section {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 2rem;
+}
+
+.intro-content {
+    position: relative;
+    z-index: 2;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.intro-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: slideIn 1.5s ease-out;
+}
+
+.intro-text {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    animation: fadeInText 3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 150, 250, 0.5), rgba(0, 50, 150, 0.5));
+    z-index: 1;
+    overflow: hidden;
+}
+
+.circles {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 200%;
+    height: 200%;
+    z-index: 1;
+    animation: moveCircles 20s linear infinite;
+}
+
+.circle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: float 10s ease-in-out infinite;
+}
+
+.circle:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes moveCircles {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}

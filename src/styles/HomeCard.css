@@ -1,0 +1,42 @@
+/* src/styles/HomeCard.css */
+.home-card {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.home-card h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.home-card p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.home-card .contact-info {
+    margin: 1rem 0;
+}
+
+.home-card .social-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.home-card .social-links a:hover {
+    color: #ffeb3b;
+}
