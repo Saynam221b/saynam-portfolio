@@ -10,7 +10,7 @@ const Experience = () => (
             title="Data Engineer I, KPI Partners" 
             duration="09/2022 – present" 
             location="Pune, India" 
-            description="Details of your experience at KPI Partners..."
+            description="Details of your experience "
         />
         <ExperienceItem 
             title="Python Intern, Entuple Technologies" 
