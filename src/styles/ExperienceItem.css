@@ -6,6 +6,8 @@
     padding: 1.5rem;
     margin-bottom: 1rem;
     transition: transform 0.3s ease, background 0.3s ease;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .experience-item:hover {
@@ -16,8 +18,39 @@
 .experience-item h3 {
     color: white;
     margin-bottom: 0.5rem;
+    font-size: 1.5rem;
 }
 
 .experience-item p {
     color: white;
+    font-size: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .experience-item {
+        padding: 1rem;
+    }
+
+    .experience-item h3 {
+        font-size: 1.25rem;
+    }
+
+    .experience-item p {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .experience-item {
+        padding: 0.75rem;
+    }
+
+    .experience-item h3 {
+        font-size: 1rem;
+    }
+
+    .experience-item p {
+        font-size: 0.75rem;
+    }
 }
