@@ -19,7 +19,7 @@ const Contact = () => {
     setStatus('sending');
 
     try {
-      const response = await fetch('http://saynam-portfolio-19qy.vercel.app/api/contact', {
+      const response = await fetch('https://saynam-portfolio-19qy.vercel.app/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
