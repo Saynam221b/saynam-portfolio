@@ -35,7 +35,7 @@ const Navbar = () => {
             whileHover={{ scale: 1.1 }}
             className="text-2xl font-bold text-blue-500"
           >
-            DE.
+            Saynam.
           </motion.div>
 
           {/* Desktop Menu */}
@@ -54,7 +54,7 @@ const Navbar = () => {
             <div className="flex items-center space-x-4">
               <motion.a
                 whileHover={{ scale: 1.1 }}
-                href="https://github.com/yourusername"
+                href="https://github.com/saynam221b"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-blue-500 transition-colors"
@@ -63,7 +63,7 @@ const Navbar = () => {
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.1 }}
-                href="https://linkedin.com/in/yourusername"
+                href="https://linkedin.com/in/saynam-sharma"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-blue-500 transition-colors"
