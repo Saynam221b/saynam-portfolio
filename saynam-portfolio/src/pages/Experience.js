@@ -1,21 +1,20 @@
-// src/pages/Experience.js
 import React from 'react';
 import ExperienceItem from '../components/ExperienceItem';
 import '../styles/Experience.css';
 
 const Experience = () => (
     <div className="experience-section">
-        <h1>Experience</h1>
+        <h1 className="section-title">Professional Experience</h1>
         <ExperienceItem 
             title="Data Engineer I, KPI Partners" 
-            duration="09/2022 – present" 
+            duration="09/2022 – Present" 
             location="Pune, India" 
             description={
                 <>
                     <p>• Spearheaded the design and implementation of an end-to-end ETL pipeline processing over 100 GB of AR module data monthly from Oracle Fusion to Snowflake, enabling real-time reporting and analytics.</p>
                     <p>• Implemented incremental data load logic in Airflow and reduced data processing time by 60% by handling over 1 million records per iteration efficiently, while ensuring scalable and efficient data handling.</p>
                     <p>• Automated data extraction via Oracle BI API and UCM integration, delivering secure and seamless data transfers to AWS S3 with advanced encryption and decryption mechanisms.</p>
-                    <p>• Developed and deployed DBT models for data transformations, improving data quality by performing comprehensive validations such as null handling, and schema drift detection and each model execution is logged in the audit table.</p>
+                    <p>• Developed and deployed DBT models for data transformations, improving data quality by performing comprehensive validations such as null handling, and schema drift detection.</p>
                     <p>• Deployed containerized DBT models using Docker and AWS ECS clusters, achieving a scalable, high-performance transformation pipeline.</p>
                     <p>• Streamlined AWS infrastructure provisioning and pipeline automation using Terraform, ensuring consistent, scalable, and repeatable deployments across MWAA, ECS, and S3 services.</p>
                     <p>• Enhanced pipeline observability by integrating monitoring tools like AWS CloudWatch and Snowflake Query History, improving performance visibility and troubleshooting.</p>

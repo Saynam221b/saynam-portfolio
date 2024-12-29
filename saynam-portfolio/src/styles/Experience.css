@@ -1,0 +1,47 @@
+/* src/styles/Experience.css */
+.experience-section {
+    padding: 4rem 2rem;
+    background: #f0f4f8;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.experience-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #2c3e50;
+}
+
+.experience-item {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.experience-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.experience-item h3 {
+    font-size: 1.8rem;
+    color: #2980b9;
+    margin-bottom: 0.5rem;
+}
+
+.experience-item p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.experience-item p:first-child {
+    font-weight: bold;
+    color: #34495e;
+}

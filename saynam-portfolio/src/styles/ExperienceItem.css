@@ -1,0 +1,58 @@
+/* src/styles/ExperienceItem.css */
+.experience-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, background 0.3s ease;
+    max-width: 800px;
+    color: #333;
+}
+
+.experience-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 1);
+}
+
+.experience-item h3 {
+    color: #007acc;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.experience-item p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .experience-item {
+        padding: 1.5rem;
+    }
+
+    .experience-item h3 {
+        font-size: 1.5rem;
+    }
+
+    .experience-item p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .experience-item {
+        padding: 1rem;
+    }
+
+    .experience-item h3 {
+        font-size: 1.25rem;
+    }
+
+    .experience-item p {
+        font-size: 0.85rem;
+    }
+}

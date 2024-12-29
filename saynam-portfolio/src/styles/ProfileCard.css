@@ -1,0 +1,50 @@
+.profile-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 400px;
+    margin: 1rem auto;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.profile-card h2 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: #007acc;
+}
+
+.profile-card p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.profile-card .skills {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.profile-card .contact-info {
+    margin: 1rem 0;
+}
+
+.profile-card .social-links a {
+    color: #007acc;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.profile-card .social-links a:hover {
+    color: #005999;
+}
