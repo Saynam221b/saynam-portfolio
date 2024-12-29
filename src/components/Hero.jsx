@@ -22,7 +22,7 @@ const Hero = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="bg-blue-500 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-600 transition-colors"
-            onClick={() => window.open('tmp/resume.pdf', '_blank')}
+            onClick={() => window.open('https://5nhj4mbbqhp4fsgg.public.blob.vercel-storage.com/resume-g4oaCPtkMcxj6VcTzAMSbwmhaFBemF.pdf', '_blank')}
           >
             Download Resume
           </motion.button>
