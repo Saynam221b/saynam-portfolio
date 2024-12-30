@@ -7,6 +7,7 @@ import React from 'react';
     import FreeTimeActivities from './components/FreeTimeActivities';
     import Contact from './components/Contact';
     import { motion } from 'framer-motion';
+    import BackgroundAnimation from './components/BackgroundAnimation';
     
     const AppContainer = styled(motion.div)`
       display: flex;
@@ -42,6 +43,7 @@ import React from 'react';
           initial="initial"
           animate="animate"
         >
+          <BackgroundAnimation />
           <Header />
           <MainContent>
             <Introduction />

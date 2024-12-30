@@ -30,7 +30,7 @@ import React from 'react';
             options={{
               background: {
                 color: {
-                  value: "#1a1a1a",
+                  value: "#000000",
                 },
               },
               fpsLimit: 120,
@@ -58,7 +58,7 @@ import React from 'react';
               },
               particles: {
                 color: {
-                  value: "#ffffff",
+                  value: ["#00f260", "#0575e6"],
                 },
                 links: {
                   color: "#ffffff",
@@ -77,7 +77,7 @@ import React from 'react';
                     default: "bounce",
                   },
                   random: false,
-                  speed: 1,
+                  speed: 0.5,
                   straight: false,
                 },
                 number: {

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
     import styled from 'styled-components';
     import { Link } from 'react-scroll';
-    import { motion, AnimatePresence } from 'framer-motion';
+    import { motion } from 'framer-motion';
     import { FaBars } from 'react-icons/fa';
     
     const HeaderContainer = styled(motion.header)`
-      background-color: #1a132b;
+      background-color: transparent;
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
