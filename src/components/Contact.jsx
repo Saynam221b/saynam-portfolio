@@ -1,161 +1,203 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-
-const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [status, setStatus] = useState('');
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: true
-  });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus('sending');
-
-    try {
-      const response = await fetch('https://saynam-portfolio-19qy.vercel.app/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    import styled from 'styled-components';
+    import { motion } from 'framer-motion';
+    import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+    
+    const ContactContainer = styled(motion.div)`
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: calc(100vh - 60px);
+    `;
+    
+    const Title = styled(motion.h2)`
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    `;
+    
+    const ContactInfo = styled(motion.div)`
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    `;
+    
+    const ContactLink = styled(motion.a)`
+      color: #00bcd4;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.3s ease;
+    
+      &:hover {
+        color: #008ba3;
+      }
+    `;
+    
+    const SocialIcons = styled(motion.div)`
+      display: flex;
+      gap: 20px;
+      font-size: 2rem;
+    `;
+    
+    const SocialLink = styled(motion.a)`
+      color: #fff;
+      transition: color 0.3s ease;
+    
+      &:hover {
+        color: #00bcd4;
+      }
+    `;
+    
+    const Form = styled(motion.form)`
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;
+      gap: 1rem;
+    `;
+    
+    const Input = styled(motion.input)`
+      padding: 1rem;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #334155;
+      color: #fff;
+    `;
+    
+    const Textarea = styled(motion.textarea)`
+      padding: 1rem;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #334155;
+      color: #fff;
+      resize: vertical;
+    `;
+    
+    const SubmitButton = styled(motion.button)`
+      background-color: #00bcd4;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    
+      &:hover {
+        background-color: #008ba3;
+      }
+    `;
+    
+    const containerVariants = {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          delayChildren: 0.3,
+          staggerChildren: 0.2,
         },
-        body: JSON.stringify(formData),
+      },
+    };
+    
+    const itemVariants = {
+      hidden: { opacity: 0, y: 20 },
+      visible: { opacity: 1, y: 0 },
+    };
+    
+    function Contact() {
+      const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        message: '',
       });
-
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        setStatus('error');
-      }
-    } catch (error) {
-      setStatus('error');
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0
-    }
-  };
-
-  return (
-    <section id="contact" className="relative py-20 bg-gray-900 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-blue-900/30" />
-      
-      <motion.div
-        ref={ref}
-        variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        className="relative max-w-3xl mx-auto px-4 sm:px-6"
-      >
-        <motion.h2
-          variants={itemVariants}
-          className="text-3xl sm:text-4xl font-bold text-white mb-12 text-center"
-        >
-          Get in Touch
-        </motion.h2>
-
-        <motion.form
+    
+      const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        const smtpUser = 'saynamsharma221b@gmail.com';
+        const smtpPass = 'tfmwcuafqardzief';
+        const recipientEmail = 'saynamsharma221b@gmail.com';
+    
+        try {
+          const response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...formData, smtpUser, smtpPass, recipientEmail }),
+          });
+    
+          if (response.ok) {
+            alert('Email sent successfully!');
+            setFormData({ name: '', email: '', message: '' });
+          } else {
+            alert('Error sending email.');
+          }
+        } catch (error) {
+          console.error('Error submitting form:', error);
+          alert('Error submitting form.');
+        }
+      };
+    
+      return (
+        <ContactContainer
+          id="contact"
           variants={containerVariants}
-          className="space-y-6 bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl shadow-xl"
-          onSubmit={handleSubmit}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         >
-          <motion.div variants={itemVariants}>
-            <label htmlFor="name" className="block text-gray-300 mb-2 text-sm font-medium">
-              Name
-            </label>
-            <input
+          <Title variants={itemVariants}>Contact Me</Title>
+          <ContactInfo variants={itemVariants}>
+            <ContactLink href="mailto:saynam1101@gmail.com" variants={itemVariants}>
+              <FaEnvelope />
+              saynam1101@gmail.com
+            </ContactLink>
+          </ContactInfo>
+          <SocialIcons variants={itemVariants}>
+            <SocialLink href="https://github.com/saynam221b" target="_blank" rel="noopener noreferrer" variants={itemVariants}>
+              <FaGithub />
+            </SocialLink>
+            <SocialLink href="https://linkedin.com/in/saynam-sharma" target="_blank" rel="noopener noreferrer" variants={itemVariants}>
+              <FaLinkedin />
+            </SocialLink>
+          </SocialIcons>
+          <Form variants={itemVariants} onSubmit={handleSubmit}>
+            <Input
               type="text"
-              id="name"
+              name="name"
+              placeholder="Your Name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              onChange={handleChange}
               required
             />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <label htmlFor="email" className="block text-gray-300 mb-2 text-sm font-medium">
-              Email
-            </label>
-            <input
+            <Input
               type="email"
-              id="email"
+              name="email"
+              placeholder="Your Email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              onChange={handleChange}
               required
             />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <label htmlFor="message" className="block text-gray-300 mb-2 text-sm font-medium">
-              Message
-            </label>
-            <textarea
-              id="message"
-              value={formData.message}
-              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            <Textarea
+              name="message"
+              placeholder="Your Message"
               rows="5"
-              className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              value={formData.message}
+              onChange={handleChange}
               required
             />
-          </motion.div>
-
-          <motion.button
-            variants={itemVariants}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors disabled:opacity-50"
-            disabled={status === 'sending'}
-          >
-            {status === 'sending' ? 'Sending...' : 'Send Message'}
-          </motion.button>
-
-          {status === 'success' && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-green-500 text-center text-sm"
-            >
-              Message sent successfully!
-            </motion.p>
-          )}
-          {status === 'error' && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-red-500 text-center text-sm"
-            >
-              Failed to send message. Please try again.
-            </motion.p>
-          )}
-        </motion.form>
-      </motion.div>
-    </section>
-  );
-};
-
-export default Contact;
+            <SubmitButton type="submit">Send</SubmitButton>
+          </Form>
+        </ContactContainer>
+      );
+    }
+    
+    export default Contact;
