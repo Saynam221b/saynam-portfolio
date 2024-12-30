@@ -111,23 +111,19 @@ import React, { useState } from 'react';
           <MenuIcon onClick={toggleMenu}>
             <FaBars />
           </MenuIcon>
-          <AnimatePresence>
-            {isOpen && (
-              <Nav
-                isOpen={isOpen}
-                variants={navVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                <NavLink to="introduction" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Introduction</NavLink>
-                <NavLink to="experience" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Experience</NavLink>
-                <NavLink to="projects" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Projects</NavLink>
-                 <NavLink to="free-time" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Free Time</NavLink>
-                <NavLink to="contact" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Contact</NavLink>
-              </Nav>
-            )}
-          </AnimatePresence>
+          <Nav
+            isOpen={isOpen}
+            variants={navVariants}
+            initial="hidden"
+            animate={isOpen ? "visible" : ""}
+            exit="exit"
+          >
+            <NavLink to="introduction" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Introduction</NavLink>
+            <NavLink to="experience" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Experience</NavLink>
+            <NavLink to="projects" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Projects</NavLink>
+             <NavLink to="free-time" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Free Time</NavLink>
+            <NavLink to="contact" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Contact</NavLink>
+          </Nav>
         </HeaderContainer>
       );
     }
