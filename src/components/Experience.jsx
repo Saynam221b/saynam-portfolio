@@ -5,6 +5,7 @@ import React from 'react';
     const ExperienceContainer = styled(motion.div)`
       padding: 2rem;
       min-height: calc(100vh - 60px);
+      backdrop-filter: blur(3px);
     `;
     
     const Title = styled(motion.h2)`
@@ -19,11 +20,12 @@ import React from 'react';
     `;
     
     const ExperienceItem = styled(motion.li)`
-      background-color: #475569;
+      background-color: rgba(71, 85, 105, 0.15);
       padding: 1.5rem;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       margin-bottom: 1rem;
+      backdrop-filter: blur(2px);
     `;
     
     const JobTitle = styled(motion.h3)`

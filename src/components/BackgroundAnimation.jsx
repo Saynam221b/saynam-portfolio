@@ -41,8 +41,8 @@ import React from 'react';
                     mode: "push",
                   },
                   onHover: {
-                    enable: false,
-                    mode: "repulse",
+                    enable: true,
+                    mode: "bubble",
                   },
                   resize: true,
                 },
@@ -50,9 +50,11 @@ import React from 'react';
                   push: {
                     quantity: 4,
                   },
-                  repulse: {
+                  bubble: {
                     distance: 200,
-                    duration: 0.4,
+                    duration: 0.3,
+                    opacity: 1,
+                    size: 6,
                   },
                 },
               },

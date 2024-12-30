@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-    import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+    import styled, { css } from 'styled-components';
     import { Link } from 'react-scroll';
-    import { motion } from 'framer-motion';
+    import { motion, useAnimation } from 'framer-motion';
     import { FaBars } from 'react-icons/fa';
     
     const HeaderContainer = styled(motion.header)`
@@ -10,10 +10,19 @@ import React, { useState } from 'react';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      width: 100%;
       z-index: 100;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: backdrop-filter 0.3s ease;
+    
+      ${(props) =>
+        props.isScrolled &&
+        css`
+          backdrop-filter: blur(2px);
+        `}
     `;
     
     const Nav = styled(motion.nav)`
@@ -27,9 +36,17 @@ import React, { useState } from 'react';
         top: 60px;
         left: 0;
         width: 100%;
-        background-color: #1a132b;
+        background-color: transparent;
+        backdrop-filter: blur(2px);
         padding: 1rem;
         align-items: center;
+        opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+        transform-origin: top;
+        transform: ${({ isOpen }) =>
+          isOpen
+            ? 'translateY(0) rotateX(0deg) scaleY(1)'
+            : 'translateY(-20px) rotateX(-45deg) scaleY(0.8)'};
+        transition: opacity 0.3s ease, transform 0.3s ease, backdrop-filter 0.3s ease;
       }
     `;
     
@@ -96,16 +113,37 @@ import React, { useState } from 'react';
     
     function Header() {
       const [isOpen, setIsOpen] = useState(false);
+      const [isScrolled, setIsScrolled] = useState(false);
+      const navAnimation = useAnimation();
     
-      const toggleMenu = () => {
+      const toggleMenu = async () => {
         setIsOpen(!isOpen);
+        if (isOpen) {
+          await navAnimation.start({ opacity: 0, translateY: '-20px', rotateX: '-45deg', scaleY: 0.8 });
+        } else {
+          await navAnimation.start({ opacity: 1, translateY: '0', rotateX: '0deg', scaleY: 1 });
+        }
       };
+    
+      useEffect(() => {
+        const handleScroll = () => {
+          const scrollTop = window.pageYOffset;
+          setIsScrolled(scrollTop > 50);
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+    
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+      }, []);
     
       return (
         <HeaderContainer
           variants={headerVariants}
           initial="hidden"
           animate="visible"
+          isScrolled={isScrolled}
         >
           <Logo>DataEng</Logo>
           <MenuIcon onClick={toggleMenu}>
@@ -117,6 +155,7 @@ import React, { useState } from 'react';
             initial="hidden"
             animate={isOpen ? "visible" : ""}
             exit="exit"
+            style={{ transformOrigin: 'top' }}
           >
             <NavLink to="introduction" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Introduction</NavLink>
             <NavLink to="experience" smooth={true} duration={500} onClick={() => setIsOpen(false)}>Experience</NavLink>
