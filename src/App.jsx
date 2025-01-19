@@ -51,6 +51,14 @@ const darkTheme = {
 };
 
 const GlobalStyle = createGlobalStyle`
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: ${props => props.theme.contentBg};
+  }
+
   ::selection {
     background-color: ${props => props.theme.primary};
     color: #fff;

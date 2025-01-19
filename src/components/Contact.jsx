@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
 
 const ContactContainer = styled.section`
   padding: 4rem 2rem;
@@ -85,6 +85,9 @@ const Input = styled.input`
   };
   color: ${props => props.theme.text.primary};
   transition: all 0.3s ease;
+  text-align: left;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
 
   &:focus {
     outline: none;
@@ -96,17 +99,24 @@ const Input = styled.input`
 const TextArea = styled(Input).attrs({ as: 'textarea' })`
   min-height: 150px;
   resize: vertical;
+  text-align: left;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
 `;
 
 const SubmitButton = styled.button`
   background-color: ${props => props.theme.primary};
   color: white;
-  padding: 0.8rem 2rem;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.5rem;
 
   &:hover {
     transform: translateY(-2px);
@@ -132,7 +142,10 @@ function Contact() {
             <Input type="text" placeholder="Your Name" required />
             <Input type="email" placeholder="Your Email" required />
             <TextArea placeholder="Your Message" required />
-            <SubmitButton type="submit">Send Message</SubmitButton>
+            <SubmitButton type="submit">
+              <FaPaperPlane />
+              Let's Connect!
+            </SubmitButton>
           </ContactForm>
           <SocialLinks>
             <SocialLink 
