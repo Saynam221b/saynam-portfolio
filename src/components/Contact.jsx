@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 const ContactContainer = styled.section`
   padding: 4rem 2rem;
@@ -44,27 +44,6 @@ const ContactText = styled.p`
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-`;
-
-const EmailLink = styled.a`
-  color: ${props => props.theme.text.accent};
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: ${props => props.theme.primary};
-  }
-
-  svg {
-    font-size: 1.4rem;
-  }
 `;
 
 const SocialLinks = styled.div`
@@ -149,10 +128,6 @@ function Contact() {
           <ContactText>
             I'm always open to discussing new projects, opportunities, and collaborations.
           </ContactText>
-          <EmailLink href="mailto:saynamsharma221b@gmail.com">
-            <FaEnvelope />
-            saynamsharma221b@gmail.com
-          </EmailLink>
           <ContactForm onSubmit={handleSubmit}>
             <Input type="text" placeholder="Your Name" required />
             <Input type="email" placeholder="Your Email" required />

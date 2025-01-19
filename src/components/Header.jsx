@@ -79,7 +79,7 @@ const NavLink = styled(Link)`
   cursor: pointer;
   transition: all 0.3s ease;
 
-  &:hover, &.active {
+  &:hover {
     color: ${props => props.theme.primary};
     background-color: ${props => props.isDarkMode ? 
       'rgba(255, 255, 255, 0.1)' : 
@@ -187,37 +187,18 @@ function Header() {
   const NavLinks = ({ onClick, isMobile }) => (
     <>
       {navItems.map(({ to, label }) => (
-        isMobile ? (
-          <MobileNavLink
-            key={to}
-            variants={linkVariants}
-          >
-            <NavLink
-              to={to}
-              smooth={true}
-              duration={500}
-              offset={-70}
-              spy={true}
-              onClick={onClick}
-              isDarkMode={isDarkMode}
-            >
-              {label}
-            </NavLink>
-          </MobileNavLink>
-        ) : (
-          <NavLink
-            key={to}
-            to={to}
-            smooth={true}
-            duration={500}
-            offset={-70}
-            spy={true}
-            onClick={onClick}
-            isDarkMode={isDarkMode}
-          >
-            {label}
-          </NavLink>
-        )
+        <NavLink
+          key={to}
+          to={to}
+          smooth={true}
+          duration={500}
+          offset={-70}
+          spy={true}
+          onClick={onClick}
+          isDarkMode={isDarkMode}
+        >
+          {label}
+        </NavLink>
       ))}
     </>
   );
@@ -246,7 +227,7 @@ function Header() {
             isScrolled={isScrolled}
             isDarkMode={isDarkMode}
           >
-            <NavLinks onClick={() => setIsOpen(false)} isMobile={true} />
+            <NavLinks onClick={() => setIsOpen(false)} />
           </MobileNav>
         )}
       </AnimatePresence>
