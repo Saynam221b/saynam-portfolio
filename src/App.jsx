@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import styled, { ThemeProvider as StyledThemeProvider, createGlobalStyle, keyframes } from 'styled-components';
 import Header from './components/Header';
@@ -146,26 +146,42 @@ function App() {
 }
 
 function ThemedApp() {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, toggleTheme } = useTheme();
+  const [isThemeChanging, setIsThemeChanging] = useState(false);
+
+  useEffect(() => {
+    setIsThemeChanging(true);
+    const timeoutId = setTimeout(() => {
+      setIsThemeChanging(false);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [isDarkMode]);
+
+  const handleThemeToggle = () => {
+    setIsThemeChanging(true);
+    toggleTheme();
+  };
   
   return (
     <StyledThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <GlobalStyle />
       <AnimatePresence mode='wait'>
-        <ThemeTransition
-          key={isDarkMode ? 'dark' : 'light'}
-          isDarkMode={isDarkMode}
-          initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ 
-            scale: [1.1, 1],
-            opacity: [0, 1, 0],
-          }}
-          exit={{ opacity: 0 }}
-          transition={{ 
-            duration: 0.5,
-            times: [0, 0.5, 1]
-          }}
-        />
+        {isThemeChanging && (
+          <ThemeTransition
+            key={isDarkMode ? 'dark' : 'light'}
+            isDarkMode={isDarkMode}
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ 
+              scale: [1.1, 1],
+              opacity: [0, 1, 0],
+            }}
+            exit={{ opacity: 0 }}
+            transition={{ 
+              duration: 0.5,
+              times: [0, 0.5, 1]
+            }}
+          />
+        )}
       </AnimatePresence>
       <AppContainer
         initial={{ opacity: 0 }}
@@ -185,7 +201,7 @@ function ThemedApp() {
           <Contact />
         </MainContent>
         <ThemeToggleWrapper>
-          <ThemeToggle />
+          <ThemeToggle onClick={handleThemeToggle} />
         </ThemeToggleWrapper>
       </AppContainer>
     </StyledThemeProvider>

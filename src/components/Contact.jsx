@@ -69,6 +69,7 @@ const ContactForm = styled.form`
   flex-direction: column;
   gap: 1rem;
   margin-top: 2rem;
+  align-items: center;
 `;
 
 const Input = styled.input`
