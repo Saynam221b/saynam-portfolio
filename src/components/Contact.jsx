@@ -134,7 +134,7 @@ function Contact() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/send-email', {
+      const response = await fetch('/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,8 +151,8 @@ function Contact() {
         alert('Error sending email.');
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting form.');
+      console.error('Error sending email:', error);
+      alert('Error sending email.');
     }
   };
 
@@ -165,23 +165,23 @@ function Contact() {
             I'm always open to discussing new projects, opportunities, and collaborations.
           </ContactText>
           <ContactForm onSubmit={handleSubmit}>
-            <Input
-              type="text"
-              placeholder="Your Name"
-              required
+            <Input 
+              type="text" 
+              placeholder="Your Name" 
+              required 
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <Input
-              type="email"
-              placeholder="Your Email"
-              required
+            <Input 
+              type="email" 
+              placeholder="Your Email" 
+              required 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextArea
-              placeholder="Your Message"
-              required
+            <TextArea 
+              placeholder="Your Message" 
+              required 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
