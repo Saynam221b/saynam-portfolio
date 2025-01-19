@@ -11,42 +11,42 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './components/ThemeToggle';
 
 const lightTheme = {
-  headerBg: 'rgba(255, 255, 255, 0.98)',
-  headerText: '#2d3436',
-  headerShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-  primary: '#00bcd4',
-  toggleBg: '#ffffff',
-  toggleIcon: '#1a132b',
-  mainBg: '#ffffff',
-  contentBg: '#ffffff',
-  cardBg: '#ffffff',
-  cardHoverBg: '#ffffff',
-  cardShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  cardHoverShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+  headerBg: 'rgba(255, 255, 255, 0.85)',
+  headerText: '#0f172a',
+  headerShadow: '0 2px 4px rgba(15, 23, 42, 0.06)',
+  primary: '#0284c7',
+  toggleBg: '#f1f5f9',
+  toggleIcon: '#0f172a',
+  mainBg: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+  contentBg: 'transparent',
+  cardBg: 'rgba(255, 255, 255, 0.85)',
+  cardHoverBg: 'rgba(255, 255, 255, 0.95)',
+  cardShadow: '0 4px 6px rgba(15, 23, 42, 0.04), 0 2px 4px rgba(15, 23, 42, 0.03)',
+  cardHoverShadow: '0 10px 15px rgba(15, 23, 42, 0.06), 0 4px 6px rgba(15, 23, 42, 0.04)',
   text: {
-    primary: '#2d3436',
-    secondary: '#636e72',
-    accent: '#00bcd4'
+    primary: '#0f172a',
+    secondary: '#334155',
+    accent: '#0284c7'
   }
 };
 
 const darkTheme = {
-  headerBg: 'rgba(17, 25, 40, 0.98)',
+  headerBg: 'rgba(15, 23, 42, 0.85)',
   headerText: '#ffffff',
-  headerShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
-  primary: '#00bcd4',
+  headerShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  primary: '#0284c7',
   toggleBg: 'rgba(255, 255, 255, 0.05)',
   toggleIcon: '#ffd700',
-  mainBg: 'linear-gradient(135deg, #111928 0%, #1f2937 100%)',
+  mainBg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
   contentBg: 'transparent',
-  cardBg: 'rgba(17, 25, 40, 0.7)',
-  cardHoverBg: 'rgba(17, 25, 40, 0.9)',
-  cardShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
-  cardHoverShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+  cardBg: 'rgba(30, 41, 59, 0.85)',
+  cardHoverBg: 'rgba(30, 41, 59, 0.95)',
+  cardShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  cardHoverShadow: '0 10px 15px rgba(0, 0, 0, 0.15)',
   text: {
     primary: '#ffffff',
     secondary: '#cbd5e1',
-    accent: '#00bcd4'
+    accent: '#38bdf8'
   }
 };
 

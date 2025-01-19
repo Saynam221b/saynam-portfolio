@@ -1,179 +1,255 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-scroll';
-import { motion } from 'framer-motion';
-import { FaBars } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import { useTheme } from '../context/ThemeContext';
 
 const HeaderContainer = styled(motion.header)`
   background-color: ${props => props.theme.headerBg};
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 80px;
-  z-index: 100;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
   box-shadow: ${props => props.theme.headerShadow};
-  transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 
-  ${(props) =>
-    props.isScrolled &&
-    css`
-      background-color: ${props => props.theme.headerBg};
-      box-shadow: ${props => props.theme.headerShadow};
-    `}
+  ${props => props.isScrolled && css`
+    height: 60px;
+    background-color: ${props => props.theme.headerBg};
+  `}
 `;
 
-const Nav = styled.nav`
+const Logo = styled.div`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: ${props => props.theme.headerText};
+`;
+
+const NavContainer = styled.div`
   display: flex;
-  gap: 20px;
-  margin-right: 2rem;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const DesktopNav = styled.nav`
+  display: flex;
+  gap: 1rem;
 
   @media (max-width: 768px) {
-    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    display: none;
+  }
+`;
+
+const MobileNav = styled(motion.nav)`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: flex;
     flex-direction: column;
     position: absolute;
-    top: 80px;
+    top: ${props => props.isScrolled ? '60px' : '70px'};
     left: 0;
-    width: 100%;
+    right: 0;
     background-color: ${props => props.theme.headerBg};
+    backdrop-filter: blur(10px);
     padding: 1rem;
-    align-items: center;
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid ${props => props.theme.text.secondary}20;
+    gap: 0.5rem;
+    border-bottom: 1px solid ${props => props.isDarkMode ? 
+      'rgba(255, 255, 255, 0.1)' : 
+      'rgba(15, 23, 42, 0.1)'
+    };
+    transform-origin: top center;
+    box-shadow: ${props => props.theme.headerShadow};
   }
 `;
 
 const NavLink = styled(Link)`
   color: ${props => props.theme.headerText};
-  text-decoration: none;
-  font-weight: bold;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: color 0.3s ease;
-  position: relative;
+  transition: all 0.3s ease;
+
+  &:hover, &.active {
+    color: ${props => props.theme.primary};
+    background-color: ${props => props.isDarkMode ? 
+      'rgba(255, 255, 255, 0.1)' : 
+      'rgba(15, 23, 42, 0.1)'
+    };
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+`;
+
+const MobileNavLink = styled(motion.div)`
+  width: 100%;
+`;
+
+const MenuButton = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  color: ${props => props.theme.headerText};
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 
   &:hover {
-    color: ${props => props.theme.primary};
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: ${props => props.theme.primary};
-    transition: width 0.3s ease;
-  }
-
-  &:hover::after {
-    width: 100%;
+    background-color: ${props => props.isDarkMode ? 
+      'rgba(255, 255, 255, 0.1)' : 
+      'rgba(15, 23, 42, 0.1)'
+    };
   }
 
   @media (max-width: 768px) {
-    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
   }
 `;
 
-const Logo = styled.span`
-  font-size: 1.7rem;
-  font-weight: bold;
-  color: ${props => props.theme.headerText};
-  letter-spacing: 1px;
-`;
-
-const MenuIcon = styled.div`
-  display: none;
-  color: ${props => props.theme.headerText};
-  font-size: 1.5rem;
-  cursor: pointer;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
+const navItems = [
+  { to: "introduction", label: "Introduction" },
+  { to: "experience", label: "Experience" },
+  { to: "projects", label: "Projects" },
+  { to: "free-time", label: "Free Time" },
+  { to: "contact", label: "Contact" }
+];
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset;
-      setIsScrolled(scrollTop > 50);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLinkClick = () => {
-    setIsOpen(false);
+  const mobileNavVariants = {
+    hidden: {
+      clipPath: "inset(0 0 100% 0)",
+      transition: {
+        type: "tween",
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+        when: "afterChildren"
+      }
+    },
+    visible: {
+      clipPath: "inset(0 0 0 0)",
+      transition: {
+        type: "tween",
+        duration: 0.4,
+        ease: [0.4, 0, 0.2, 1],
+        staggerChildren: 0.05,
+        when: "beforeChildren"
+      }
+    }
   };
 
+  const linkVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 20,
+      transition: {
+        duration: 0.2
+      }
+    },
+    visible: { 
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const NavLinks = ({ onClick, isMobile }) => (
+    <>
+      {navItems.map(({ to, label }) => (
+        isMobile ? (
+          <MobileNavLink
+            key={to}
+            variants={linkVariants}
+          >
+            <NavLink
+              to={to}
+              smooth={true}
+              duration={500}
+              offset={-70}
+              spy={true}
+              onClick={onClick}
+              isDarkMode={isDarkMode}
+            >
+              {label}
+            </NavLink>
+          </MobileNavLink>
+        ) : (
+          <NavLink
+            key={to}
+            to={to}
+            smooth={true}
+            duration={500}
+            offset={-70}
+            spy={true}
+            onClick={onClick}
+            isDarkMode={isDarkMode}
+          >
+            {label}
+          </NavLink>
+        )
+      ))}
+    </>
+  );
+
   return (
-    <HeaderContainer isScrolled={isScrolled}>
+    <HeaderContainer isScrolled={isScrolled} isDarkMode={isDarkMode}>
       <Logo>DataEng</Logo>
-      <MenuIcon onClick={() => setIsOpen(!isOpen)}>
-        <FaBars />
-      </MenuIcon>
-      <Nav isOpen={isOpen}>
-        <NavLink 
-          to="introduction" 
-          smooth={true} 
-          duration={500} 
-          offset={-80}
-          spy={true}
-          onClick={handleLinkClick}
+      <NavContainer>
+        <DesktopNav>
+          <NavLinks />
+        </DesktopNav>
+        <MenuButton 
+          onClick={() => setIsOpen(!isOpen)}
+          isDarkMode={isDarkMode}
         >
-          Introduction
-        </NavLink>
-        <NavLink 
-          to="experience" 
-          smooth={true} 
-          duration={500} 
-          offset={-80}
-          spy={true}
-          onClick={handleLinkClick}
-        >
-          Experience
-        </NavLink>
-        <NavLink 
-          to="projects" 
-          smooth={true} 
-          duration={500} 
-          offset={-80}
-          spy={true}
-          onClick={handleLinkClick}
-        >
-          Projects
-        </NavLink>
-        <NavLink 
-          to="free-time" 
-          smooth={true} 
-          duration={500} 
-          offset={-80}
-          spy={true}
-          onClick={handleLinkClick}
-        >
-          Free Time
-        </NavLink>
-        <NavLink 
-          to="contact" 
-          smooth={true} 
-          duration={500} 
-          offset={-80}
-          spy={true}
-          onClick={handleLinkClick}
-        >
-          Contact
-        </NavLink>
-      </Nav>
+          {isOpen ? <FaTimes /> : <FaBars />}
+        </MenuButton>
+      </NavContainer>
+      <AnimatePresence>
+        {isOpen && (
+          <MobileNav
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={mobileNavVariants}
+            isScrolled={isScrolled}
+            isDarkMode={isDarkMode}
+          >
+            <NavLinks onClick={() => setIsOpen(false)} isMobile={true} />
+          </MobileNav>
+        )}
+      </AnimatePresence>
     </HeaderContainer>
   );
 }

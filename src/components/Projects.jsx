@@ -16,12 +16,15 @@ const ProjectsGrid = styled.div`
 
 const ProjectCard = styled.div`
   background-color: ${props => props.theme.cardBg};
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: ${props => props.theme.cardShadow};
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(15, 23, 42, 0.1)'
+  };
 
   &:hover {
     transform: translateY(-5px);
@@ -52,10 +55,13 @@ const TechStack = styled.div`
 `;
 
 const TechTag = styled.span`
-  background-color: ${props => props.theme.mainBg};
+  background-color: ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(15, 23, 42, 0.1)'
+  };
   color: ${props => props.theme.text.accent};
   padding: 0.3rem 0.8rem;
-  border-radius: 15px;
+  border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
 `;

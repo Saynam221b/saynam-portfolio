@@ -26,10 +26,12 @@ const ContactCard = styled.div`
   padding: 2rem;
   border-radius: 12px;
   box-shadow: ${props => props.theme.cardShadow};
-  margin-bottom: 2rem;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(15, 23, 42, 0.1)'
+  };
 
   &:hover {
     background-color: ${props => props.theme.cardHoverBg};
@@ -91,55 +93,45 @@ const ContactForm = styled.form`
 `;
 
 const Input = styled.input`
+  width: 100%;
   padding: 0.8rem 1rem;
-  border: 2px solid transparent;
   border-radius: 8px;
-  background-color: ${props => props.theme.mainBg};
+  border: 1px solid ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(15, 23, 42, 0.1)'
+  };
+  background-color: ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.05)' : 
+    'rgba(15, 23, 42, 0.05)'
+  };
   color: ${props => props.theme.text.primary};
-  font-size: 1rem;
   transition: all 0.3s ease;
 
   &:focus {
     outline: none;
     border-color: ${props => props.theme.primary};
+    box-shadow: 0 0 0 2px ${props => props.theme.primary}30;
   }
 `;
 
-const TextArea = styled.textarea`
-  padding: 0.8rem 1rem;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  background-color: ${props => props.theme.mainBg};
-  color: ${props => props.theme.text.primary};
-  font-size: 1rem;
+const TextArea = styled(Input).attrs({ as: 'textarea' })`
   min-height: 150px;
   resize: vertical;
-  transition: all 0.3s ease;
-
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme.primary};
-  }
 `;
 
 const SubmitButton = styled.button`
-  padding: 1rem 2rem;
   background-color: ${props => props.theme.primary};
   color: white;
+  padding: 0.8rem 2rem;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    transform: translateY(0);
+    box-shadow: 0 4px 12px ${props => props.theme.primary}40;
   }
 `;
 

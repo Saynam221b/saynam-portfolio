@@ -29,8 +29,11 @@ const ActivityCard = styled.div`
   border-radius: 12px;
   box-shadow: ${props => props.theme.cardShadow};
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(15, 23, 42, 0.1)'
+  };
   text-align: center;
 
   &:hover {
