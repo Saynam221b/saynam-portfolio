@@ -1,109 +1,122 @@
 import React from 'react';
-    import styled from 'styled-components';
-    import { motion } from 'framer-motion';
-    import {
-      FaCamera,
-      FaHiking,
-      FaGamepad,
-      FaBook,
-      FaCode,
-      FaPlane,
-    } from 'react-icons/fa';
-    
-    const FreeTimeContainer = styled(motion.div)`
-      padding: 2rem;
-      min-height: calc(100vh - 60px);
-      backdrop-filter: blur(3px);
-    `;
-    
-    const Title = styled(motion.h2)`
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    `;
-    
-    const ActivitiesList = styled(motion.ul)`
-      list-style: none;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      justify-items: center;
-    `;
-    
-    const ActivityItem = styled(motion.li)`
-      background-color: rgba(71, 85, 105, 0.15);
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      text-align: center;
-      transition: transform 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      backdrop-filter: blur(2px);
-    
-      &:hover {
-        transform: translateY(-5px);
-      }
-    `;
-    
-    const ActivityIcon = styled(motion.span)`
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    `;
-    
-    const ActivityTitle = styled(motion.h3)`
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-    `;
-    
-    const containerVariants = {
-      hidden: { opacity: 0 },
-      visible: {
-        opacity: 1,
-        transition: {
-          delayChildren: 0.3,
-          staggerChildren: 0.2,
-        },
-      },
-    };
-    
-    const itemVariants = {
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0 },
-    };
-    
-    function FreeTimeActivities() {
-      const activities = [
-        { title: 'Photography', icon: <FaCamera /> },
-        { title: 'Hiking', icon: <FaHiking /> },
-        { title: 'Gaming', icon: <FaGamepad /> },
-        { title: 'Reading', icon: <FaBook /> },
-        { title: 'Coding', icon: <FaCode /> },
-        { title: 'Traveling', icon: <FaPlane /> },
-      ];
-    
-      return (
-        <FreeTimeContainer
-          id="free-time"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <Title variants={itemVariants}>My Free Time Activities</Title>
-          <ActivitiesList>
-            {activities.map((activity, index) => (
-              <ActivityItem key={index} variants={itemVariants}>
-                <ActivityIcon>{activity.icon}</ActivityIcon>
-                <ActivityTitle>{activity.title}</ActivityTitle>
-              </ActivityItem>
-            ))}
-          </ActivitiesList>
-        </FreeTimeContainer>
-      );
-    }
-    
-    export default FreeTimeActivities;
+import styled from 'styled-components';
+import { FaCamera, FaHiking, FaGamepad, FaBook, FaCode, FaPlane } from 'react-icons/fa';
+
+const ActivitiesContainer = styled.section`
+  padding: 4rem 2rem;
+  background: transparent;
+`;
+
+const SectionTitle = styled.h2`
+  color: ${props => props.theme.text.primary};
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 700;
+`;
+
+const ActivitiesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const ActivityCard = styled.div`
+  background-color: ${props => props.theme.cardBg};
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: ${props => props.theme.cardShadow};
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+
+  &:hover {
+    transform: translateY(-5px);
+    background-color: ${props => props.theme.cardHoverBg};
+    box-shadow: ${props => props.theme.cardHoverShadow};
+  }
+`;
+
+const IconWrapper = styled.div`
+  font-size: 2.5rem;
+  color: ${props => props.theme.text.accent};
+  margin-bottom: 1rem;
+  
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  ${ActivityCard}:hover & svg {
+    transform: scale(1.1);
+  }
+`;
+
+const ActivityTitle = styled.h3`
+  color: ${props => props.theme.text.primary};
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+`;
+
+const ActivityDescription = styled.p`
+  color: ${props => props.theme.text.secondary};
+  font-size: 1rem;
+  line-height: 1.6;
+`;
+
+const activities = [
+  {
+    icon: <FaCamera />,
+    title: "Photography",
+    description: "Capturing moments and exploring visual storytelling through the lens."
+  },
+  {
+    icon: <FaHiking />,
+    title: "Hiking",
+    description: "Exploring nature trails and discovering new landscapes."
+  },
+  {
+    icon: <FaGamepad />,
+    title: "Gaming",
+    description: "Enjoying strategic games and immersive experiences."
+  },
+  {
+    icon: <FaBook />,
+    title: "Reading",
+    description: "Expanding knowledge through books and technical literature."
+  },
+  {
+    icon: <FaCode />,
+    title: "Coding",
+    description: "Building side projects and learning new technologies."
+  },
+  {
+    icon: <FaPlane />,
+    title: "Traveling",
+    description: "Experiencing different cultures and exploring new places."
+  }
+];
+
+function FreeTimeActivities() {
+  return (
+    <ActivitiesContainer id="free-time">
+      <SectionTitle>Free Time Activities</SectionTitle>
+      <ActivitiesGrid>
+        {activities.map((activity, index) => (
+          <ActivityCard key={index}>
+            <IconWrapper>
+              {activity.icon}
+            </IconWrapper>
+            <ActivityTitle>{activity.title}</ActivityTitle>
+            <ActivityDescription>{activity.description}</ActivityDescription>
+          </ActivityCard>
+        ))}
+      </ActivitiesGrid>
+    </ActivitiesContainer>
+  );
+}
+
+export default FreeTimeActivities;

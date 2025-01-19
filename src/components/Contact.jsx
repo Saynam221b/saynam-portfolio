@@ -1,203 +1,192 @@
-import React, { useState } from 'react';
-    import styled from 'styled-components';
-    import { motion } from 'framer-motion';
-    import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
-    
-    const ContactContainer = styled(motion.div)`
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      min-height: calc(100vh - 60px);
-    `;
-    
-    const Title = styled(motion.h2)`
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-    `;
-    
-    const ContactInfo = styled(motion.div)`
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    `;
-    
-    const ContactLink = styled(motion.a)`
-      color: #00bcd4;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: color 0.3s ease;
-    
-      &:hover {
-        color: #008ba3;
-      }
-    `;
-    
-    const SocialIcons = styled(motion.div)`
-      display: flex;
-      gap: 20px;
-      font-size: 2rem;
-    `;
-    
-    const SocialLink = styled(motion.a)`
-      color: #fff;
-      transition: color 0.3s ease;
-    
-      &:hover {
-        color: #00bcd4;
-      }
-    `;
-    
-    const Form = styled(motion.form)`
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 400px;
-      gap: 1rem;
-    `;
-    
-    const Input = styled(motion.input)`
-      padding: 1rem;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #334155;
-      color: #fff;
-    `;
-    
-    const Textarea = styled(motion.textarea)`
-      padding: 1rem;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #334155;
-      color: #fff;
-      resize: vertical;
-    `;
-    
-    const SubmitButton = styled(motion.button)`
-      background-color: #00bcd4;
-      color: #fff;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    
-      &:hover {
-        background-color: #008ba3;
-      }
-    `;
-    
-    const containerVariants = {
-      hidden: { opacity: 0 },
-      visible: {
-        opacity: 1,
-        transition: {
-          delayChildren: 0.3,
-          staggerChildren: 0.2,
-        },
-      },
-    };
-    
-    const itemVariants = {
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0 },
-    };
-    
-    function Contact() {
-      const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: '',
-      });
-    
-      const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-      };
-    
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        const smtpUser = 'saynamsharma221b@gmail.com';
-        const smtpPass = 'tfmwcuafqardzief';
-        const recipientEmail = 'saynamsharma221b@gmail.com';
-    
-        try {
-          const response = await fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...formData, smtpUser, smtpPass, recipientEmail }),
-          });
-    
-          if (response.ok) {
-            alert('Email sent successfully!');
-            setFormData({ name: '', email: '', message: '' });
-          } else {
-            alert('Error sending email.');
-          }
-        } catch (error) {
-          console.error('Error submitting form:', error);
-          alert('Error submitting form.');
-        }
-      };
-    
-      return (
-        <ContactContainer
-          id="contact"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <Title variants={itemVariants}>Contact Me</Title>
-          <ContactInfo variants={itemVariants}>
-            <ContactLink href="mailto:saynam1101@gmail.com" variants={itemVariants}>
-              <FaEnvelope />
-              saynam1101@gmail.com
-            </ContactLink>
-          </ContactInfo>
-          <SocialIcons variants={itemVariants}>
-            <SocialLink href="https://github.com/saynam221b" target="_blank" rel="noopener noreferrer" variants={itemVariants}>
+import React from 'react';
+import styled from 'styled-components';
+import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+
+const ContactContainer = styled.section`
+  padding: 4rem 2rem;
+  background: transparent;
+`;
+
+const SectionTitle = styled.h2`
+  color: ${props => props.theme.text.primary};
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 700;
+`;
+
+const ContactContent = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+`;
+
+const ContactCard = styled.div`
+  background-color: ${props => props.theme.cardBg};
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: ${props => props.theme.cardShadow};
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    background-color: ${props => props.theme.cardHoverBg};
+    box-shadow: ${props => props.theme.cardHoverShadow};
+  }
+`;
+
+const ContactText = styled.p`
+  color: ${props => props.theme.text.secondary};
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+`;
+
+const EmailLink = styled.a`
+  color: ${props => props.theme.text.accent};
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: ${props => props.theme.primary};
+  }
+
+  svg {
+    font-size: 1.4rem;
+  }
+`;
+
+const SocialLinks = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+`;
+
+const SocialLink = styled.a`
+  color: ${props => props.theme.text.primary};
+  font-size: 1.8rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: ${props => props.theme.text.accent};
+    transform: translateY(-3px);
+  }
+`;
+
+const ContactForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+`;
+
+const Input = styled.input`
+  padding: 0.8rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-color: ${props => props.theme.mainBg};
+  color: ${props => props.theme.text.primary};
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.primary};
+  }
+`;
+
+const TextArea = styled.textarea`
+  padding: 0.8rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-color: ${props => props.theme.mainBg};
+  color: ${props => props.theme.text.primary};
+  font-size: 1rem;
+  min-height: 150px;
+  resize: vertical;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.primary};
+  }
+`;
+
+const SubmitButton = styled.button`
+  padding: 1rem 2rem;
+  background-color: ${props => props.theme.primary};
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+function Contact() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add form submission logic here
+  };
+
+  return (
+    <ContactContainer id="contact">
+      <SectionTitle>Get In Touch</SectionTitle>
+      <ContactContent>
+        <ContactCard>
+          <ContactText>
+            I'm always open to discussing new projects, opportunities, and collaborations.
+          </ContactText>
+          <EmailLink href="mailto:saynamsharma221b@gmail.com">
+            <FaEnvelope />
+            saynamsharma221b@gmail.com
+          </EmailLink>
+          <ContactForm onSubmit={handleSubmit}>
+            <Input type="text" placeholder="Your Name" required />
+            <Input type="email" placeholder="Your Email" required />
+            <TextArea placeholder="Your Message" required />
+            <SubmitButton type="submit">Send Message</SubmitButton>
+          </ContactForm>
+          <SocialLinks>
+            <SocialLink 
+              href="https://github.com/saynam221b" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
               <FaGithub />
             </SocialLink>
-            <SocialLink href="https://linkedin.com/in/saynam-sharma" target="_blank" rel="noopener noreferrer" variants={itemVariants}>
+            <SocialLink 
+              href="https://linkedin.com/in/saynam-sharma" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
               <FaLinkedin />
             </SocialLink>
-          </SocialIcons>
-          <Form variants={itemVariants} onSubmit={handleSubmit}>
-            <Input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <Textarea
-              name="message"
-              placeholder="Your Message"
-              rows="5"
-              value={formData.message}
-              onChange={handleChange}
-              required
-            />
-            <SubmitButton type="submit">Send</SubmitButton>
-          </Form>
-        </ContactContainer>
-      );
-    }
-    
-    export default Contact;
+          </SocialLinks>
+        </ContactCard>
+      </ContactContent>
+    </ContactContainer>
+  );
+}
+
+export default Contact;
