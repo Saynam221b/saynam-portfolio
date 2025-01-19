@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaGithub, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const ContactContainer = styled.section`
   padding: 4rem 2rem;
@@ -143,16 +144,43 @@ function Contact() {
       });
 
       if (response.ok) {
-        alert('Email sent successfully!');
+        toast.success('Email sent successfully!', {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
         setName('');
         setEmail('');
         setMessage('');
       } else {
-        alert('Error sending email.');
+        toast.error('Error sending email.', {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     } catch (error) {
       console.error('Error sending email:', error);
-      alert('Error sending email.');
+      toast.error('Error sending email.', {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 

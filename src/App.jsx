@@ -9,6 +9,8 @@ import FreeTimeActivities from './components/FreeTimeActivities';
 import Contact from './components/Contact';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './components/ThemeToggle';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const lightTheme = {
   headerBg: 'rgba(255, 255, 255, 0.85)',
@@ -203,6 +205,7 @@ function ThemedApp() {
         <ThemeToggleWrapper>
           <ThemeToggle onClick={handleThemeToggle} />
         </ThemeToggleWrapper>
+        <ToastContainer position="bottom-right" autoClose={3000} />
       </AppContainer>
     </StyledThemeProvider>
   );
