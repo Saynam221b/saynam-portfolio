@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaGithub, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
 
@@ -126,9 +126,34 @@ const SubmitButton = styled.button`
 `;
 
 function Contact() {
-  const handleSubmit = (e) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form submission logic here
+
+    try {
+      const response = await fetch('http://localhost:5000/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (response.ok) {
+        alert('Email sent successfully!');
+        setName('');
+        setEmail('');
+        setMessage('');
+      } else {
+        alert('Error sending email.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error submitting form.');
+    }
   };
 
   return (
@@ -140,9 +165,26 @@ function Contact() {
             I'm always open to discussing new projects, opportunities, and collaborations.
           </ContactText>
           <ContactForm onSubmit={handleSubmit}>
-            <Input type="text" placeholder="Your Name" required />
-            <Input type="email" placeholder="Your Email" required />
-            <TextArea placeholder="Your Message" required />
+            <Input
+              type="text"
+              placeholder="Your Name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Input
+              type="email"
+              placeholder="Your Email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextArea
+              placeholder="Your Message"
+              required
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
             <SubmitButton type="submit">
               <FaPaperPlane />
               Let's Connect!
