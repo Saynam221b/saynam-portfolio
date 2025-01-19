@@ -37,7 +37,7 @@ const darkTheme = {
   primary: '#00bcd4',
   toggleBg: 'rgba(255, 255, 255, 0.05)',
   toggleIcon: '#ffd700',
-  mainBg: 'linear-gradient(to bottom right, #111928, #1f2937)',
+  mainBg: 'linear-gradient(135deg, #111928 0%, #1f2937 100%)',
   contentBg: 'transparent',
   cardBg: 'rgba(17, 25, 40, 0.7)',
   cardHoverBg: 'rgba(17, 25, 40, 0.9)',
@@ -129,20 +129,6 @@ const ThemeToggleWrapper = styled.div`
   z-index: 100;
 `;
 
-// Add a subtle gradient overlay for dark mode
-const DarkModeOverlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: ${props => props.isDarkMode ? 
-    'radial-gradient(circle at top right, rgba(17, 25, 40, 0.2), transparent)' : 
-    'transparent'};
-  pointer-events: none;
-  z-index: 1;
-`;
-
 function App() {
   return (
     <ThemeProvider>
@@ -178,12 +164,6 @@ function ThemedApp() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <DarkModeOverlay 
-          isDarkMode={isDarkMode}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        />
         <Header />
         <MainContent
           initial={{ y: 20, opacity: 0 }}
