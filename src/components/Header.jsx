@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-scroll';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes, FaLaptopCode } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
 
 const HeaderContainer = styled(motion.header)`
@@ -11,54 +11,26 @@ const HeaderContainer = styled(motion.header)`
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 70px;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 3rem;
+  padding: 0 2rem;
   box-shadow: ${props => props.theme.headerShadow};
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 
   ${props => props.isScrolled && css`
-    height: 65px;
-    padding: 0 2.5rem;
+    height: 60px;
     background-color: ${props => props.theme.headerBg};
   `}
-  
-  @media (max-width: 768px) {
-    padding: 0 1.5rem;
-  }
-`;
-
-const LogoContainer = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-`;
-
-const LogoIcon = styled.div`
-  font-size: 1.8rem;
-  color: ${props => props.theme.primary};
 `;
 
 const Logo = styled.div`
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: ${props => props.theme.headerText};
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 50%;
-    height: 3px;
-    background: ${props => props.theme.primary};
-    border-radius: 3px;
-  }
 `;
 
 const NavContainer = styled.div`
@@ -69,7 +41,7 @@ const NavContainer = styled.div`
 
 const DesktopNav = styled.nav`
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
 
   @media (max-width: 768px) {
     display: none;
@@ -83,67 +55,43 @@ const MobileNav = styled(motion.nav)`
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: ${props => props.isScrolled ? '65px' : '80px'};
+    top: ${props => props.isScrolled ? '60px' : '70px'};
     left: 0;
     right: 0;
     background-color: ${props => props.theme.headerBg};
     backdrop-filter: blur(10px);
     padding: 1rem;
     gap: 0.5rem;
-    border-bottom: 1px solid ${props => props.theme.text.primary}10;
+    border-bottom: 1px solid ${props => props.isDarkMode ? 
+      'rgba(255, 255, 255, 0.1)' : 
+      'rgba(15, 23, 42, 0.1)'
+    };
     transform-origin: top center;
     box-shadow: ${props => props.theme.headerShadow};
   }
 `;
 
-const NavLinkContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const NavLink = styled(Link)`
   color: ${props => props.theme.headerText};
   font-weight: 500;
-  padding: 0.6rem 1.2rem;
-  border-radius: 30px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
 
   &:hover {
-    color: ${props => props.active ? 'white' : props.theme.primary};
+    color: ${props => props.theme.primary};
+    background-color: ${props => props.isDarkMode ? 
+      'rgba(255, 255, 255, 0.1)' : 
+      'rgba(15, 23, 42, 0.1)'
+    };
   }
-  
-  ${props => props.active && css`
-    color: white;
-    font-weight: 600;
-  `}
 
   @media (max-width: 768px) {
     width: 100%;
-    padding: 0.9rem 1.2rem;
+    padding: 0.75rem 1rem;
     text-align: center;
     font-size: 1.1rem;
-    border-radius: 8px;
-  }
-`;
-
-const NavLinkBackground = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${props => props.theme.primary};
-  border-radius: 30px;
-  z-index: -1;
-  
-  @media (max-width: 768px) {
-    border-radius: 8px;
   }
 `;
 
@@ -151,35 +99,22 @@ const MobileNavLink = styled(motion.div)`
   width: 100%;
 `;
 
-const MenuButton = styled(motion.button)`
+const MenuButton = styled.button`
   display: none;
   background: none;
   border: none;
   color: ${props => props.theme.headerText};
   cursor: pointer;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   transition: all 0.3s ease;
-  position: relative;
-  z-index: 2;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: ${props => props.theme.text.primary}10;
-    border-radius: 50%;
-    z-index: -1;
-    transform: scale(0);
-    transition: all 0.3s ease;
-  }
-
-  &:hover::before {
-    transform: scale(1);
+  &:hover {
+    background-color: ${props => props.isDarkMode ? 
+      'rgba(255, 255, 255, 0.1)' : 
+      'rgba(15, 23, 42, 0.1)'
+    };
   }
 
   @media (max-width: 768px) {
@@ -190,66 +125,23 @@ const MenuButton = styled(motion.button)`
   }
 `;
 
-const ContactButton = styled(motion.a)`
-  background-color: ${props => props.theme.primary};
-  color: white;
-  font-weight: 600;
-  padding: 0.6rem 1.2rem;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  border: 2px solid ${props => props.theme.primary};
-  box-shadow: 0 4px 8px ${props => props.theme.primary}40;
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px ${props => props.theme.primary}50;
-  }
-  
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
 const navItems = [
-  { to: "introduction", label: "Home" },
+  { to: "introduction", label: "Introduction" },
   { to: "experience", label: "Experience" },
   { to: "projects", label: "Projects" },
-  { to: "free-time", label: "Activities" },
+  { to: "free-time", label: "Free Time" },
+  { to: "contact", label: "Contact" }
 ];
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeLink, setActiveLink] = useState("introduction");
   const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    
-    const handleScrollSpy = () => {
-      const sections = document.querySelectorAll("section[id]");
-      const scrollPosition = window.pageYOffset + 100;
-      
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute("id");
-        
-        if (scrollPosition >= sectionTop && 
-            scrollPosition < sectionTop + sectionHeight) {
-          setActiveLink(sectionId);
-        }
-      });
-    };
-    
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('scroll', handleScrollSpy);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('scroll', handleScrollSpy);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const mobileNavVariants = {
@@ -292,83 +184,39 @@ function Header() {
     }
   };
 
-  const MotionNavLinks = ({ onClick, isMobile }) => (
+  const NavLinks = ({ onClick, isMobile }) => (
     <>
-      {navItems.map(({ to, label }) => {
-        const isActive = activeLink === to;
-        
-        return (
-          <NavLinkContainer key={to}>
-            <NavLink
-              to={to}
-              smooth={true}
-              duration={500}
-              offset={-80}
-              spy={true}
-              onClick={onClick}
-              active={isActive}
-            >
-              {label}
-            </NavLink>
-            {isActive && (
-              <NavLinkBackground 
-                layoutId="navbar-indicator"
-                transition={{ 
-                  type: "spring", 
-                  duration: 0.6, 
-                  bounce: 0.25 
-                }}
-              />
-            )}
-          </NavLinkContainer>
-        );
-      })}
+      {navItems.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          smooth={true}
+          duration={500}
+          offset={-70}
+          spy={true}
+          onClick={onClick}
+          isDarkMode={isDarkMode}
+        >
+          {label}
+        </NavLink>
+      ))}
     </>
   );
 
   return (
-    <HeaderContainer 
-      isScrolled={isScrolled} 
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      <LogoContainer
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <LogoIcon>
-          <FaLaptopCode />
-        </LogoIcon>
-        <Logo>Saynam</Logo>
-      </LogoContainer>
-      
+    <HeaderContainer isScrolled={isScrolled} isDarkMode={isDarkMode}>
+      <Logo>DataEng</Logo>
       <NavContainer>
         <DesktopNav>
-          <MotionNavLinks />
+          <NavLinks />
         </DesktopNav>
-        
-        <ContactButton 
-          href="#contact"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Contact Me
-        </ContactButton>
-        
         <MenuButton 
           onClick={() => setIsOpen(!isOpen)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          isDarkMode={isDarkMode}
         >
           {isOpen ? <FaTimes /> : <FaBars />}
         </MenuButton>
       </NavContainer>
-      
       <AnimatePresence>
         {isOpen && (
           <MobileNav
@@ -377,32 +225,9 @@ function Header() {
             exit="hidden"
             variants={mobileNavVariants}
             isScrolled={isScrolled}
+            isDarkMode={isDarkMode}
           >
-            <MotionNavLinks onClick={() => setIsOpen(false)} isMobile={true} />
-            
-            <NavLinkContainer>
-              <NavLink
-                to="contact"
-                smooth={true}
-                duration={500}
-                offset={-80}
-                spy={true}
-                onClick={() => setIsOpen(false)}
-                active={activeLink === "contact"}
-              >
-                Contact
-              </NavLink>
-              {activeLink === "contact" && (
-                <NavLinkBackground 
-                  layoutId="navbar-indicator"
-                  transition={{ 
-                    type: "spring", 
-                    duration: 0.6, 
-                    bounce: 0.25 
-                  }}
-                />
-              )}
-            </NavLinkContainer>
+            <NavLinks onClick={() => setIsOpen(false)} />
           </MobileNav>
         )}
       </AnimatePresence>
