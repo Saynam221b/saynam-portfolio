@@ -2,7 +2,7 @@ import { init } from 'emailjs-com';
 
 // Initialize EmailJS with your user ID
 export const initEmailJS = () => {
-  init("YOUR_USER_ID"); // Replace with your actual EmailJS user ID
+  init("ouEA5jIjHjqjdgo3u"); // Replace with your actual EmailJS public key from dashboard
 };
 
 // EmailJS service and template IDs
