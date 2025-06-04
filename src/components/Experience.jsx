@@ -5,10 +5,10 @@ import { useTheme } from '../App';
 
 const ExperienceSection = styled.section`
   padding: 6rem 1.5rem;
-  background-color: ${props => props.isDarkMode ? 
-    props.theme.colors.background : 
-    'rgba(249, 250, 251, 0.5)'
-  };
+  
+  @media (max-width: 768px) {
+    padding: 4rem 1.5rem 3rem;
+  }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     padding: 8rem 2rem;
@@ -22,7 +22,7 @@ const ExperienceContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 4rem;
@@ -42,7 +42,7 @@ const SectionTitle = styled.h2`
   }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 `;
 
@@ -57,8 +57,16 @@ const ExperienceCard = styled(motion.div)`
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: ${props => props.theme.shadows.md};
-  transition: all 0.3s ease;
+  margin-bottom: 3rem;
   position: relative;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 4rem;
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
   
   &:hover {
     transform: translateY(-5px);
@@ -94,8 +102,8 @@ const CardHeader = styled.div`
 `;
 
 const CompanyLogo = styled.div`
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: ${props => props.theme.gradients.primary};
   display: flex;
@@ -103,14 +111,14 @@ const CompanyLogo = styled.div`
   align-items: center;
   color: white;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   position: absolute;
-  top: -30px;
+  top: -25px;
   right: 30px;
   box-shadow: ${props => props.theme.shadows.md};
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    left: -30px;
+    left: -25px;
     top: 50%;
     transform: translateY(-50%);
   }
@@ -126,18 +134,18 @@ const HeaderContent = styled.div`
 `;
 
 const JobTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: 0.5rem;
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 `;
 
 const CompanyName = styled.h4`
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   color: ${props => props.theme.colors.primary};
   margin-bottom: 0.5rem;
@@ -189,7 +197,7 @@ const CardBody = styled.div`
 `;
 
 const JobDescription = styled.ul`
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.7;
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 1.5rem;
@@ -211,8 +219,8 @@ const JobDescription = styled.ul`
       position: absolute;
       left: 0;
       top: 0.7rem;
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: ${props => props.theme.gradients.primary};
     }

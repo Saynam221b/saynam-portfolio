@@ -9,16 +9,20 @@ const HeaderWrapper = styled(motion.header)`
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 70px;
   background: ${props => props.isDarkMode ? 
-    'rgba(17, 24, 39, 0.8)' : 
-    'rgba(255, 255, 255, 0.8)'
+    'rgba(17, 24, 39, 0.85)' : 
+    'rgba(255, 255, 255, 0.85)'
   };
   backdrop-filter: blur(10px);
-  z-index: 100;
+  z-index: 1000;
   box-shadow: ${props => props.theme.shadows.sm};
   transform: translateY(${props => props.isVisible ? '0' : '-100%'});
   transition: transform 0.3s ease, background-color 0.3s ease;
+  
+  @media (max-width: 768px) {
+    height: 60px;
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -44,6 +48,10 @@ const Logo = styled.a`
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
   }
 `;
 
@@ -148,6 +156,12 @@ const ThemeToggle = styled(motion.button)`
   &:hover:before {
     opacity: 0.3;
   }
+  
+  @media (max-width: 768px) {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
 `;
 
 const ThemeIcon = styled(motion.div)`
@@ -159,8 +173,8 @@ const ThemeIcon = styled(motion.div)`
 `;
 
 const MobileMenuButton = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -187,13 +201,18 @@ const MobileMenu = styled(motion.div)`
   top: 0;
   right: 0;
   bottom: 0;
-  width: 300px;
+  width: 280px;
   background: ${props => props.theme.colors.background};
   box-shadow: ${props => props.theme.shadows.lg};
-  padding: 2rem;
-  z-index: 101;
+  padding: 1.5rem;
+  z-index: 1001;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  
+  @media (max-width: 350px) {
+    width: 100%;
+  }
 `;
 
 const MobileMenuHeader = styled.div`
@@ -204,8 +223,8 @@ const MobileMenuHeader = styled.div`
 `;
 
 const MobileMenuClose = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -235,6 +254,7 @@ const MobileNavLink = styled.a`
   font-size: 1.25rem;
   text-decoration: none;
   transition: color 0.3s ease;
+  padding: 0.5rem 0;
   
   &:hover {
     color: ${props => props.theme.colors.primary};
@@ -254,7 +274,7 @@ const Overlay = styled(motion.div)`
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
-  z-index: 100;
+  z-index: 1000;
 `;
 
 const iconVariants = {

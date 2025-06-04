@@ -11,10 +11,15 @@ const HeroSection = styled.section`
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding: 0 1.5rem;
+  padding: 80px 1.5rem 0;
+  
+  @media (max-width: 768px) {
+    padding-top: 70px;
+    min-height: calc(100vh - 10px);
+  }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    padding: 0 2rem;
+    padding: 80px 2rem 0;
   }
 `;
 
@@ -56,7 +61,7 @@ const gradientText = keyframes`
 `;
 
 const HeroTitle = styled(motion.h1)`
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 1rem;
   background: ${props => props.theme.gradients.primary};
@@ -67,27 +72,27 @@ const HeroTitle = styled(motion.h1)`
   animation: ${gradientText} 4s ease infinite;
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
   }
   
   @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    font-size: 4rem;
+    font-size: 3.2rem;
   }
 `;
 
 const HeroSubtitle = styled(motion.h2)`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 1.5rem;
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 `;
 
 const HeroText = styled(motion.p)`
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 2rem;
   max-width: 600px;

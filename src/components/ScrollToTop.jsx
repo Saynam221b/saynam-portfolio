@@ -29,8 +29,9 @@ const ScrollButton = styled(motion.button)`
   @media (max-width: 768px) {
     bottom: 20px;
     right: 20px;
-    width: 45px;
-    height: 45px;
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
   }
 `;
 

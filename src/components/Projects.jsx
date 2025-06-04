@@ -10,6 +10,10 @@ const ProjectsSection = styled.section`
     'rgba(249, 250, 251, 0.5)'
   };
   
+  @media (max-width: 768px) {
+    padding: 4rem 1.5rem 3rem;
+  }
+  
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     padding: 8rem 2rem;
   }
@@ -22,7 +26,7 @@ const ProjectsContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 1rem;
@@ -42,7 +46,7 @@ const SectionTitle = styled.h2`
   }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 `;
 
@@ -51,6 +55,7 @@ const SectionSubtitle = styled.p`
   max-width: 600px;
   margin: 2rem auto 3rem;
   color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.95rem;
 `;
 
 const FilterContainer = styled.div`
@@ -59,6 +64,10 @@ const FilterContainer = styled.div`
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
   gap: 0.75rem;
+  
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+  }
 `;
 
 const FilterButton = styled(motion.button)`
@@ -74,13 +83,19 @@ const FilterButton = styled(motion.button)`
     'transparent' : 
     props.theme.colors.border
   };
-  padding: 0.6rem 1.5rem;
+  padding: 0.5rem 1.3rem;
   border-radius: 50px;
   font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  
+  @media (max-width: 480px) {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
   
   &:hover {
     transform: translateY(-2px);
@@ -160,14 +175,14 @@ const ProjectContent = styled.div`
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: 0.75rem;
 `;
 
 const ProjectDescription = styled.ul`
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.6;
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 1.5rem;
@@ -192,9 +207,9 @@ const TechTag = styled.span`
     'rgba(0, 0, 0, 0.05)'
   };
   color: ${props => props.theme.colors.textSecondary};
-  padding: 0.3rem 0.8rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
 `;
 
@@ -208,7 +223,7 @@ const ProjectLink = styled.a`
   color: ${props => props.theme.colors.primary};
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.3rem;

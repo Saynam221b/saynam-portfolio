@@ -96,7 +96,13 @@ const globalStyles = (theme) => css`
   
   html {
     scroll-behavior: smooth;
-    font-size: 16px;
+    font-size: 15px; /* Reduced base font size */
+    scroll-padding-top: 80px; /* Ensures scrolling to sections accounts for fixed header */
+    
+    @media (max-width: 768px) {
+      scroll-padding-top: 60px;
+      font-size: 14px; /* Even smaller on mobile */
+    }
   }
   
   body {
@@ -111,6 +117,34 @@ const globalStyles = (theme) => css`
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     line-height: 1.2;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+    
+    @media (max-width: 768px) {
+      font-size: 1.8rem;
+    }
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+  
+  h3 {
+    font-size: 1.4rem;
+    
+    @media (max-width: 768px) {
+      font-size: 1.2rem;
+    }
+  }
+  
+  p, li, a, button, input, textarea, span {
+    font-size: 0.95rem;
   }
   
   a {
@@ -153,13 +187,21 @@ const globalStyles = (theme) => css`
   
   .section {
     padding: 5rem 1.5rem;
+    padding-top: calc(5rem + 70px);
+    
+    @media (max-width: 768px) {
+      padding: 3rem 1.5rem;
+      padding-top: calc(3rem + 60px);
+    }
     
     @media (min-width: ${theme.breakpoints.md}) {
       padding: 6rem 2rem;
+      padding-top: calc(6rem + 70px);
     }
     
     @media (min-width: ${theme.breakpoints.lg}) {
       padding: 8rem 2rem;
+      padding-top: calc(8rem + 70px);
     }
   }
   
@@ -171,7 +213,7 @@ const globalStyles = (theme) => css`
   
   .section-title {
     position: relative;
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin-bottom: 3rem;
     text-align: center;
     
@@ -188,7 +230,7 @@ const globalStyles = (theme) => css`
     }
     
     @media (min-width: ${theme.breakpoints.md}) {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
     }
   }
 `;

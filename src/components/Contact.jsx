@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useTheme } from '../App';
 import { toast } from 'react-toastify';
+import emailjs from 'emailjs-com';
+import { EMAIL_CONFIG, initEmailJS } from '../utils/emailjs';
 
 const ContactSection = styled.section`
   padding: 6rem 1.5rem;
-  background-color: ${props => props.theme.colors.background};
+  
+  @media (max-width: 768px) {
+    padding: 4rem 1.5rem 3rem;
+  }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     padding: 8rem 2rem;
@@ -20,7 +25,7 @@ const ContactContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 1rem;
@@ -40,7 +45,7 @@ const SectionTitle = styled.h2`
   }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 `;
 
@@ -49,6 +54,7 @@ const SectionSubtitle = styled.p`
   max-width: 600px;
   margin: 2rem auto 3rem;
   color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.95rem;
 `;
 
 const ContactContent = styled.div`
@@ -81,7 +87,7 @@ const ContactInfoCard = styled(motion.div)`
 `;
 
 const ContactInfoTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: 1.5rem;
@@ -112,8 +118,8 @@ const ContactItem = styled.div`
 `;
 
 const ContactIcon = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   background: ${props => props.theme.gradients.primary};
   display: flex;
@@ -121,19 +127,19 @@ const ContactIcon = styled.div`
   justify-content: center;
   margin-right: 1rem;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
 `;
 
 const ContactText = styled.div`
   h4 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: ${props => props.theme.colors.text};
     margin-bottom: 0.25rem;
   }
   
   p, a {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: ${props => props.theme.colors.textSecondary};
     text-decoration: none;
     transition: color 0.3s ease;
@@ -151,15 +157,15 @@ const SocialLinks = styled.div`
 `;
 
 const SocialLink = styled(motion.a)`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: ${props => props.theme.colors.background};
   color: ${props => props.theme.colors.textSecondary};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   transition: all 0.3s ease;
   
   &:hover {
@@ -187,7 +193,7 @@ const FormLabel = styled.label`
   position: absolute;
   left: 1rem;
   top: ${props => props.isFocused || props.hasValue ? '-0.5rem' : '1rem'};
-  font-size: ${props => props.isFocused || props.hasValue ? '0.75rem' : '0.95rem'};
+  font-size: ${props => props.isFocused || props.hasValue ? '0.75rem' : '0.9rem'};
   color: ${props => props.isFocused ? props.theme.colors.primary : props.theme.colors.textSecondary};
   background: ${props => props.theme.colors.cardBg};
   padding: 0 0.5rem;
@@ -203,7 +209,7 @@ const FormInput = styled.input`
   border-radius: 0.5rem;
   background: transparent;
   color: ${props => props.theme.colors.text};
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   outline: none;
   
@@ -220,7 +226,7 @@ const FormTextarea = styled.textarea`
   border-radius: 0.5rem;
   background: transparent;
   color: ${props => props.theme.colors.text};
-  font-size: 1rem;
+  font-size: 0.95rem;
   min-height: 150px;
   resize: vertical;
   transition: all 0.3s ease;
@@ -233,12 +239,12 @@ const FormTextarea = styled.textarea`
 `;
 
 const SubmitButton = styled(motion.button)`
-  padding: 1rem 2rem;
+  padding: 0.9rem 1.8rem;
   background: ${props => props.theme.gradients.primary};
   color: white;
   border: none;
   border-radius: 0.5rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -264,6 +270,12 @@ const Contact = () => {
   });
   const [focusedField, setFocusedField] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef();
+  
+  // Initialize EmailJS
+  useEffect(() => {
+    initEmailJS();
+  }, []);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -297,8 +309,27 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Send email to portfolio owner using EmailJS
+      await emailjs.sendForm(
+        EMAIL_CONFIG.serviceId,
+        EMAIL_CONFIG.templateId,
+        formRef.current
+      );
+      
+      // Send auto-reply email to the user
+      const autoReplyParams = {
+        to_name: formState.name,
+        to_email: formState.email,
+        from_name: "Saynam Sharma",
+        message: "Thank you for contacting me! I have received your message and will get back to you as soon as possible.",
+        subject: formState.subject ? `Re: ${formState.subject}` : "Thank you for contacting me"
+      };
+      
+      await emailjs.send(
+        EMAIL_CONFIG.serviceId,
+        EMAIL_CONFIG.autoReplyTemplateId,
+        autoReplyParams
+      );
       
       // Success
       toast.success("Message sent successfully! I'll get back to you soon.");
@@ -309,6 +340,7 @@ const Contact = () => {
         message: ''
       });
     } catch (error) {
+      console.error("Email sending failed:", error);
       toast.error("Failed to send message. Please try again later.");
     } finally {
       setIsSubmitting(false);
@@ -408,6 +440,7 @@ const Contact = () => {
           </ContactInfo>
           
           <ContactForm
+            ref={formRef}
             onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

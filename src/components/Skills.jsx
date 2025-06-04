@@ -10,6 +10,10 @@ const SkillsSection = styled.section`
     'rgba(249, 250, 251, 0.5)'
   };
   
+  @media (max-width: 768px) {
+    padding: 4rem 1.5rem 3rem;
+  }
+  
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     padding: 8rem 2rem;
   }

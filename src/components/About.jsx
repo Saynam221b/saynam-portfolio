@@ -10,6 +10,10 @@ const AboutSection = styled.section`
     'rgba(249, 250, 251, 0.5)'
   };
   
+  @media (max-width: 768px) {
+    padding: 4rem 1.5rem 3rem;
+  }
+  
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     padding: 8rem 2rem;
   }
@@ -22,7 +26,7 @@ const AboutContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
@@ -42,7 +46,7 @@ const SectionTitle = styled.h2`
   }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 `;
 
@@ -62,7 +66,7 @@ const AboutText = styled(motion.div)`
 `;
 
 const AboutDescription = styled.p`
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   line-height: 1.8;
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 2rem;
@@ -110,7 +114,7 @@ const EducationContainer = styled(motion.div)`
 `;
 
 const EducationTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: 1.5rem;
@@ -139,14 +143,14 @@ const EducationItem = styled.div`
 `;
 
 const DegreeName = styled.h4`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: ${props => props.theme.colors.text};
   margin-bottom: 0.5rem;
 `;
 
 const InstitutionName = styled.h5`
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   color: ${props => props.theme.colors.primary};
   margin-bottom: 0.5rem;
