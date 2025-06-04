@@ -165,6 +165,35 @@ const SkillLevelText = styled.div`
   margin-top: 0.5rem;
 `;
 
+const CertificationsContainer = styled.div`
+  margin-top: 4rem;
+`;
+
+const CertificationsList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+const CertificationItem = styled(motion.li)`
+  background: ${props => props.theme.colors.cardBg};
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  box-shadow: ${props => props.theme.shadows.md};
+  color: ${props => props.theme.colors.text};
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  
+  &:before {
+    content: '🏆';
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+  }
+`;
+
 const skillVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: i => ({
@@ -197,7 +226,7 @@ const getSkillIcon = (skill) => {
     "JavaScript": "fab fa-js",
     "Java": "fab fa-java",
     "SQL": "fas fa-database",
-    "C++": "fas fa-code",
+    "Scala": "fas fa-code",
     
     // Data Engineering
     "Apache Airflow": "fas fa-stream",
@@ -205,20 +234,30 @@ const getSkillIcon = (skill) => {
     "Kafka": "fas fa-exchange-alt",
     "ETL Pipelines": "fas fa-project-diagram",
     "Data Warehousing": "fas fa-warehouse",
+    "Snowflake": "fas fa-snowflake",
+    "Databricks": "fas fa-bolt",
     
     // Web Development
     "React": "fab fa-react",
     "Node.js": "fab fa-node-js",
     "HTML/CSS": "fab fa-html5",
-    "Express": "fas fa-server",
-    "MongoDB": "fas fa-leaf",
+    "Django": "fab fa-python",
     
     // Cloud & DevOps
     "AWS": "fab fa-aws",
     "Docker": "fab fa-docker",
     "CI/CD": "fas fa-sync",
     "Kubernetes": "fas fa-dharmachakra",
-    "Terraform": "fas fa-cubes"
+    "Terraform": "fas fa-cubes",
+    "Azure": "fab fa-microsoft",
+    
+    // Data Science & ML
+    "Pandas": "fas fa-table",
+    "Scikit-learn": "fas fa-brain",
+    "Tableau": "fas fa-chart-bar",
+    
+    // Version Control
+    "Git": "fab fa-git-alt"
   };
   
   return skillIcons[skill] || "fas fa-code";
@@ -233,29 +272,18 @@ const Skills = () => {
       skills: [
         { name: "Python", level: 95 },
         { name: "SQL", level: 90 },
-        { name: "JavaScript", level: 85 },
-        { name: "Java", level: 75 },
-        { name: "C++", level: 70 }
+        { name: "Scala", level: 85 },
+        { name: "JavaScript", level: 80 }
       ]
     },
     {
       category: "Data Engineering",
       skills: [
         { name: "Apache Airflow", level: 90 },
-        { name: "Spark", level: 85 },
-        { name: "Kafka", level: 80 },
-        { name: "ETL Pipelines", level: 90 },
-        { name: "Data Warehousing", level: 85 }
-      ]
-    },
-    {
-      category: "Web Development",
-      skills: [
-        { name: "React", level: 85 },
-        { name: "Node.js", level: 80 },
-        { name: "HTML/CSS", level: 90 },
-        { name: "Express", level: 75 },
-        { name: "MongoDB", level: 80 }
+        { name: "Spark", level: 90 },
+        { name: "Snowflake", level: 85 },
+        { name: "Databricks", level: 85 },
+        { name: "ETL Pipelines", level: 90 }
       ]
     },
     {
@@ -263,32 +291,61 @@ const Skills = () => {
       skills: [
         { name: "AWS", level: 85 },
         { name: "Docker", level: 80 },
-        { name: "CI/CD", level: 75 },
-        { name: "Kubernetes", level: 70 },
-        { name: "Terraform", level: 65 }
+        { name: "Terraform", level: 75 },
+        { name: "Azure", level: 70 }
+      ]
+    },
+    {
+      category: "Web Development",
+      skills: [
+        { name: "Django", level: 80 },
+        { name: "React", level: 75 },
+        { name: "HTML/CSS", level: 85 }
+      ]
+    },
+    {
+      category: "Data Science & ML",
+      skills: [
+        { name: "Pandas", level: 90 },
+        { name: "Scikit-learn", level: 80 },
+        { name: "Tableau", level: 75 }
+      ]
+    },
+    {
+      category: "Version Control",
+      skills: [
+        { name: "Git", level: 90 }
       ]
     }
   ];
-
+  
+  const certifications = [
+    "Databricks Certified Data Engineer Associate",
+    "Databricks Certified Data Engineer Professional",
+    "Python Programming",
+    "Apache Spark Lake House Fundamentals"
+  ];
+  
   return (
     <SkillsSection id="skills" isDarkMode={isDarkMode}>
       <SkillsContainer>
         <SectionTitle>Technical Skills</SectionTitle>
         
-        {skillCategories.map((category, categoryIndex) => (
-          <SkillCategoryContainer 
-            key={categoryIndex}
+        {skillCategories.map((category, index) => (
+          <SkillCategoryContainer
+            key={category.category}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={containerVariants}
           >
             <CategoryTitle>{category.category}</CategoryTitle>
+            
             <SkillsGrid>
-              {category.skills.map((skill, skillIndex) => (
-                <SkillCard 
-                  key={skillIndex}
-                  custom={skillIndex}
+              {category.skills.map((skill, i) => (
+                <SkillCard
+                  key={skill.name}
+                  custom={i}
                   variants={skillVariants}
                 >
                   <SkillHeader>
@@ -299,25 +356,35 @@ const Skills = () => {
                   </SkillHeader>
                   
                   <SkillLevel isDarkMode={isDarkMode}>
-                    <SkillLevelFill 
-                      level={skill.level}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${skill.level}%` }}
-                      transition={{ duration: 1, delay: 0.2 }}
-                      viewport={{ once: true }}
-                    />
+                    <SkillLevelFill level={skill.level} />
                   </SkillLevel>
                   
                   <SkillLevelText>
-                    <span>Beginner</span>
+                    <span>Proficiency</span>
                     <span>{skill.level}%</span>
-                    <span>Expert</span>
                   </SkillLevelText>
                 </SkillCard>
               ))}
             </SkillsGrid>
           </SkillCategoryContainer>
         ))}
+        
+        <CertificationsContainer>
+          <CategoryTitle>Certifications</CategoryTitle>
+          <CertificationsList>
+            {certifications.map((cert, index) => (
+              <CertificationItem
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                {cert}
+              </CertificationItem>
+            ))}
+          </CertificationsList>
+        </CertificationsContainer>
       </SkillsContainer>
     </SkillsSection>
   );

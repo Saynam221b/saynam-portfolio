@@ -1,124 +1,146 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
+import { useTheme } from '../App';
 import { toast } from 'react-toastify';
-import { useTheme } from '../context/ThemeContext';
 
 const ContactSection = styled.section`
-  padding: 4rem 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  color: ${props => props.theme.text.primary};
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 1rem;
-  font-weight: 700;
-`;
-
-const SectionSubtitle = styled.p`
-  color: ${props => props.theme.text.secondary};
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 3rem;
-  font-size: 1.1rem;
-  line-height: 1.6;
+  padding: 6rem 1.5rem;
+  background-color: ${props => props.theme.colors.background};
+  
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    padding: 8rem 2rem;
+  }
 `;
 
 const ContactContainer = styled.div`
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  gap: 4rem;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  position: relative;
+  color: ${props => props.theme.colors.text};
   
-  @media (max-width: 992px) {
-    flex-direction: column;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 2px;
+  }
+  
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    font-size: 2.5rem;
+  }
+`;
+
+const SectionSubtitle = styled.p`
+  text-align: center;
+  max-width: 600px;
+  margin: 2rem auto 3rem;
+  color: ${props => props.theme.colors.textSecondary};
+`;
+
+const ContactContent = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  
+  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+    grid-template-columns: 1fr 1fr;
   }
 `;
 
 const ContactInfo = styled.div`
-  flex: 1;
-`;
-
-const ContactForm = styled(motion.form)`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 `;
 
-const InfoCard = styled(motion.div)`
-  background: ${props => props.theme.cardBg};
-  border-radius: 16px;
+const ContactInfoCard = styled(motion.div)`
+  background: ${props => props.theme.colors.cardBg};
+  border-radius: 1rem;
   padding: 2rem;
-  margin-bottom: 1.5rem;
-  box-shadow: ${props => props.theme.cardShadow};
-  backdrop-filter: blur(10px);
-  border: 1px solid ${props => props.isDarkMode ? 
-    'rgba(255, 255, 255, 0.1)' : 
-    'rgba(15, 23, 42, 0.1)'
-  };
+  box-shadow: ${props => props.theme.shadows.md};
   transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-5px);
-    box-shadow: ${props => props.theme.cardHoverShadow};
+    box-shadow: ${props => props.theme.shadows.lg};
   }
 `;
 
-const InfoTitle = styled.h3`
-  color: ${props => props.theme.text.primary};
+const ContactInfoTitle = styled.h3`
   font-size: 1.5rem;
-  margin-bottom: 1.5rem;
   font-weight: 600;
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 1.5rem;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 2px;
+  }
 `;
 
-const InfoItem = styled.div`
+const ContactItem = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
-  color: ${props => props.theme.text.secondary};
+  margin-bottom: 1.5rem;
   
   &:last-child {
     margin-bottom: 0;
   }
 `;
 
-const InfoIcon = styled.div`
-  width: 40px;
-  height: 40px;
+const ContactIcon = styled.div`
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: ${props => props.theme.primary};
-  color: white;
+  background: ${props => props.theme.gradients.primary};
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
-  font-size: 1.2rem;
+  color: white;
+  font-size: 1.25rem;
 `;
 
-const InfoText = styled.div`
-  flex: 1;
-  
+const ContactText = styled.div`
   h4 {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
+    color: ${props => props.theme.colors.text};
     margin-bottom: 0.25rem;
-    color: ${props => props.theme.text.primary};
   }
   
-  p {
-    font-size: 0.95rem;
-  }
-  
-  a {
-    color: ${props => props.theme.text.accent};
+  p, a {
+    font-size: 1rem;
+    color: ${props => props.theme.colors.textSecondary};
     text-decoration: none;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      text-decoration: underline;
-    }
+    transition: color 0.3s ease;
+  }
+  
+  a:hover {
+    color: ${props => props.theme.colors.primary};
   }
 `;
 
@@ -132,64 +154,72 @@ const SocialLink = styled(motion.a)`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: ${props => props.theme.text.light};
-  opacity: 0.2;
-  color: ${props => props.theme.text.primary};
+  background: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.textSecondary};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   transition: all 0.3s ease;
   
   &:hover {
-    background: ${props => props.theme.primary};
+    background: ${props => props.theme.gradients.primary};
     color: white;
-    opacity: 1;
     transform: translateY(-3px);
   }
 `;
 
-const InputGroup = styled.div`
+const ContactForm = styled(motion.form)`
+  background: ${props => props.theme.colors.cardBg};
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: ${props => props.theme.shadows.md};
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+const FormGroup = styled.div`
   position: relative;
 `;
 
-const Label = styled.label`
+const FormLabel = styled.label`
   position: absolute;
   left: 1rem;
   top: ${props => props.isFocused || props.hasValue ? '-0.5rem' : '1rem'};
   font-size: ${props => props.isFocused || props.hasValue ? '0.75rem' : '0.95rem'};
-  color: ${props => props.isFocused ? props.theme.primary : props.theme.text.secondary};
-  background: ${props => props.theme.cardBg};
+  color: ${props => props.isFocused ? props.theme.colors.primary : props.theme.colors.textSecondary};
+  background: ${props => props.theme.colors.cardBg};
   padding: 0 0.5rem;
   transition: all 0.3s ease;
   pointer-events: none;
   z-index: 1;
 `;
 
-const Input = styled.input`
+const FormInput = styled.input`
   width: 100%;
   padding: 1rem;
-  border: 1px solid ${props => props.isFocused ? props.theme.primary : props.theme.text.light};
-  border-radius: 8px;
+  border: 1px solid ${props => props.isFocused ? props.theme.colors.primary : props.theme.colors.border};
+  border-radius: 0.5rem;
   background: transparent;
-  color: ${props => props.theme.text.primary};
+  color: ${props => props.theme.colors.text};
   font-size: 1rem;
   transition: all 0.3s ease;
   outline: none;
   
   &:focus {
-    border-color: ${props => props.theme.primary};
-    box-shadow: 0 0 0 2px ${props => props.theme.primary}33;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.primary}33;
   }
 `;
 
-const TextArea = styled.textarea`
+const FormTextarea = styled.textarea`
   width: 100%;
   padding: 1rem;
-  border: 1px solid ${props => props.isFocused ? props.theme.primary : props.theme.text.light};
-  border-radius: 8px;
+  border: 1px solid ${props => props.isFocused ? props.theme.colors.primary : props.theme.colors.border};
+  border-radius: 0.5rem;
   background: transparent;
-  color: ${props => props.theme.text.primary};
+  color: ${props => props.theme.colors.text};
   font-size: 1rem;
   min-height: 150px;
   resize: vertical;
@@ -197,25 +227,25 @@ const TextArea = styled.textarea`
   outline: none;
   
   &:focus {
-    border-color: ${props => props.theme.primary};
-    box-shadow: 0 0 0 2px ${props => props.theme.primary}33;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.primary}33;
   }
 `;
 
 const SubmitButton = styled(motion.button)`
-  background: ${props => props.theme.buttonGradient};
-  color: white;
   padding: 1rem 2rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
+  background: ${props => props.theme.gradients.primary};
+  color: white;
   border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background: ${props => props.theme.buttonHoverGradient};
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: ${props => props.theme.shadows.md};
   }
   
   &:disabled {
@@ -224,7 +254,7 @@ const SubmitButton = styled(motion.button)`
   }
 `;
 
-function Contact() {
+const Contact = () => {
   const { isDarkMode } = useTheme();
   const [formState, setFormState] = useState({
     name: '',
@@ -232,7 +262,6 @@ function Contact() {
     subject: '',
     message: ''
   });
-  
   const [focusedField, setFocusedField] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -288,182 +317,198 @@ function Contact() {
   
   return (
     <ContactSection id="contact">
-      <SectionTitle>Get In Touch</SectionTitle>
-      <SectionSubtitle>
-        Have a question or want to work together? Feel free to contact me!
-      </SectionSubtitle>
-      
       <ContactContainer>
-        <ContactInfo>
-          <InfoCard 
-            isDarkMode={isDarkMode}
+        <SectionTitle>Get In Touch</SectionTitle>
+        <SectionSubtitle>
+          Have a question or want to work together? Feel free to contact me!
+        </SectionSubtitle>
+        
+        <ContactContent>
+          <ContactInfo>
+            <ContactInfoCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <ContactInfoTitle>Contact Information</ContactInfoTitle>
+              
+              <ContactItem>
+                <ContactIcon>
+                  <i className="fas fa-envelope"></i>
+                </ContactIcon>
+                <ContactText>
+                  <h4>Email</h4>
+                  <a href="mailto:saynam1101@gmail.com">saynam1101@gmail.com</a>
+                </ContactText>
+              </ContactItem>
+              
+              <ContactItem>
+                <ContactIcon>
+                  <i className="fas fa-phone"></i>
+                </ContactIcon>
+                <ContactText>
+                  <h4>Phone</h4>
+                  <a href="tel:+919419271101">+91 9419271101</a>
+                </ContactText>
+              </ContactItem>
+              
+              <ContactItem>
+                <ContactIcon>
+                  <i className="fas fa-map-marker-alt"></i>
+                </ContactIcon>
+                <ContactText>
+                  <h4>Location</h4>
+                  <p>Jammu, India</p>
+                </ContactText>
+              </ContactItem>
+              
+              <SocialLinks>
+                <SocialLink 
+                  href="https://www.linkedin.com/in/saynam-sharma/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fab fa-linkedin-in"></i>
+                </SocialLink>
+                
+                <SocialLink 
+                  href="https://github.com/Saynam221b" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fab fa-github"></i>
+                </SocialLink>
+                
+                <SocialLink 
+                  href="mailto:saynam1101@gmail.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fas fa-envelope"></i>
+                </SocialLink>
+                
+                <SocialLink 
+                  href="https://twitter.com/saynam_sharma" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fab fa-twitter"></i>
+                </SocialLink>
+              </SocialLinks>
+            </ContactInfoCard>
+          </ContactInfo>
+          
+          <ContactForm
+            onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <InfoTitle>Contact Information</InfoTitle>
-            
-            <InfoItem>
-              <InfoIcon>
-                <i className="fas fa-envelope"></i>
-              </InfoIcon>
-              <InfoText>
-                <h4>Email</h4>
-                <p><a href="mailto:saynam1101@gmail.com">saynam1101@gmail.com</a></p>
-              </InfoText>
-            </InfoItem>
-            
-            <InfoItem>
-              <InfoIcon>
-                <i className="fas fa-phone"></i>
-              </InfoIcon>
-              <InfoText>
-                <h4>Phone</h4>
-                <p><a href="tel:+919419271101">+91 9419271101</a></p>
-              </InfoText>
-            </InfoItem>
-            
-            <InfoItem>
-              <InfoIcon>
-                <i className="fas fa-map-marker-alt"></i>
-              </InfoIcon>
-              <InfoText>
-                <h4>Location</h4>
-                <p>Jammu, India</p>
-              </InfoText>
-            </InfoItem>
-            
-            <SocialLinks>
-              <SocialLink 
-                href="https://www.linkedin.com/in/saynam-sharma/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ y: -5 }}
+            <FormGroup>
+              <FormLabel 
+                htmlFor="name" 
+                isFocused={focusedField === 'name'} 
+                hasValue={formState.name.length > 0}
               >
-                <i className="fab fa-linkedin-in"></i>
-              </SocialLink>
-              <SocialLink 
-                href="https://github.com/Saynam221b" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ y: -5 }}
+                Name *
+              </FormLabel>
+              <FormInput 
+                type="text" 
+                id="name" 
+                name="name" 
+                value={formState.name}
+                onChange={handleChange}
+                onFocus={() => handleFocus('name')}
+                onBlur={handleBlur}
+                isFocused={focusedField === 'name'}
+                required
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <FormLabel 
+                htmlFor="email" 
+                isFocused={focusedField === 'email'} 
+                hasValue={formState.email.length > 0}
               >
-                <i className="fab fa-github"></i>
-              </SocialLink>
-              <SocialLink 
-                href="https://twitter.com/saynam_sharma" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={{ y: -5 }}
+                Email *
+              </FormLabel>
+              <FormInput 
+                type="email" 
+                id="email" 
+                name="email" 
+                value={formState.email}
+                onChange={handleChange}
+                onFocus={() => handleFocus('email')}
+                onBlur={handleBlur}
+                isFocused={focusedField === 'email'}
+                required
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <FormLabel 
+                htmlFor="subject" 
+                isFocused={focusedField === 'subject'} 
+                hasValue={formState.subject.length > 0}
               >
-                <i className="fab fa-twitter"></i>
-              </SocialLink>
-            </SocialLinks>
-          </InfoCard>
-        </ContactInfo>
-        
-        <ContactForm 
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <InputGroup>
-            <Label 
-              htmlFor="name" 
-              isFocused={focusedField === 'name'} 
-              hasValue={formState.name.length > 0}
+                Subject
+              </FormLabel>
+              <FormInput 
+                type="text" 
+                id="subject" 
+                name="subject" 
+                value={formState.subject}
+                onChange={handleChange}
+                onFocus={() => handleFocus('subject')}
+                onBlur={handleBlur}
+                isFocused={focusedField === 'subject'}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <FormLabel 
+                htmlFor="message" 
+                isFocused={focusedField === 'message'} 
+                hasValue={formState.message.length > 0}
+              >
+                Message *
+              </FormLabel>
+              <FormTextarea 
+                id="message" 
+                name="message" 
+                value={formState.message}
+                onChange={handleChange}
+                onFocus={() => handleFocus('message')}
+                onBlur={handleBlur}
+                isFocused={focusedField === 'message'}
+                required
+              />
+            </FormGroup>
+            
+            <SubmitButton 
+              type="submit" 
+              disabled={isSubmitting}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Name *
-            </Label>
-            <Input 
-              type="text" 
-              id="name" 
-              name="name" 
-              value={formState.name}
-              onChange={handleChange}
-              onFocus={() => handleFocus('name')}
-              onBlur={handleBlur}
-              isFocused={focusedField === 'name'}
-              required
-            />
-          </InputGroup>
-          
-          <InputGroup>
-            <Label 
-              htmlFor="email" 
-              isFocused={focusedField === 'email'} 
-              hasValue={formState.email.length > 0}
-            >
-              Email *
-            </Label>
-            <Input 
-              type="email" 
-              id="email" 
-              name="email" 
-              value={formState.email}
-              onChange={handleChange}
-              onFocus={() => handleFocus('email')}
-              onBlur={handleBlur}
-              isFocused={focusedField === 'email'}
-              required
-            />
-          </InputGroup>
-          
-          <InputGroup>
-            <Label 
-              htmlFor="subject" 
-              isFocused={focusedField === 'subject'} 
-              hasValue={formState.subject.length > 0}
-            >
-              Subject
-            </Label>
-            <Input 
-              type="text" 
-              id="subject" 
-              name="subject" 
-              value={formState.subject}
-              onChange={handleChange}
-              onFocus={() => handleFocus('subject')}
-              onBlur={handleBlur}
-              isFocused={focusedField === 'subject'}
-            />
-          </InputGroup>
-          
-          <InputGroup>
-            <Label 
-              htmlFor="message" 
-              isFocused={focusedField === 'message'} 
-              hasValue={formState.message.length > 0}
-            >
-              Message *
-            </Label>
-            <TextArea 
-              id="message" 
-              name="message" 
-              value={formState.message}
-              onChange={handleChange}
-              onFocus={() => handleFocus('message')}
-              onBlur={handleBlur}
-              isFocused={focusedField === 'message'}
-              required
-            />
-          </InputGroup>
-          
-          <SubmitButton 
-            type="submit" 
-            disabled={isSubmitting}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {isSubmitting ? 'Sending...' : 'Send Message'}
-          </SubmitButton>
-        </ContactForm>
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </SubmitButton>
+          </ContactForm>
+        </ContactContent>
       </ContactContainer>
     </ContactSection>
   );
-}
+};
 
 export default Contact;

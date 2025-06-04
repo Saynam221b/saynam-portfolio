@@ -1,38 +1,118 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
+import styled from '@emotion/styled';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../App';
 
 const ProjectsSection = styled.section`
-  padding: 4rem 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  color: ${props => props.theme.text.primary};
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 1rem;
-  font-weight: 700;
-`;
-
-const SectionSubtitle = styled.p`
-  color: ${props => props.theme.text.secondary};
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 3rem;
-  font-size: 1.1rem;
-  line-height: 1.6;
+  padding: 6rem 1.5rem;
+  background-color: ${props => props.isDarkMode ? 
+    props.theme.colors.background : 
+    'rgba(249, 250, 251, 0.5)'
+  };
+  
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    padding: 8rem 2rem;
+  }
 `;
 
 const ProjectsContainer = styled.div`
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 `;
 
-const ProjectsGrid = styled.div`
+const SectionTitle = styled.h2`
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  position: relative;
+  color: ${props => props.theme.colors.text};
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 2px;
+  }
+  
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    font-size: 2.5rem;
+  }
+`;
+
+const SectionSubtitle = styled.p`
+  text-align: center;
+  max-width: 600px;
+  margin: 2rem auto 3rem;
+  color: ${props => props.theme.colors.textSecondary};
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+`;
+
+const FilterButton = styled(motion.button)`
+  background: ${props => props.isActive ? 
+    props.theme.gradients.primary : 
+    'transparent'
+  };
+  color: ${props => props.isActive ? 
+    'white' : 
+    props.theme.colors.text
+  };
+  border: 2px solid ${props => props.isActive ? 
+    'transparent' : 
+    props.theme.colors.border
+  };
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.isActive ? 
+      props.theme.shadows.md : 
+      'none'
+    };
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: ${props => props.theme.gradients.primary};
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+  
+  &:hover:before {
+    opacity: ${props => props.isActive ? 0 : 0.1};
+  }
+`;
+
+const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  min-height: 400px;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -40,23 +120,18 @@ const ProjectsGrid = styled.div`
 `;
 
 const ProjectCard = styled(motion.div)`
-  background: ${props => props.theme.cardBg};
-  border-radius: 16px;
+  background: ${props => props.theme.colors.cardBg};
+  border-radius: 1rem;
   overflow: hidden;
-  box-shadow: ${props => props.theme.cardShadow};
+  box-shadow: ${props => props.theme.shadows.md};
   transition: all 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(10px);
-  border: 1px solid ${props => props.isDarkMode ? 
-    'rgba(255, 255, 255, 0.1)' : 
-    'rgba(15, 23, 42, 0.1)'
-  };
   
   &:hover {
     transform: translateY(-5px);
-    box-shadow: ${props => props.theme.cardHoverShadow};
+    box-shadow: ${props => props.theme.shadows.lg};
   }
 `;
 
@@ -85,18 +160,23 @@ const ProjectContent = styled.div`
 `;
 
 const ProjectTitle = styled.h3`
-  color: ${props => props.theme.text.primary};
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
   font-weight: 600;
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 0.75rem;
 `;
 
-const ProjectDescription = styled.p`
-  color: ${props => props.theme.text.secondary};
-  font-size: 1rem;
+const ProjectDescription = styled.ul`
+  font-size: 0.95rem;
   line-height: 1.6;
+  color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 1.5rem;
   flex: 1;
+  padding-left: 1.5rem;
+  
+  li {
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const TechStack = styled.div`
@@ -109,11 +189,11 @@ const TechStack = styled.div`
 const TechTag = styled.span`
   background: ${props => props.isDarkMode ? 
     'rgba(255, 255, 255, 0.1)' : 
-    'rgba(15, 23, 42, 0.1)'
+    'rgba(0, 0, 0, 0.05)'
   };
-  color: ${props => props.theme.text.accent};
+  color: ${props => props.theme.colors.textSecondary};
   padding: 0.3rem 0.8rem;
-  border-radius: 30px;
+  border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
 `;
@@ -125,7 +205,7 @@ const ProjectLinks = styled.div`
 `;
 
 const ProjectLink = styled.a`
-  color: ${props => props.theme.text.accent};
+  color: ${props => props.theme.colors.primary};
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
@@ -136,44 +216,29 @@ const ProjectLink = styled.a`
   padding: 0.5rem 0;
   
   &:hover {
-    color: ${props => props.theme.primary};
     transform: translateX(3px);
   }
 `;
 
-const FilterContainer = styled.div`
+const EmptyState = styled(motion.div)`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-`;
-
-const FilterButton = styled.button`
-  background: ${props => props.isActive ? 
-    props.theme.buttonGradient : 
-    'transparent'
-  };
-  color: ${props => props.isActive ? 
-    'white' : 
-    props.theme.text.primary
-  };
-  border: 2px solid ${props => props.isActive ? 
-    'transparent' : 
-    props.theme.text.light
-  };
-  padding: 0.5rem 1.25rem;
-  border-radius: 30px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 3rem;
+  text-align: center;
+  color: ${props => props.theme.colors.textSecondary};
   
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${props => props.isActive ? 
-      '0 4px 12px rgba(2, 132, 199, 0.2)' : 
-      'none'
-    };
+  i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: ${props => props.theme.colors.primary};
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: ${props => props.theme.colors.text};
   }
 `;
 
@@ -187,64 +252,66 @@ const projectVariants = {
       duration: 0.5,
       ease: "easeOut"
     }
-  })
+  }),
+  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
 };
 
-function Projects() {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      staggerChildren: 0.1,
+      duration: 0.3
+    }
+  },
+  exit: { 
+    opacity: 0,
+    transition: { 
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+      duration: 0.3
+    }
+  }
+};
+
+const buttonVariants = {
+  tap: { scale: 0.95 }
+};
+
+const Projects = () => {
   const { isDarkMode } = useTheme();
   const [filter, setFilter] = useState('all');
   
   const projects = [
     {
-      title: "Data Pipeline Automation",
-      description: "Designed and implemented an end-to-end ETL pipeline using Apache Airflow, processing over 1TB of data daily with automated error handling and monitoring.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070",
-      techStack: ["Python", "Airflow", "AWS", "SQL"],
+      id: 1,
+      title: "Cloud-Enabled ETL Transformation",
+      description: [
+        "Orchestrated data transfer from Oracle DB to S3 using Databricks Notebooks, enhancing reusability and reducing development time by 30%.",
+        "Conducted data profiling and analysis, improving data quality by 25% through effective outlier detection and statistical evaluations.",
+        "Executed stage layer transformations, including deduplication and audit column addition, resulting in a 15% reduction in data redundancy.",
+        "Created Delta tables in S3 using SQL files, optimizing data processing and achieving a 40% improvement in query performance.",
+        "Configured the serve layer with DDL for target tables, translating SQL to Spark DataFrames, which enhanced processing speed by 20%.",
+        "Applied Apache Airflow for pipeline orchestration, ensuring efficient scheduling and monitoring that reduced workflow execution time by 35%."
+      ],
+      image: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      techStack: ["Databricks", "Oracle DB", "AWS S3", "Delta Lake", "SQL", "Apache Airflow", "Spark"],
       liveLink: "#",
       githubLink: "#",
       category: "data"
     },
     {
-      title: "Real-time Analytics Dashboard",
-      description: "Built a responsive dashboard visualizing real-time data streams using React, D3.js and WebSockets, reducing decision-making time by 40% for business stakeholders.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070",
-      techStack: ["React", "D3.js", "Node.js", "WebSocket"],
-      liveLink: "#",
-      githubLink: "#",
-      category: "web"
-    },
-    {
-      title: "Machine Learning Recommendation Engine",
-      description: "Developed a recommendation system using collaborative filtering and content-based algorithms, improving user engagement by 25% and increasing average session duration.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070",
-      techStack: ["Python", "TensorFlow", "Flask", "MongoDB"],
-      liveLink: "#",
-      githubLink: "#",
-      category: "ml"
-    },
-    {
-      title: "Cloud-based Data Warehouse",
-      description: "Architected and deployed a scalable data warehouse solution on AWS Redshift, optimizing query performance and implementing automated data quality checks.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070",
-      techStack: ["AWS Redshift", "Python", "dbt", "Terraform"],
-      liveLink: "#",
-      githubLink: "#",
-      category: "data"
-    },
-    {
-      title: "E-commerce Platform",
-      description: "Built a full-stack e-commerce application with secure payment processing, inventory management, and a responsive user interface for both web and mobile.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070",
-      techStack: ["React", "Node.js", "MongoDB", "Stripe API"],
-      liveLink: "#",
-      githubLink: "#",
-      category: "web"
-    },
-    {
-      title: "Sentiment Analysis Tool",
-      description: "Created an NLP-based sentiment analysis tool that processes customer feedback and social media mentions to provide actionable insights for product improvement.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070",
-      techStack: ["Python", "NLTK", "SpaCy", "FastAPI"],
+      id: 2,
+      title: "Data Prediction Machine Learning Model",
+      description: [
+        "Developed a machine learning model for predictions using a user-uploaded CSV dataset, achieving an accuracy rate of 85%.",
+        "Created a user-friendly web interface for CSV file uploads, enhancing user engagement and reducing upload time by 40%.",
+        "Trained and deployed the machine learning model, improving prediction speed by 30% compared to previous methods.",
+        "Integrated the model into a web platform, providing seamless data prediction that resulted in a 25% increase in user satisfaction."
+      ],
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      techStack: ["Python", "Scikit-learn", "Pandas", "Django", "HTML/CSS", "JavaScript"],
       liveLink: "#",
       githubLink: "#",
       category: "ml"
@@ -255,87 +322,103 @@ function Projects() {
     ? projects 
     : projects.filter(project => project.category === filter);
   
+  const categories = [
+    { id: 'all', name: 'All Projects' },
+    { id: 'data', name: 'Data Engineering' },
+    { id: 'ml', name: 'Machine Learning' },
+    { id: 'web', name: 'Web Development' }
+  ];
+  
   return (
-    <ProjectsSection id="projects">
-      <SectionTitle>Projects</SectionTitle>
-      <SectionSubtitle>
-        Here are some of my recent projects showcasing my skills and experience.
-      </SectionSubtitle>
-      
+    <ProjectsSection id="projects" isDarkMode={isDarkMode}>
       <ProjectsContainer>
+        <SectionTitle>Projects</SectionTitle>
+        <SectionSubtitle>
+          Here are some of my key projects showcasing my technical skills and problem-solving abilities
+        </SectionSubtitle>
+        
         <FilterContainer>
-          <FilterButton 
-            isActive={filter === 'all'} 
-            onClick={() => setFilter('all')}
-          >
-            All Projects
-          </FilterButton>
-          <FilterButton 
-            isActive={filter === 'data'} 
-            onClick={() => setFilter('data')}
-          >
-            Data Engineering
-          </FilterButton>
-          <FilterButton 
-            isActive={filter === 'web'} 
-            onClick={() => setFilter('web')}
-          >
-            Web Development
-          </FilterButton>
-          <FilterButton 
-            isActive={filter === 'ml'} 
-            onClick={() => setFilter('ml')}
-          >
-            Machine Learning
-          </FilterButton>
+          {categories.map(category => (
+            <FilterButton 
+              key={category.id}
+              isActive={filter === category.id} 
+              onClick={() => setFilter(category.id)}
+              whileTap="tap"
+              variants={buttonVariants}
+            >
+              {category.name}
+            </FilterButton>
+          ))}
         </FilterContainer>
         
-        <ProjectsGrid>
-          {filteredProjects.map((project, index) => (
-            <ProjectCard 
-              key={index}
-              custom={index}
+        <AnimatePresence mode="wait">
+          {filteredProjects.length > 0 ? (
+            <ProjectsGrid
+              key={filter}
+              variants={containerVariants}
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={projectVariants}
-              isDarkMode={isDarkMode}
+              animate="visible"
+              exit="exit"
             >
-              <ProjectImageContainer>
-                <ProjectImage 
-                  src={project.image} 
-                  alt={project.title} 
-                  onError={(e) => {
-                    e.target.src = "https://via.placeholder.com/600x400?text=Project+Image";
-                  }}
-                />
-              </ProjectImageContainer>
-              
-              <ProjectContent>
-                <ProjectTitle>{project.title}</ProjectTitle>
-                <ProjectDescription>{project.description}</ProjectDescription>
-                
-                <TechStack>
-                  {project.techStack.map((tech, i) => (
-                    <TechTag key={i} isDarkMode={isDarkMode}>{tech}</TechTag>
-                  ))}
-                </TechStack>
-                
-                <ProjectLinks>
-                  <ProjectLink href={project.liveLink} target="_blank" rel="noopener noreferrer">
-                    Live Demo <i className="fas fa-external-link-alt"></i>
-                  </ProjectLink>
-                  <ProjectLink href={project.githubLink} target="_blank" rel="noopener noreferrer">
-                    GitHub <i className="fab fa-github"></i>
-                  </ProjectLink>
-                </ProjectLinks>
-              </ProjectContent>
-            </ProjectCard>
-          ))}
-        </ProjectsGrid>
+              {filteredProjects.map((project, index) => (
+                <ProjectCard 
+                  key={project.id}
+                  custom={index}
+                  variants={projectVariants}
+                  layout
+                >
+                  <ProjectImageContainer>
+                    <ProjectImage 
+                      src={project.image} 
+                      alt={project.title} 
+                      onError={(e) => {
+                        e.target.src = "https://via.placeholder.com/600x400?text=Project+Image";
+                      }}
+                    />
+                  </ProjectImageContainer>
+                  
+                  <ProjectContent>
+                    <ProjectTitle>{project.title}</ProjectTitle>
+                    <ProjectDescription>
+                      {project.description.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ProjectDescription>
+                    
+                    <TechStack>
+                      {project.techStack.map((tech, i) => (
+                        <TechTag key={i} isDarkMode={isDarkMode}>{tech}</TechTag>
+                      ))}
+                    </TechStack>
+                    
+                    <ProjectLinks>
+                      <ProjectLink href={project.liveLink} target="_blank" rel="noopener noreferrer">
+                        Live Demo <i className="fas fa-external-link-alt"></i>
+                      </ProjectLink>
+                      <ProjectLink href={project.githubLink} target="_blank" rel="noopener noreferrer">
+                        GitHub <i className="fab fa-github"></i>
+                      </ProjectLink>
+                    </ProjectLinks>
+                  </ProjectContent>
+                </ProjectCard>
+              ))}
+            </ProjectsGrid>
+          ) : (
+            <EmptyState
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <i className="fas fa-folder-open"></i>
+              <h3>No Projects Found</h3>
+              <p>There are no projects in this category yet.</p>
+            </EmptyState>
+          )}
+        </AnimatePresence>
       </ProjectsContainer>
     </ProjectsSection>
   );
-}
+};
 
 export default Projects;

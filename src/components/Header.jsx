@@ -10,7 +10,10 @@ const HeaderWrapper = styled(motion.header)`
   left: 0;
   right: 0;
   height: 80px;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.isDarkMode ? 
+    'rgba(17, 24, 39, 0.8)' : 
+    'rgba(255, 255, 255, 0.8)'
+  };
   backdrop-filter: blur(10px);
   z-index: 100;
   box-shadow: ${props => props.theme.shadows.sm};
@@ -93,13 +96,19 @@ const NavLink = styled.a`
   }
 `;
 
-const ThemeToggle = styled.button`
-  width: 40px;
-  height: 40px;
+const ThemeToggle = styled(motion.button)`
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: transparent;
-  border: none;
-  color: ${props => props.theme.colors.text};
+  background: ${props => props.isDarkMode ? 
+    'linear-gradient(135deg, #1F2937 0%, #374151 100%)' : 
+    'linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%)'
+  };
+  border: 2px solid ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(0, 0, 0, 0.05)'
+  };
+  color: ${props => props.isDarkMode ? '#F9FAFB' : '#4B5563'};
   font-size: 1.25rem;
   cursor: pointer;
   display: flex;
@@ -107,11 +116,46 @@ const ThemeToggle = styled.button`
   justify-content: center;
   margin-left: 1.5rem;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: ${props => props.isDarkMode ? 
+    '0 0 10px rgba(255, 255, 255, 0.1)' : 
+    '0 0 10px rgba(0, 0, 0, 0.1)'
+  };
   
   &:hover {
-    background: ${props => props.theme.colors.primary}20;
-    color: ${props => props.theme.colors.primary};
+    transform: translateY(-3px);
+    box-shadow: ${props => props.isDarkMode ? 
+      '0 0 15px rgba(255, 255, 255, 0.2)' : 
+      '0 0 15px rgba(0, 0, 0, 0.2)'
+    };
   }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover:before {
+    opacity: 0.3;
+  }
+`;
+
+const ThemeIcon = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 `;
 
 const MobileMenuButton = styled.button`
@@ -197,6 +241,11 @@ const MobileNavLink = styled.a`
   }
 `;
 
+const MobileThemeToggle = styled(ThemeToggle)`
+  margin: 1.5rem 0 0 0;
+  align-self: flex-start;
+`;
+
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -207,6 +256,12 @@ const Overlay = styled(motion.div)`
   backdrop-filter: blur(3px);
   z-index: 100;
 `;
+
+const iconVariants = {
+  initial: { scale: 0, rotate: -180 },
+  animate: { scale: 1, rotate: 0, transition: { type: "spring", duration: 0.5 } },
+  exit: { scale: 0, rotate: 180, transition: { duration: 0.3 } }
+};
 
 const Header = () => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -255,7 +310,7 @@ const Header = () => {
   
   return (
     <>
-      <HeaderWrapper isVisible={isVisible}>
+      <HeaderWrapper isVisible={isVisible} isDarkMode={isDarkMode}>
         <HeaderContainer>
           <Logo href="#home">
             Saynam<span>.</span>
@@ -273,12 +328,34 @@ const Header = () => {
               ))}
             </NavLinks>
             
-            <ThemeToggle onClick={toggleTheme}>
-              {isDarkMode ? (
-                <i className="fas fa-sun"></i>
-              ) : (
-                <i className="fas fa-moon"></i>
-              )}
+            <ThemeToggle 
+              onClick={toggleTheme} 
+              isDarkMode={isDarkMode}
+              whileTap={{ scale: 0.9 }}
+            >
+              <AnimatePresence mode="wait">
+                {isDarkMode ? (
+                  <ThemeIcon
+                    key="sun"
+                    variants={iconVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <i className="fas fa-sun"></i>
+                  </ThemeIcon>
+                ) : (
+                  <ThemeIcon
+                    key="moon"
+                    variants={iconVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <i className="fas fa-moon"></i>
+                  </ThemeIcon>
+                )}
+              </AnimatePresence>
             </ThemeToggle>
           </Nav>
           
@@ -324,15 +401,37 @@ const Header = () => {
                     {item.name}
                   </MobileNavLink>
                 ))}
-                
-                <ThemeToggle onClick={toggleTheme}>
-                  {isDarkMode ? (
-                    <i className="fas fa-sun"></i>
-                  ) : (
-                    <i className="fas fa-moon"></i>
-                  )}
-                </ThemeToggle>
               </MobileNavLinks>
+              
+              <MobileThemeToggle 
+                onClick={toggleTheme} 
+                isDarkMode={isDarkMode}
+                whileTap={{ scale: 0.9 }}
+              >
+                <AnimatePresence mode="wait">
+                  {isDarkMode ? (
+                    <ThemeIcon
+                      key="sun"
+                      variants={iconVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                    >
+                      <i className="fas fa-sun"></i>
+                    </ThemeIcon>
+                  ) : (
+                    <ThemeIcon
+                      key="moon"
+                      variants={iconVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                    >
+                      <i className="fas fa-moon"></i>
+                    </ThemeIcon>
+                  )}
+                </AnimatePresence>
+              </MobileThemeToggle>
             </MobileMenu>
           </>
         )}

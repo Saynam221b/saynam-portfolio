@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef, useCallback, useMemo } from 'react';
 import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 import { Global, css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,7 +11,10 @@ import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Loader from './components/Loader';
+import ScrollToTop from './components/ScrollToTop';
 import { ToastContainer } from 'react-toastify';
+import { SectionProvider } from './context/SectionContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Define theme
@@ -189,25 +193,42 @@ const globalStyles = (theme) => css`
   }
 `;
 
-const ThemeContext = React.createContext();
+// Create context for theme
+export const ThemeContext = createContext();
 
-export const useTheme = () => React.useContext(ThemeContext);
+// Create custom hook for accessing theme
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
 
 const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Check user preference
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setIsDarkMode(prefersDarkMode);
+    // Check user preference only once on initial load
+    if (!isInitialized) {
+      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDarkMode(prefersDarkMode);
+      setIsInitialized(true);
+    }
+  }, [isInitialized]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode(prevMode => !prevMode);
   }, []);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const contextValue = useMemo(() => ({
+    isDarkMode,
+    toggleTheme
+  }), [isDarkMode, toggleTheme]);
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
@@ -220,7 +241,7 @@ const ThemeTransition = styled(motion.div)`
   right: 0;
   bottom: 0;
   z-index: 9999;
-  background: ${props => props.isDarkMode ? '#111827' : '#FFFFFF'};
+  background: ${props => props.isDarkMode ? 'rgba(17, 24, 39, 0.3)' : 'rgba(255, 255, 255, 0.3)'};
   pointer-events: none;
 `;
 
@@ -234,32 +255,40 @@ const Main = styled(motion.main)`
   flex: 1;
 `;
 
-function App() {
+const App = React.memo(() => {
   const [isThemeChanging, setIsThemeChanging] = useState(false);
   
   return (
     <ThemeProvider>
-      <AppContent 
-        isThemeChanging={isThemeChanging}
-        setIsThemeChanging={setIsThemeChanging}
-      />
+      <SectionProvider>
+        <AppContent 
+          isThemeChanging={isThemeChanging}
+          setIsThemeChanging={setIsThemeChanging}
+        />
+      </SectionProvider>
     </ThemeProvider>
   );
-}
+});
 
 function AppContent({ isThemeChanging, setIsThemeChanging }) {
   const { isDarkMode, toggleTheme } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  const theme = useMemo(() => isDarkMode ? darkTheme : lightTheme, [isDarkMode]);
+  const prevThemeRef = useRef(isDarkMode);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    if (toggleTheme) {
+    // Only trigger the theme change animation when the theme actually changes
+    // Not on initial render
+    if (prevThemeRef.current !== isDarkMode) {
       setIsThemeChanging(true);
       const timeoutId = setTimeout(() => {
         setIsThemeChanging(false);
-      }, 500);
+      }, 300);
+      
+      prevThemeRef.current = isDarkMode;
       return () => clearTimeout(timeoutId);
     }
-  }, [isDarkMode, setIsThemeChanging, toggleTheme]);
+  }, [isDarkMode, setIsThemeChanging]);
   
   return (
     <EmotionThemeProvider theme={theme}>
@@ -270,55 +299,58 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
           <ThemeTransition
             key={isDarkMode ? 'dark' : 'light'}
             isDarkMode={isDarkMode}
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ 
-              scale: [1.1, 1],
-              opacity: [0, 1, 0],
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
-            transition={{ 
-              duration: 0.5,
-              times: [0, 0.5, 1]
-            }}
+            transition={{ duration: 0.3 }}
           />
         )}
       </AnimatePresence>
       
-      <MainContainer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Header />
-        
-        <Main
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Hero />
-          <About />
-          <Skills />
-          <Experience />
-          <Projects />
-          <Contact />
-        </Main>
-        
-        <Footer />
-        
-        <ToastContainer 
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme={isDarkMode ? "dark" : "light"}
-        />
-      </MainContainer>
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <Loader finishLoading={() => setLoading(false)} key="loader" />
+        ) : (
+          <MainContainer
+            key="main"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Header />
+            
+            <Main
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Hero />
+              <About />
+              <Skills />
+              <Experience />
+              <Projects />
+              <Contact />
+            </Main>
+            
+            <Footer />
+            
+            <ScrollToTop />
+            
+            <ToastContainer 
+              position="bottom-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme={isDarkMode ? "dark" : "light"}
+            />
+          </MainContainer>
+        )}
+      </AnimatePresence>
     </EmotionThemeProvider>
   );
 }
