@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../App';
 import { toast } from 'react-toastify';
 import emailjs from 'emailjs-com';
-import { EMAIL_CONFIG, initEmailJS } from '../utils/emailjs';
+import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
 
 const ContactSection = styled.section`
   padding: 6rem 1.5rem;
@@ -316,29 +316,28 @@ const Contact = () => {
         formRef.current
       );
       
-      // Send auto-reply email to the user
-      const autoReplyParams = {
-        to_name: formState.name,
-        to_email: formState.email,
-        from_name: "Saynam Sharma",
-        message: "Thank you for contacting me! I have received your message and will get back to you as soon as possible.",
-        subject: formState.subject ? `Re: ${formState.subject}` : "Thank you for contacting me"
-      };
-      
-      await emailjs.send(
-        EMAIL_CONFIG.serviceId,
-        EMAIL_CONFIG.autoReplyTemplateId,
-        autoReplyParams
+      // Send auto-reply using our helper function
+      const autoReplyResult = await sendAutoReply(
+        formState.name,
+        formState.email
       );
       
-      // Success
-      toast.success("Message sent successfully! I'll get back to you soon.");
+      // Reset form
       setFormState({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
+      
+      // Show success message
+      toast.success("Message sent successfully! I'll get back to you soon.");
+      
+      // Log auto-reply status
+      if (!autoReplyResult.success) {
+        console.warn("Auto-reply email could not be sent, but main message was delivered");
+      }
+      
     } catch (error) {
       console.error("Email sending failed:", error);
       toast.error("Failed to send message. Please try again later.");
@@ -447,6 +446,28 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
+            {/* Hidden fields for EmailJS template */}
+            <input 
+              type="hidden" 
+              name="to_email" 
+              value="saynam1101@gmail.com"
+            />
+            <input 
+              type="hidden" 
+              name="from_name" 
+              value="Portfolio Contact Form"
+            />
+            <input 
+              type="hidden" 
+              name="reply_to" 
+              value={formState.email}
+            />
+            <input 
+              type="hidden" 
+              name="user_email" 
+              value={formState.email}
+            />
+            
             <FormGroup>
               <FormLabel 
                 htmlFor="name" 
