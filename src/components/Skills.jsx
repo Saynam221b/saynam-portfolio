@@ -1,100 +1,168 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../App';
 
 const SkillsSection = styled.section`
-  padding: 4rem 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  color: ${props => props.theme.text.primary};
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 3rem;
-  font-weight: 700;
+  padding: 6rem 1.5rem;
+  background-color: ${props => props.isDarkMode ? 
+    props.theme.colors.background : 
+    'rgba(249, 250, 251, 0.5)'
+  };
+  
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    padding: 8rem 2rem;
+  }
 `;
 
 const SkillsContainer = styled.div`
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 `;
 
-const SkillCategoryContainer = styled.div`
+const SectionTitle = styled.h2`
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
   margin-bottom: 3rem;
-`;
-
-const CategoryTitle = styled.h3`
-  color: ${props => props.theme.text.primary};
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
+  position: relative;
+  color: ${props => props.theme.colors.text};
   
   &:after {
     content: '';
-    flex: 1;
-    height: 1px;
-    background: ${props => props.theme.text.light};
-    margin-left: 1rem;
-    opacity: 0.3;
+    position: absolute;
+    bottom: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 2px;
+  }
+  
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    font-size: 2.5rem;
+  }
+`;
+
+const SkillCategoryContainer = styled(motion.div)`
+  margin-bottom: 4rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const CategoryTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 1rem;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 1.5rem;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 2px;
   }
 `;
 
 const SkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
-`;
-
-const SkillItem = styled(motion.div)`
-  background: ${props => props.theme.cardBg};
-  padding: 1.25rem;
-  border-radius: 12px;
-  box-shadow: ${props => props.theme.cardShadow};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
   
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${props => props.theme.cardHoverShadow};
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 `;
 
-const SkillName = styled.h4`
-  color: ${props => props.theme.text.primary};
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-top: 0.75rem;
+const SkillCard = styled(motion.div)`
+  background: ${props => props.theme.colors.cardBg};
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: ${props => props.theme.shadows.md};
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: ${props => props.theme.shadows.lg};
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: ${props => props.theme.gradients.primary};
+  }
 `;
 
-const SkillIcon = styled.div`
-  font-size: 2rem;
-  color: ${props => props.theme.primary};
-  margin-bottom: 0.5rem;
+const SkillHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
+const SkillIconWrapper = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: ${props => props.theme.gradients.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  color: white;
+  font-size: 1.25rem;
+`;
+
+const SkillName = styled.h4`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: ${props => props.theme.colors.text};
 `;
 
 const SkillLevel = styled.div`
   width: 100%;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-  margin-top: 0.75rem;
+  height: 8px;
+  background: ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(0, 0, 0, 0.1)'
+  };
+  border-radius: 4px;
   overflow: hidden;
+  margin-top: 0.5rem;
 `;
 
 const SkillLevelFill = styled.div`
   height: 100%;
   width: ${props => props.level}%;
-  background: linear-gradient(90deg, ${props => props.theme.primary}, ${props => props.theme.secondary});
-  border-radius: 2px;
+  background: ${props => props.theme.gradients.primary};
+  border-radius: 4px;
+  transition: width 1s ease;
+`;
+
+const SkillLevelText = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: ${props => props.theme.colors.textSecondary};
+  margin-top: 0.5rem;
 `;
 
 const skillVariants = {
@@ -110,7 +178,53 @@ const skillVariants = {
   })
 };
 
-function Skills() {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3
+    }
+  }
+};
+
+// Function to get appropriate icon for each skill
+const getSkillIcon = (skill) => {
+  const skillIcons = {
+    // Programming Languages
+    "Python": "fab fa-python",
+    "JavaScript": "fab fa-js",
+    "Java": "fab fa-java",
+    "SQL": "fas fa-database",
+    "C++": "fas fa-code",
+    
+    // Data Engineering
+    "Apache Airflow": "fas fa-stream",
+    "Spark": "fas fa-fire",
+    "Kafka": "fas fa-exchange-alt",
+    "ETL Pipelines": "fas fa-project-diagram",
+    "Data Warehousing": "fas fa-warehouse",
+    
+    // Web Development
+    "React": "fab fa-react",
+    "Node.js": "fab fa-node-js",
+    "HTML/CSS": "fab fa-html5",
+    "Express": "fas fa-server",
+    "MongoDB": "fas fa-leaf",
+    
+    // Cloud & DevOps
+    "AWS": "fab fa-aws",
+    "Docker": "fab fa-docker",
+    "CI/CD": "fas fa-sync",
+    "Kubernetes": "fas fa-dharmachakra",
+    "Terraform": "fas fa-cubes"
+  };
+  
+  return skillIcons[skill] || "fas fa-code";
+};
+
+const Skills = () => {
   const { isDarkMode } = useTheme();
   
   const skillCategories = [
@@ -157,27 +271,49 @@ function Skills() {
   ];
 
   return (
-    <SkillsSection id="skills">
-      <SectionTitle>Skills</SectionTitle>
+    <SkillsSection id="skills" isDarkMode={isDarkMode}>
       <SkillsContainer>
+        <SectionTitle>Technical Skills</SectionTitle>
+        
         {skillCategories.map((category, categoryIndex) => (
-          <SkillCategoryContainer key={categoryIndex}>
+          <SkillCategoryContainer 
+            key={categoryIndex}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={containerVariants}
+          >
             <CategoryTitle>{category.category}</CategoryTitle>
             <SkillsGrid>
               {category.skills.map((skill, skillIndex) => (
-                <SkillItem 
+                <SkillCard 
                   key={skillIndex}
                   custom={skillIndex}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
                   variants={skillVariants}
                 >
-                  <SkillName>{skill.name}</SkillName>
-                  <SkillLevel>
-                    <SkillLevelFill level={skill.level} />
+                  <SkillHeader>
+                    <SkillIconWrapper>
+                      <i className={getSkillIcon(skill.name)}></i>
+                    </SkillIconWrapper>
+                    <SkillName>{skill.name}</SkillName>
+                  </SkillHeader>
+                  
+                  <SkillLevel isDarkMode={isDarkMode}>
+                    <SkillLevelFill 
+                      level={skill.level}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${skill.level}%` }}
+                      transition={{ duration: 1, delay: 0.2 }}
+                      viewport={{ once: true }}
+                    />
                   </SkillLevel>
-                </SkillItem>
+                  
+                  <SkillLevelText>
+                    <span>Beginner</span>
+                    <span>{skill.level}%</span>
+                    <span>Expert</span>
+                  </SkillLevelText>
+                </SkillCard>
               ))}
             </SkillsGrid>
           </SkillCategoryContainer>
@@ -185,6 +321,6 @@ function Skills() {
       </SkillsContainer>
     </SkillsSection>
   );
-}
+};
 
 export default Skills; 

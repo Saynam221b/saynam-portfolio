@@ -1,70 +1,88 @@
 import React, { useState, useEffect } from 'react';
-import { ThemeProvider, useTheme } from './context/ThemeContext';
-import styled, { ThemeProvider as StyledThemeProvider, createGlobalStyle, keyframes } from 'styled-components';
+import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
+import { Global, css } from '@emotion/react';
+import styled from '@emotion/styled';
 import Header from './components/Header';
-import Introduction from './components/Introduction';
+import Hero from './components/Hero';
+import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import { motion, AnimatePresence } from 'framer-motion';
-import ThemeToggle from './components/ThemeToggle';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Define theme
 const lightTheme = {
-  headerBg: 'rgba(255, 255, 255, 0.85)',
-  headerText: '#0f172a',
-  headerShadow: '0 2px 10px rgba(15, 23, 42, 0.08)',
-  primary: '#0284c7',
-  secondary: '#6366f1',
-  accent: '#f59e0b',
-  toggleBg: '#f1f5f9',
-  toggleIcon: '#0f172a',
-  mainBg: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-  contentBg: 'transparent',
-  cardBg: 'rgba(255, 255, 255, 0.9)',
-  cardHoverBg: 'rgba(255, 255, 255, 0.95)',
-  cardShadow: '0 4px 20px rgba(15, 23, 42, 0.06)',
-  cardHoverShadow: '0 10px 25px rgba(15, 23, 42, 0.08)',
-  buttonGradient: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 100%)',
-  buttonHoverGradient: 'linear-gradient(90deg, #0369a1 0%, #0284c7 100%)',
-  text: {
-    primary: '#0f172a',
-    secondary: '#334155',
-    accent: '#0284c7',
-    light: '#64748b'
+  colors: {
+    primary: '#7C3AED', // Vibrant purple
+    secondary: '#EC4899', // Pink
+    accent: '#3B82F6', // Blue
+    background: '#FFFFFF',
+    cardBg: '#F9FAFB',
+    text: '#1F2937',
+    textSecondary: '#4B5563',
+    textLight: '#9CA3AF',
+    border: '#E5E7EB',
+    success: '#10B981',
+    error: '#EF4444',
+    warning: '#F59E0B',
+  },
+  shadows: {
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  },
+  gradients: {
+    primary: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+    card: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)',
+  },
+  breakpoints: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
   }
 };
 
 const darkTheme = {
-  headerBg: 'rgba(15, 23, 42, 0.9)',
-  headerText: '#ffffff',
-  headerShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-  primary: '#38bdf8',
-  secondary: '#818cf8',
-  accent: '#fbbf24',
-  toggleBg: 'rgba(255, 255, 255, 0.05)',
-  toggleIcon: '#ffd700',
-  mainBg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-  contentBg: 'transparent',
-  cardBg: 'rgba(30, 41, 59, 0.9)',
-  cardHoverBg: 'rgba(30, 41, 59, 0.95)',
-  cardShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-  cardHoverShadow: '0 10px 25px rgba(0, 0, 0, 0.25)',
-  buttonGradient: 'linear-gradient(90deg, #38bdf8 0%, #7dd3fc 100%)',
-  buttonHoverGradient: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 100%)',
-  text: {
-    primary: '#ffffff',
-    secondary: '#cbd5e1',
-    accent: '#38bdf8',
-    light: '#94a3b8'
+  colors: {
+    primary: '#8B5CF6', // Lighter purple for dark mode
+    secondary: '#F472B6', // Lighter pink for dark mode
+    accent: '#60A5FA', // Lighter blue for dark mode
+    background: '#111827',
+    cardBg: '#1F2937',
+    text: '#F9FAFB',
+    textSecondary: '#D1D5DB',
+    textLight: '#6B7280',
+    border: '#374151',
+    success: '#34D399',
+    error: '#F87171',
+    warning: '#FBBF24',
+  },
+  shadows: {
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
+    md: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+  },
+  gradients: {
+    primary: 'linear-gradient(135deg, #8B5CF6 0%, #F472B6 100%)',
+    card: 'linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%)',
+  },
+  breakpoints: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
   }
 };
 
-const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+// Global styles
+const globalStyles = (theme) => css`
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
   
   * {
     box-sizing: border-box;
@@ -72,58 +90,128 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
   
-  body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: ${props => props.theme.contentBg};
-    color: ${props => props.theme.text.primary};
-    overflow-x: hidden;
+  html {
     scroll-behavior: smooth;
+    font-size: 16px;
   }
-
-  ::selection {
-    background-color: ${props => props.theme.primary};
-    color: #fff;
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: ${theme.colors.background};
+    color: ${theme.colors.text};
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
   }
   
   a {
-    text-decoration: none;
     color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
   }
   
   button {
     cursor: pointer;
-    border: none;
-    outline: none;
+    font-family: 'Poppins', sans-serif;
   }
   
   img {
     max-width: 100%;
     height: auto;
   }
+  
+  ::selection {
+    background-color: ${theme.colors.primary};
+    color: white;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: ${theme.colors.background};
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: ${theme.colors.primary};
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${theme.colors.secondary};
+  }
+  
+  .section {
+    padding: 5rem 1.5rem;
+    
+    @media (min-width: ${theme.breakpoints.md}) {
+      padding: 6rem 2rem;
+    }
+    
+    @media (min-width: ${theme.breakpoints.lg}) {
+      padding: 8rem 2rem;
+    }
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .section-title {
+    position: relative;
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -0.75rem;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 4px;
+      background: ${theme.gradients.primary};
+      border-radius: 2px;
+    }
+    
+    @media (min-width: ${theme.breakpoints.md}) {
+      font-size: 2.5rem;
+    }
+  }
 `;
 
-// Add transition animations
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
+const ThemeContext = React.createContext();
 
-const slideIn = keyframes`
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-`;
+export const useTheme = () => React.useContext(ThemeContext);
+
+const ThemeProvider = ({ children }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check user preference
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setIsDarkMode(prefersDarkMode);
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  return (
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
 
 const ThemeTransition = styled(motion.div)`
   position: fixed;
@@ -132,79 +220,51 @@ const ThemeTransition = styled(motion.div)`
   right: 0;
   bottom: 0;
   z-index: 9999;
-  background: ${props => props.isDarkMode ? '#111928' : '#ffffff'};
+  background: ${props => props.isDarkMode ? '#111827' : '#FFFFFF'};
   pointer-events: none;
 `;
 
-const AppContainer = styled(motion.div)`
+const MainContainer = styled(motion.div)`
   min-height: 100vh;
-  background: ${props => props.theme.mainBg};
-  transition: all 0.5s ease;
-  position: relative;
-  overflow-x: hidden;
-  animation: ${fadeIn} 0.5s ease-out;
-
-  & * {
-    transition: all 0.3s ease;
-  }
+  display: flex;
+  flex-direction: column;
 `;
 
-const MainContent = styled(motion.main)`
-  padding-top: 80px;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
-  background: ${props => props.theme.mainBg};
-  transition: all 0.5s ease;
-
-  & > section {
-    margin: 0 auto;
-    max-width: 1400px;
-    padding: 4rem 2rem;
-    animation: ${slideIn} 0.5s ease-out;
-    scroll-margin-top: 80px;
-  }
-
-  & > section:first-child {
-    padding-top: 0;
-  }
-`;
-
-const ThemeToggleWrapper = styled.div`
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 100;
+const Main = styled(motion.main)`
+  flex: 1;
 `;
 
 function App() {
+  const [isThemeChanging, setIsThemeChanging] = useState(false);
+  
   return (
     <ThemeProvider>
-      <ThemedApp />
+      <AppContent 
+        isThemeChanging={isThemeChanging}
+        setIsThemeChanging={setIsThemeChanging}
+      />
     </ThemeProvider>
   );
 }
 
-function ThemedApp() {
+function AppContent({ isThemeChanging, setIsThemeChanging }) {
   const { isDarkMode, toggleTheme } = useTheme();
-  const [isThemeChanging, setIsThemeChanging] = useState(false);
-
+  const theme = isDarkMode ? darkTheme : lightTheme;
+  
   useEffect(() => {
-    setIsThemeChanging(true);
-    const timeoutId = setTimeout(() => {
-      setIsThemeChanging(false);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [isDarkMode]);
-
-  const handleThemeToggle = () => {
-    setIsThemeChanging(true);
-    toggleTheme();
-  };
+    if (toggleTheme) {
+      setIsThemeChanging(true);
+      const timeoutId = setTimeout(() => {
+        setIsThemeChanging(false);
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isDarkMode, setIsThemeChanging, toggleTheme]);
   
   return (
-    <StyledThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <GlobalStyle />
+    <EmotionThemeProvider theme={theme}>
+      <Global styles={globalStyles(theme)} />
+      
       <AnimatePresence mode='wait'>
         {isThemeChanging && (
           <ThemeTransition
@@ -223,30 +283,43 @@ function ThemedApp() {
           />
         )}
       </AnimatePresence>
-      <AppContainer
+      
+      <MainContainer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
         <Header />
-        <MainContent
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+        
+        <Main
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Introduction />
+          <Hero />
+          <About />
           <Skills />
           <Experience />
           <Projects />
           <Contact />
-        </MainContent>
+        </Main>
+        
         <Footer />
-        <ThemeToggleWrapper>
-          <ThemeToggle onClick={handleThemeToggle} />
-        </ThemeToggleWrapper>
-        <ToastContainer position="bottom-right" autoClose={3000} />
-      </AppContainer>
-    </StyledThemeProvider>
+        
+        <ToastContainer 
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={isDarkMode ? "dark" : "light"}
+        />
+      </MainContainer>
+    </EmotionThemeProvider>
   );
 }
 
