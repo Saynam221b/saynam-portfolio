@@ -5,8 +5,9 @@ import Header from './components/Header';
 import Introduction from './components/Introduction';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
-import FreeTimeActivities from './components/FreeTimeActivities';
+import Skills from './components/Skills';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './components/ThemeToggle';
 import { ToastContainer } from 'react-toastify';
@@ -15,55 +16,91 @@ import 'react-toastify/dist/ReactToastify.css';
 const lightTheme = {
   headerBg: 'rgba(255, 255, 255, 0.85)',
   headerText: '#0f172a',
-  headerShadow: '0 2px 4px rgba(15, 23, 42, 0.06)',
+  headerShadow: '0 2px 10px rgba(15, 23, 42, 0.08)',
   primary: '#0284c7',
+  secondary: '#6366f1',
+  accent: '#f59e0b',
   toggleBg: '#f1f5f9',
   toggleIcon: '#0f172a',
   mainBg: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
   contentBg: 'transparent',
-  cardBg: 'rgba(255, 255, 255, 0.85)',
+  cardBg: 'rgba(255, 255, 255, 0.9)',
   cardHoverBg: 'rgba(255, 255, 255, 0.95)',
-  cardShadow: '0 4px 6px rgba(15, 23, 42, 0.04), 0 2px 4px rgba(15, 23, 42, 0.03)',
-  cardHoverShadow: '0 10px 15px rgba(15, 23, 42, 0.06), 0 4px 6px rgba(15, 23, 42, 0.04)',
+  cardShadow: '0 4px 20px rgba(15, 23, 42, 0.06)',
+  cardHoverShadow: '0 10px 25px rgba(15, 23, 42, 0.08)',
+  buttonGradient: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 100%)',
+  buttonHoverGradient: 'linear-gradient(90deg, #0369a1 0%, #0284c7 100%)',
   text: {
     primary: '#0f172a',
     secondary: '#334155',
-    accent: '#0284c7'
+    accent: '#0284c7',
+    light: '#64748b'
   }
 };
 
 const darkTheme = {
-  headerBg: 'rgba(15, 23, 42, 0.85)',
+  headerBg: 'rgba(15, 23, 42, 0.9)',
   headerText: '#ffffff',
-  headerShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  primary: '#0284c7',
+  headerShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+  primary: '#38bdf8',
+  secondary: '#818cf8',
+  accent: '#fbbf24',
   toggleBg: 'rgba(255, 255, 255, 0.05)',
   toggleIcon: '#ffd700',
   mainBg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
   contentBg: 'transparent',
-  cardBg: 'rgba(30, 41, 59, 0.85)',
+  cardBg: 'rgba(30, 41, 59, 0.9)',
   cardHoverBg: 'rgba(30, 41, 59, 0.95)',
-  cardShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  cardHoverShadow: '0 10px 15px rgba(0, 0, 0, 0.15)',
+  cardShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+  cardHoverShadow: '0 10px 25px rgba(0, 0, 0, 0.25)',
+  buttonGradient: 'linear-gradient(90deg, #38bdf8 0%, #7dd3fc 100%)',
+  buttonHoverGradient: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 100%)',
   text: {
     primary: '#ffffff',
     secondary: '#cbd5e1',
-    accent: '#38bdf8'
+    accent: '#38bdf8',
+    light: '#94a3b8'
   }
 };
 
 const GlobalStyle = createGlobalStyle`
-  body {
-    font-family: 'Poppins', sans-serif;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  
+  * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
     background: ${props => props.theme.contentBg};
+    color: ${props => props.theme.text.primary};
+    overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   ::selection {
     background-color: ${props => props.theme.primary};
     color: #fff;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
   }
 `;
 
@@ -123,12 +160,13 @@ const MainContent = styled(motion.main)`
   & > section {
     margin: 0 auto;
     max-width: 1400px;
-    padding: 2rem;
+    padding: 4rem 2rem;
     animation: ${slideIn} 0.5s ease-out;
+    scroll-margin-top: 80px;
   }
 
-  & > section:not(:last-child) {
-    padding-bottom: 4rem;
+  & > section:first-child {
+    padding-top: 0;
   }
 `;
 
@@ -197,11 +235,12 @@ function ThemedApp() {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Introduction />
+          <Skills />
           <Experience />
           <Projects />
-          <FreeTimeActivities />
           <Contact />
         </MainContent>
+        <Footer />
         <ThemeToggleWrapper>
           <ThemeToggle onClick={handleThemeToggle} />
         </ThemeToggleWrapper>
