@@ -104,66 +104,6 @@ const NavLink = styled.a`
   }
 `;
 
-const ThemeToggle = styled(motion.button)`
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: ${props => props.isDarkMode ? 
-    'linear-gradient(135deg, #1F2937 0%, #374151 100%)' : 
-    'linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%)'
-  };
-  border: 2px solid ${props => props.isDarkMode ? 
-    'rgba(255, 255, 255, 0.1)' : 
-    'rgba(0, 0, 0, 0.05)'
-  };
-  color: ${props => props.isDarkMode ? '#F9FAFB' : '#4B5563'};
-  font-size: 1.25rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 1.5rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: ${props => props.isDarkMode ? 
-    '0 0 10px rgba(255, 255, 255, 0.1)' : 
-    '0 0 10px rgba(0, 0, 0, 0.1)'
-  };
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: ${props => props.isDarkMode ? 
-      '0 0 15px rgba(255, 255, 255, 0.2)' : 
-      '0 0 15px rgba(0, 0, 0, 0.2)'
-    };
-  }
-  
-  &:before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    z-index: -1;
-    background: ${props => props.theme.gradients.primary};
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  &:hover:before {
-    opacity: 0.3;
-  }
-  
-  @media (max-width: 768px) {
-    width: 38px;
-    height: 38px;
-    font-size: 1rem;
-  }
-`;
-
 const ThemeIcon = styled(motion.div)`
   display: flex;
   align-items: center;
@@ -261,11 +201,6 @@ const MobileNavLink = styled.a`
   }
 `;
 
-const MobileThemeToggle = styled(ThemeToggle)`
-  margin: 1.5rem 0 0 0;
-  align-self: flex-start;
-`;
-
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -347,36 +282,6 @@ const Header = () => {
                 </NavLink>
               ))}
             </NavLinks>
-            
-            <ThemeToggle 
-              onClick={toggleTheme} 
-              isDarkMode={isDarkMode}
-              whileTap={{ scale: 0.9 }}
-            >
-              <AnimatePresence mode="wait">
-                {isDarkMode ? (
-                  <ThemeIcon
-                    key="sun"
-                    variants={iconVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <i className="fas fa-sun"></i>
-                  </ThemeIcon>
-                ) : (
-                  <ThemeIcon
-                    key="moon"
-                    variants={iconVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <i className="fas fa-moon"></i>
-                  </ThemeIcon>
-                )}
-              </AnimatePresence>
-            </ThemeToggle>
           </Nav>
           
           <MobileMenuButton onClick={toggleMobileMenu}>
@@ -422,36 +327,6 @@ const Header = () => {
                   </MobileNavLink>
                 ))}
               </MobileNavLinks>
-              
-              <MobileThemeToggle 
-                onClick={toggleTheme} 
-                isDarkMode={isDarkMode}
-                whileTap={{ scale: 0.9 }}
-              >
-                <AnimatePresence mode="wait">
-                  {isDarkMode ? (
-                    <ThemeIcon
-                      key="sun"
-                      variants={iconVariants}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                    >
-                      <i className="fas fa-sun"></i>
-                    </ThemeIcon>
-                  ) : (
-                    <ThemeIcon
-                      key="moon"
-                      variants={iconVariants}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                    >
-                      <i className="fas fa-moon"></i>
-                    </ThemeIcon>
-                  )}
-                </AnimatePresence>
-              </MobileThemeToggle>
             </MobileMenu>
           </>
         )}

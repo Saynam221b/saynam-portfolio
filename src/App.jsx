@@ -312,6 +312,73 @@ const App = React.memo(() => {
   );
 });
 
+// Floating theme toggle button
+const FloatingThemeToggle = styled(motion.button)`
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: ${props => props.isDarkMode ? 
+    'linear-gradient(135deg, #1F2937 0%, #374151 100%)' : 
+    'linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%)'
+  };
+  border: 2px solid ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.1)' : 
+    'rgba(0, 0, 0, 0.05)'
+  };
+  color: ${props => props.isDarkMode ? '#F9FAFB' : '#4B5563'};
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 999;
+  box-shadow: ${props => props.theme.shadows.md};
+  
+  &:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: ${props => props.isDarkMode ? 
+      '0 0 15px rgba(255, 255, 255, 0.2)' : 
+      '0 0 15px rgba(0, 0, 0, 0.2)'
+    };
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover:before {
+    opacity: 0.3;
+  }
+`;
+
+const ThemeIcon = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const iconVariants = {
+  initial: { scale: 0, rotate: -180 },
+  animate: { scale: 1, rotate: 0, transition: { type: "spring", duration: 0.5 } },
+  exit: { scale: 0, rotate: 180, transition: { duration: 0.3 } }
+};
+
 function AppContent({ isThemeChanging, setIsThemeChanging }) {
   const { isDarkMode, toggleTheme } = useTheme();
   const theme = useMemo(() => isDarkMode ? darkTheme : lightTheme, [isDarkMode]);
@@ -390,6 +457,40 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
               pauseOnHover
               theme={isDarkMode ? "dark" : "light"}
             />
+            
+            {/* Floating Theme Toggle Button */}
+            <FloatingThemeToggle
+              onClick={toggleTheme}
+              isDarkMode={isDarkMode}
+              whileTap={{ scale: 0.9 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+            >
+              <AnimatePresence mode="wait">
+                {isDarkMode ? (
+                  <ThemeIcon
+                    key="sun"
+                    variants={iconVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <i className="fas fa-sun"></i>
+                  </ThemeIcon>
+                ) : (
+                  <ThemeIcon
+                    key="moon"
+                    variants={iconVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <i className="fas fa-moon"></i>
+                  </ThemeIcon>
+                )}
+              </AnimatePresence>
+            </FloatingThemeToggle>
           </MainContainer>
         )}
       </AnimatePresence>

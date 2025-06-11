@@ -28,7 +28,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 4rem;
   position: relative;
   color: ${props => props.theme.colors.text};
-  
+
   &:after {
     content: '';
     position: absolute;
@@ -40,7 +40,7 @@ const SectionTitle = styled.h2`
     background: ${props => props.theme.gradients.primary};
     border-radius: 2px;
   }
-  
+
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     font-size: 2.2rem;
   }
@@ -266,14 +266,14 @@ const TechTag = styled.span`
 `;
 
 const experienceData = [
-  {
+    {
     id: 1,
     title: "Data Engineer I",
     company: "KPI Partners",
     location: "Pune, India",
     date: "09/2022 - Present",
     logo: "KP",
-    description: [
+      description: [
       "Spearheaded the design and implementation of an end-to-end ETL pipeline processing over 100 GB of AR module data monthly from Oracle Fusion to Snowflake, enabling real-time reporting and analytics.",
       "Implemented incremental data load logic in Airflow and reduced data processing time by 60% by handling over 1 million records per iteration efficiently, while ensuring scalable and efficient data handling.",
       "Automated data extraction via Oracle BI API and UCM integration, delivering secure and seamless data transfers to AWS S3 with advanced encryption and decryption mechanisms.",
@@ -287,7 +287,7 @@ const experienceData = [
       "Designed and implemented serverless ETL workflows using AWS Glue, processing real-time data streams from various sources such as S3, databases, and APIs.",
       "Optimized Databricks clusters to handle high-throughput real-time data processing, reducing job execution times by up to 45% while maintaining data consistency and accuracy.",
       "Ensured seamless monitoring and auditing of real-time pipelines by integrating AWS CloudWatch and audit tables, providing real-time insights and traceability of data flows."
-    ],
+      ],
     techStack: [
       { name: "Python", icon: "fab fa-python" },
       { name: "Airflow", icon: "fas fa-stream" },
@@ -307,12 +307,12 @@ const experienceData = [
     location: "Bangalore, India",
     date: "08/2021 - 09/2021",
     logo: "ET",
-    description: [
+      description: [
       "Engineered a full-stack web application utilizing Django for the backend and React with CSS for the frontend, resulting in a 25% increase in user engagement.",
       "Deployed the application on Heroku, implementing CI/CD pipelines that streamlined the deployment process and reduced deployment time by 40%.",
       "Conducted comprehensive testing and debugging, achieving a 30% reduction in reported issues and enhancing overall application stability.",
       "Leveraged Django's robust features for scalable development, optimizing performance to accommodate a 50% increase in concurrent users."
-    ],
+      ],
     techStack: [
       { name: "Python", icon: "fab fa-python" },
       { name: "Django", icon: "fab fa-python" },
@@ -321,8 +321,8 @@ const experienceData = [
       { name: "Heroku", icon: "fas fa-cloud" },
       { name: "CI/CD", icon: "fas fa-sync" }
     ]
-  }
-];
+    }
+  ];
 
 const cardVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -339,7 +339,7 @@ const cardVariants = {
 
 const Experience = () => {
   const { isDarkMode } = useTheme();
-  
+
   return (
     <ExperienceSection id="experience" isDarkMode={isDarkMode}>
       <ExperienceContainer>
@@ -354,7 +354,7 @@ const Experience = () => {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={cardVariants}
-            >
+          >
               <CompanyLogo>{job.logo}</CompanyLogo>
               
               <CardHeader isDarkMode={isDarkMode}>
@@ -379,8 +379,8 @@ const Experience = () => {
               <CardBody>
                 <JobDescription>
                   {job.description.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
+                  <li key={i}>{item}</li>
+                ))}
                 </JobDescription>
                 
                 <TechStack isDarkMode={isDarkMode}>
@@ -389,13 +389,13 @@ const Experience = () => {
                       <i className={tech.icon}></i>
                       {tech.name}
                     </TechTag>
-                  ))}
-                </TechStack>
+                ))}
+              </TechStack>
               </CardBody>
             </ExperienceCard>
-          ))}
+        ))}
         </ExperienceCards>
-      </ExperienceContainer>
+    </ExperienceContainer>
     </ExperienceSection>
   );
 };
