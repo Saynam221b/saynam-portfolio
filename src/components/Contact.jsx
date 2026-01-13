@@ -7,20 +7,20 @@ import emailjs from 'emailjs-com';
 import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
 
 const ContactSection = styled.section`
-  padding: 6rem 1.5rem;
+  padding: 3rem 1.5rem 5rem;
   
   @media (max-width: 768px) {
-    padding: 4rem 1.5rem 3rem;
+    padding: 2rem 1.5rem 4rem;
   }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
-    padding: 8rem 2rem;
+    padding: 4rem 2rem 6rem;
   }
 `;
 
 const ContactContainer = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 `;
 
@@ -38,8 +38,8 @@ const SectionTitle = styled.h2`
     bottom: -0.75rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 50px;
-    height: 4px;
+    width: 40px;
+    height: 3px;
     background: ${props => props.theme.gradients.primary};
     border-radius: 2px;
   }
@@ -52,7 +52,7 @@ const SectionTitle = styled.h2`
 const SectionSubtitle = styled.p`
   text-align: center;
   max-width: 600px;
-  margin: 2rem auto 3rem;
+  margin: 1.5rem auto 2.5rem;
   color: ${props => props.theme.colors.textSecondary};
   font-size: 0.95rem;
 `;
@@ -60,7 +60,7 @@ const SectionSubtitle = styled.p`
 const ContactContent = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3rem;
+  gap: 2rem;
   
   @media (min-width: ${props => props.theme.breakpoints.lg}) {
     grid-template-columns: 1fr 1fr;
@@ -271,43 +271,43 @@ const Contact = () => {
   const [focusedField, setFocusedField] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef();
-  
+
   // Initialize EmailJS
   useEffect(() => {
     initEmailJS();
   }, []);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormState(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleFocus = (field) => {
     setFocusedField(field);
   };
-  
+
   const handleBlur = () => {
     setFocusedField(null);
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate form
     if (!formState.name || !formState.email || !formState.message) {
       toast.error("Please fill in all required fields");
       return;
     }
-    
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formState.email)) {
       toast.error("Please enter a valid email address");
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       // Send email to portfolio owner using EmailJS
       await emailjs.sendForm(
@@ -315,13 +315,13 @@ const Contact = () => {
         EMAIL_CONFIG.templateId,
         formRef.current
       );
-      
+
       // Send auto-reply using our helper function
       const autoReplyResult = await sendAutoReply(
         formState.name,
         formState.email
       );
-      
+
       // Reset form
       setFormState({
         name: '',
@@ -329,15 +329,15 @@ const Contact = () => {
         subject: '',
         message: ''
       });
-      
+
       // Show success message
       toast.success("Message sent successfully! I'll get back to you soon.");
-      
+
       // Log auto-reply status
       if (!autoReplyResult.success) {
         console.warn("Auto-reply email could not be sent, but main message was delivered");
       }
-      
+
     } catch (error) {
       console.error("Email sending failed:", error);
       toast.error("Failed to send message. Please try again later.");
@@ -345,7 +345,7 @@ const Contact = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <ContactSection id="contact">
       <ContactContainer>
@@ -353,7 +353,7 @@ const Contact = () => {
         <SectionSubtitle>
           Have a question or want to work together? Feel free to contact me!
         </SectionSubtitle>
-        
+
         <ContactContent>
           <ContactInfo>
             <ContactInfoCard
@@ -363,7 +363,7 @@ const Contact = () => {
               viewport={{ once: true }}
             >
               <ContactInfoTitle>Contact Information</ContactInfoTitle>
-              
+
               <ContactItem>
                 <ContactIcon>
                   <i className="fas fa-envelope"></i>
@@ -373,7 +373,7 @@ const Contact = () => {
                   <a href="mailto:saynam1101@gmail.com">saynam1101@gmail.com</a>
                 </ContactText>
               </ContactItem>
-              
+
               <ContactItem>
                 <ContactIcon>
                   <i className="fas fa-phone"></i>
@@ -383,7 +383,7 @@ const Contact = () => {
                   <a href="tel:+919419271101">+91 9419271101</a>
                 </ContactText>
               </ContactItem>
-              
+
               <ContactItem>
                 <ContactIcon>
                   <i className="fas fa-map-marker-alt"></i>
@@ -393,41 +393,41 @@ const Contact = () => {
                   <p>Jammu, India</p>
                 </ContactText>
               </ContactItem>
-              
+
               <SocialLinks>
-                <SocialLink 
-                  href="https://www.linkedin.com/in/saynam-sharma/" 
-                  target="_blank" 
+                <SocialLink
+                  href="https://www.linkedin.com/in/saynam-sharma/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <i className="fab fa-linkedin-in"></i>
                 </SocialLink>
-                
-                <SocialLink 
-                  href="https://github.com/Saynam221b" 
-                  target="_blank" 
+
+                <SocialLink
+                  href="https://github.com/Saynam221b"
+                  target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <i className="fab fa-github"></i>
                 </SocialLink>
-                
-                <SocialLink 
-                  href="mailto:saynam1101@gmail.com" 
-                  target="_blank" 
+
+                <SocialLink
+                  href="mailto:saynam1101@gmail.com"
+                  target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <i className="fas fa-envelope"></i>
                 </SocialLink>
-                
-                <SocialLink 
-                  href="https://twitter.com/saynam_sharma" 
-                  target="_blank" 
+
+                <SocialLink
+                  href="https://twitter.com/saynam_sharma"
+                  target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
@@ -437,7 +437,7 @@ const Contact = () => {
               </SocialLinks>
             </ContactInfoCard>
           </ContactInfo>
-          
+
           <ContactForm
             ref={formRef}
             onSubmit={handleSubmit}
@@ -447,39 +447,39 @@ const Contact = () => {
             viewport={{ once: true }}
           >
             {/* Hidden fields for EmailJS template */}
-            <input 
-              type="hidden" 
-              name="to_email" 
+            <input
+              type="hidden"
+              name="to_email"
               value="saynam1101@gmail.com"
             />
-            <input 
-              type="hidden" 
-              name="from_name" 
+            <input
+              type="hidden"
+              name="from_name"
               value="Portfolio Contact Form"
             />
-            <input 
-              type="hidden" 
-              name="reply_to" 
+            <input
+              type="hidden"
+              name="reply_to"
               value={formState.email}
             />
-            <input 
-              type="hidden" 
-              name="user_email" 
+            <input
+              type="hidden"
+              name="user_email"
               value={formState.email}
             />
-            
+
             <FormGroup>
-              <FormLabel 
-                htmlFor="name" 
-                isFocused={focusedField === 'name'} 
+              <FormLabel
+                htmlFor="name"
+                isFocused={focusedField === 'name'}
                 hasValue={formState.name.length > 0}
               >
                 Name *
               </FormLabel>
-              <FormInput 
-                type="text" 
-                id="name" 
-                name="name" 
+              <FormInput
+                type="text"
+                id="name"
+                name="name"
                 value={formState.name}
                 onChange={handleChange}
                 onFocus={() => handleFocus('name')}
@@ -488,19 +488,19 @@ const Contact = () => {
                 required
               />
             </FormGroup>
-            
+
             <FormGroup>
-              <FormLabel 
-                htmlFor="email" 
-                isFocused={focusedField === 'email'} 
+              <FormLabel
+                htmlFor="email"
+                isFocused={focusedField === 'email'}
                 hasValue={formState.email.length > 0}
               >
                 Email *
               </FormLabel>
-              <FormInput 
-                type="email" 
-                id="email" 
-                name="email" 
+              <FormInput
+                type="email"
+                id="email"
+                name="email"
                 value={formState.email}
                 onChange={handleChange}
                 onFocus={() => handleFocus('email')}
@@ -509,19 +509,19 @@ const Contact = () => {
                 required
               />
             </FormGroup>
-            
+
             <FormGroup>
-              <FormLabel 
-                htmlFor="subject" 
-                isFocused={focusedField === 'subject'} 
+              <FormLabel
+                htmlFor="subject"
+                isFocused={focusedField === 'subject'}
                 hasValue={formState.subject.length > 0}
               >
                 Subject
               </FormLabel>
-              <FormInput 
-                type="text" 
-                id="subject" 
-                name="subject" 
+              <FormInput
+                type="text"
+                id="subject"
+                name="subject"
                 value={formState.subject}
                 onChange={handleChange}
                 onFocus={() => handleFocus('subject')}
@@ -529,18 +529,18 @@ const Contact = () => {
                 isFocused={focusedField === 'subject'}
               />
             </FormGroup>
-            
+
             <FormGroup>
-              <FormLabel 
-                htmlFor="message" 
-                isFocused={focusedField === 'message'} 
+              <FormLabel
+                htmlFor="message"
+                isFocused={focusedField === 'message'}
                 hasValue={formState.message.length > 0}
               >
                 Message *
               </FormLabel>
-              <FormTextarea 
-                id="message" 
-                name="message" 
+              <FormTextarea
+                id="message"
+                name="message"
                 value={formState.message}
                 onChange={handleChange}
                 onFocus={() => handleFocus('message')}
@@ -549,9 +549,9 @@ const Contact = () => {
                 required
               />
             </FormGroup>
-            
-            <SubmitButton 
-              type="submit" 
+
+            <SubmitButton
+              type="submit"
               disabled={isSubmitting}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

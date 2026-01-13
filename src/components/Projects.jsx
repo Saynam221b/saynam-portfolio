@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from '../App';
 
 const ProjectsSection = styled.section`
-  padding: 6rem 1.5rem;
-  background-color: ${props => props.isDarkMode ? 
-    props.theme.colors.background : 
-    'rgba(249, 250, 251, 0.5)'
+  padding: 4rem 1.5rem;
+  background-color: ${props => props.isDarkMode ?
+    props.theme.colors.background :
+    'transparent'
   };
-  
-  @media (max-width: 768px) {
-    padding: 4rem 1.5rem 3rem;
-  }
-  
-  @media (min-width: ${props => props.theme.breakpoints.md}) {
-    padding: 8rem 2rem;
-  }
 `;
 
 const ProjectsContainer = styled.div`
@@ -26,411 +18,127 @@ const ProjectsContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 800;
   text-align: center;
-  margin-bottom: 1rem;
-  position: relative;
+  margin-bottom: 3rem;
   color: ${props => props.theme.colors.text};
-  
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: -0.75rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 4px;
-    background: ${props => props.theme.gradients.primary};
-    border-radius: 2px;
-  }
-  
-  @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 2.2rem;
-  }
+  letter-spacing: -0.02em;
 `;
 
-const SectionSubtitle = styled.p`
-  text-align: center;
-  max-width: 600px;
-  margin: 2rem auto 3rem;
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.95rem;
-`;
-
-const FilterContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  
-  @media (max-width: 480px) {
-    gap: 0.5rem;
-  }
-`;
-
-const FilterButton = styled(motion.button)`
-  background: ${props => props.isActive ? 
-    props.theme.gradients.primary : 
-    'transparent'
-  };
-  color: ${props => props.isActive ? 
-    'white' : 
-    props.theme.colors.text
-  };
-  border: 2px solid ${props => props.isActive ? 
-    'transparent' : 
-    props.theme.colors.border
-  };
-  padding: 0.5rem 1.3rem;
-  border-radius: 50px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  
-  @media (max-width: 480px) {
-    padding: 0.4rem 0.9rem;
-    font-size: 0.85rem;
-  }
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${props => props.isActive ? 
-      props.theme.shadows.md : 
-      'none'
-    };
-  }
-  
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: ${props => props.theme.gradients.primary};
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-  }
-  
-  &:hover:before {
-    opacity: ${props => props.isActive ? 0 : 0.1};
-  }
-`;
-
-const ProjectsGrid = styled(motion.div)`
+const ProjectGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
-  min-height: 400px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
 `;
 
-const ProjectCard = styled(motion.div)`
+const ProjectCard = styled(motion.a)`
+  display: block;
   background: ${props => props.theme.colors.cardBg};
-  border-radius: 1rem;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: ${props => props.theme.shadows.md};
+  text-decoration: none;
+  border: 1px solid ${props => props.theme.colors.border};
   transition: all 0.3s ease;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${props => props.theme.shadows.lg};
+    transform: translateY(-8px);
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
   }
 `;
 
-const ProjectImageContainer = styled.div`
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-`;
-
-const ProjectImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-  
-  ${ProjectCard}:hover & {
-    transform: scale(1.05);
-  }
-`;
-
-const ProjectContent = styled.div`
-  padding: 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+const CardContent = styled.div`
+  padding: 2rem;
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   color: ${props => props.theme.colors.text};
-  margin-bottom: 0.75rem;
 `;
 
-const ProjectDescription = styled.ul`
-  font-size: 0.9rem;
-  line-height: 1.6;
+const ProjectDesc = styled.p`
+  font-size: 0.95rem;
   color: ${props => props.theme.colors.textSecondary};
+  line-height: 1.6;
   margin-bottom: 1.5rem;
-  flex: 1;
-  padding-left: 1.5rem;
-  
-  li {
-    margin-bottom: 0.5rem;
-  }
 `;
 
-const TechStack = styled.div`
+const TagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
 `;
 
-const TechTag = styled.span`
-  background: ${props => props.isDarkMode ? 
-    'rgba(255, 255, 255, 0.1)' : 
-    'rgba(0, 0, 0, 0.05)'
-  };
+const Tag = styled.span`
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  background: ${props => props.theme.colors.background};
   color: ${props => props.theme.colors.textSecondary};
-  padding: 0.25rem 0.7rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
+  border-radius: 100px;
+  border: 1px solid ${props => props.theme.colors.border};
 `;
-
-const ProjectLinks = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: auto;
-`;
-
-const ProjectLink = styled.a`
-  color: ${props => props.theme.colors.primary};
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  transition: all 0.3s ease;
-  padding: 0.5rem 0;
-  
-  &:hover {
-    transform: translateX(3px);
-  }
-`;
-
-const EmptyState = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  text-align: center;
-  color: ${props => props.theme.colors.textSecondary};
-  
-  i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: ${props => props.theme.colors.primary};
-  }
-  
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: ${props => props.theme.colors.text};
-  }
-`;
-
-const projectVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: i => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  }),
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
-};
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { 
-      staggerChildren: 0.1,
-      duration: 0.3
-    }
-  },
-  exit: { 
-    opacity: 0,
-    transition: { 
-      staggerChildren: 0.05,
-      staggerDirection: -1,
-      duration: 0.3
-    }
-  }
-};
-
-const buttonVariants = {
-  tap: { scale: 0.95 }
-};
 
 const Projects = () => {
   const { isDarkMode } = useTheme();
-  const [filter, setFilter] = useState('all');
-  
+
   const projects = [
     {
-      id: 1,
-      title: "Cloud-Enabled ETL Transformation",
-      description: [
-        "Orchestrated data transfer from Oracle DB to S3 using Databricks Notebooks, enhancing reusability and reducing development time by 30%.",
-        "Conducted data profiling and analysis, improving data quality by 25% through effective outlier detection and statistical evaluations.",
-        "Executed stage layer transformations, including deduplication and audit column addition, resulting in a 15% reduction in data redundancy.",
-        "Created Delta tables in S3 using SQL files, optimizing data processing and achieving a 40% improvement in query performance.",
-        "Configured the serve layer with DDL for target tables, translating SQL to Spark DataFrames, which enhanced processing speed by 20%.",
-        "Applied Apache Airflow for pipeline orchestration, ensuring efficient scheduling and monitoring that reduced workflow execution time by 35%."
-      ],
-      image: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      techStack: ["Databricks", "Oracle DB", "AWS S3", "Delta Lake", "SQL", "Apache Airflow", "Spark"],
-      liveLink: "#",
-      githubLink: "#",
-      category: "data"
+      title: "Real-time Data Streaming Pipeline",
+      desc: "Built a low-latency pipeline using Kafka and Spark Streaming to process IoT sensor data, enabling sub-second analytics.",
+      tags: ["Spark Streaming", "Kafka", "Scala"],
+      link: "https://github.com/Saynam221b"
     },
     {
-      id: 2,
-      title: "Data Prediction Machine Learning Model",
-      description: [
-        "Developed a machine learning model for predictions using a user-uploaded CSV dataset, achieving an accuracy rate of 85%.",
-        "Created a user-friendly web interface for CSV file uploads, enhancing user engagement and reducing upload time by 40%.",
-        "Trained and deployed the machine learning model, improving prediction speed by 30% compared to previous methods.",
-        "Integrated the model into a web platform, providing seamless data prediction that resulted in a 25% increase in user satisfaction."
-      ],
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      techStack: ["Python", "Scikit-learn", "Pandas", "Django", "HTML/CSS", "JavaScript"],
-      liveLink: "#",
-      githubLink: "#",
-      category: "ml"
+      title: "Cloud Data Warehouse Migration",
+      desc: "Led the migration of on-premise Oracle data warehouses to Snowflake, reducing operational costs by 35%.",
+      tags: ["Snowflake", "AWS DMS", "PL/SQL"],
+      link: "https://github.com/Saynam221b"
+    },
+    {
+      title: "Automated Data Quality Framework",
+      desc: "Developed a Python-based framework running on Airflow to automatically validate data quality across 50+ pipelines.",
+      tags: ["Python", "Airflow", "Great Expectations"],
+      link: "https://github.com/Saynam221b"
+    },
+    {
+      title: "D3xTRverse Community Platform",
+      desc: "A modern web platform for the gaming and coding community, featuring events, forums, and content sharing.",
+      tags: ["React", "Node.js", "Firebase"],
+      link: "https://d3xtrverse.vercel.app/"
     }
   ];
-  
-  const filteredProjects = filter === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === filter);
-  
-  const categories = [
-    { id: 'all', name: 'All Projects' },
-    { id: 'data', name: 'Data Engineering' },
-    { id: 'ml', name: 'Machine Learning' },
-    { id: 'web', name: 'Web Development' }
-  ];
-  
+
   return (
     <ProjectsSection id="projects" isDarkMode={isDarkMode}>
       <ProjectsContainer>
-        <SectionTitle>Projects</SectionTitle>
-        <SectionSubtitle>
-          Here are some of my key projects showcasing my technical skills and problem-solving abilities
-        </SectionSubtitle>
-        
-        <FilterContainer>
-          {categories.map(category => (
-            <FilterButton 
-              key={category.id}
-              isActive={filter === category.id} 
-              onClick={() => setFilter(category.id)}
-              whileTap="tap"
-              variants={buttonVariants}
+        <SectionTitle>Featured Work</SectionTitle>
+        <ProjectGrid>
+          {projects.map((project, index) => (
+            <ProjectCard
+              href={project.link}
+              key={index}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
             >
-              {category.name}
-            </FilterButton>
+              <CardContent>
+                <ProjectTitle>{project.title}</ProjectTitle>
+                <ProjectDesc>{project.desc}</ProjectDesc>
+                <TagContainer>
+                  {project.tags.map((tag, i) => (
+                    <Tag key={i}>{tag}</Tag>
+                  ))}
+                </TagContainer>
+              </CardContent>
+            </ProjectCard>
           ))}
-        </FilterContainer>
-        
-        <AnimatePresence mode="wait">
-          {filteredProjects.length > 0 ? (
-            <ProjectsGrid
-              key={filter}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              {filteredProjects.map((project, index) => (
-                <ProjectCard 
-                  key={project.id}
-                  custom={index}
-                  variants={projectVariants}
-                  layout
-                >
-                  <ProjectImageContainer>
-                    <ProjectImage 
-                      src={project.image} 
-                      alt={project.title} 
-                      onError={(e) => {
-                        e.target.src = "https://via.placeholder.com/600x400?text=Project+Image";
-                      }}
-                    />
-                  </ProjectImageContainer>
-                  
-                  <ProjectContent>
-                    <ProjectTitle>{project.title}</ProjectTitle>
-                    <ProjectDescription>
-                      {project.description.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ProjectDescription>
-                    
-                    <TechStack>
-                      {project.techStack.map((tech, i) => (
-                        <TechTag key={i} isDarkMode={isDarkMode}>{tech}</TechTag>
-                      ))}
-                    </TechStack>
-                    
-                    <ProjectLinks>
-                      <ProjectLink href={project.liveLink} target="_blank" rel="noopener noreferrer">
-                        Live Demo <i className="fas fa-external-link-alt"></i>
-                      </ProjectLink>
-                      <ProjectLink href={project.githubLink} target="_blank" rel="noopener noreferrer">
-                        GitHub <i className="fab fa-github"></i>
-                      </ProjectLink>
-                    </ProjectLinks>
-                  </ProjectContent>
-                </ProjectCard>
-              ))}
-            </ProjectsGrid>
-          ) : (
-            <EmptyState
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <i className="fas fa-folder-open"></i>
-              <h3>No Projects Found</h3>
-              <p>There are no projects in this category yet.</p>
-            </EmptyState>
-          )}
-        </AnimatePresence>
+        </ProjectGrid>
       </ProjectsContainer>
     </ProjectsSection>
   );

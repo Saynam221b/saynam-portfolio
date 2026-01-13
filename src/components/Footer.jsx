@@ -154,7 +154,7 @@ const FooterBottomLink = styled.a`
 const Footer = () => {
   const { isDarkMode } = useTheme();
   const currentYear = new Date().getFullYear();
-  
+
   return (
     <FooterWrapper>
       <FooterContainer>
@@ -167,48 +167,58 @@ const Footer = () => {
               Data Engineer and Full Stack Developer specializing in building robust data pipelines and creating scalable web applications.
             </FooterDescription>
             <FooterSocialLinks>
-              <FooterSocialLink 
-                href="https://www.linkedin.com/in/saynam-sharma/" 
-                target="_blank" 
+              <FooterSocialLink
+                href="https://www.linkedin.com/in/saynam-sharma/"
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <i className="fab fa-linkedin-in"></i>
               </FooterSocialLink>
-              
-              <FooterSocialLink 
-                href="https://github.com/Saynam221b" 
-                target="_blank" 
+
+              <FooterSocialLink
+                href="https://github.com/Saynam221b"
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <i className="fab fa-github"></i>
               </FooterSocialLink>
-              
-              <FooterSocialLink 
-                href="mailto:saynam1101@gmail.com" 
-                target="_blank" 
+
+              <FooterSocialLink
+                href="mailto:saynam1101@gmail.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <i className="fas fa-envelope"></i>
               </FooterSocialLink>
-              
-              <FooterSocialLink 
-                href="https://twitter.com/saynam_sharma" 
-                target="_blank" 
+
+              <FooterSocialLink
+                href="https://twitter.com/saynam_sharma"
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <i className="fab fa-twitter"></i>
               </FooterSocialLink>
+
+              <FooterSocialLink
+                href="https://d3xtrverse.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <i className="fas fa-gamepad"></i>
+              </FooterSocialLink>
             </FooterSocialLinks>
           </FooterInfo>
-          
+
           <FooterNavSection>
             <h3>Navigation</h3>
             <FooterNavLinks>
@@ -232,7 +242,7 @@ const Footer = () => {
               </FooterNavLink>
             </FooterNavLinks>
           </FooterNavSection>
-          
+
           <FooterNavSection>
             <h3>Contact</h3>
             <FooterNavLinks>
@@ -254,12 +264,12 @@ const Footer = () => {
             </FooterNavLinks>
           </FooterNavSection>
         </FooterTop>
-        
+
         <FooterBottom>
           <FooterCopyright>
             © {currentYear} Saynam Sharma. All rights reserved.
           </FooterCopyright>
-          
+
           <FooterBottomLinks>
             <FooterBottomLink href="#">Privacy Policy</FooterBottomLink>
             <FooterBottomLink href="#">Terms of Service</FooterBottomLink>

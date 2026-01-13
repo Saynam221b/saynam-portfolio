@@ -1,336 +1,304 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { motion } from 'framer-motion';
-import { Player } from '@lottiefiles/react-lottie-player';
-import { useTheme } from '../App';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { useTheme, useGyro } from '../App';
 
 const HeroSection = styled.section`
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 80px 1.5rem 0;
-  
-  @media (max-width: 768px) {
-    padding-top: 70px;
-    min-height: calc(100vh - 10px);
-  }
-  
-  @media (min-width: ${props => props.theme.breakpoints.md}) {
-    padding: 80px 2rem 0;
-  }
+  padding: 0 1.5rem;
+  background: ${props => props.theme.colors.background};
+  perspective: 1000px;
 `;
 
-const HeroContainer = styled.div`
+const Spotlight = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    800px circle at var(--x) var(--y),
+    rgba(124, 58, 237, 0.4),
+    rgba(59, 130, 246, 0.2),
+    transparent 50%
+  );
+  z-index: 1;
+  pointer-events: none;
+  filter: blur(20px);
+  mix-blend-mode: screen;
+`;
+
+const TiltContainer = styled(motion.div)`
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    flex-direction: row;
-    gap: 4rem;
-  }
-`;
-
-const HeroContent = styled.div`
-  flex: 1;
+  position: relative;
+  z-index: 2;
   text-align: center;
-  
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    text-align: left;
-  }
+  transform-style: preserve-3d;
 `;
 
-const gradientText = keyframes`
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+const glitch = keyframes`
+  0% { transform: translate(0); text-shadow: none; }
+  20% { transform: translate(-2px, 2px); text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; }
+  40% { transform: translate(-2px, -2px); text-shadow: 3px 0 #ff00c1, -3px 0 #00fff9; }
+  60% { transform: translate(2px, 2px); text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; }
+  80% { transform: translate(2px, -2px); text-shadow: 3px 0 #ff00c1, -3px 0 #00fff9; }
+  100% { transform: translate(0); text-shadow: none; }
 `;
 
-const HeroTitle = styled(motion.h1)`
-  font-size: 2.2rem;
-  font-weight: 700;
+const GlitchTitle = styled(motion.h1)`
+  font-size: clamp(3rem, 12vw, 9rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
   margin-bottom: 1rem;
-  background: ${props => props.theme.gradients.primary};
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: ${gradientText} 4s ease infinite;
+  color: ${props => props.theme.colors.text};
+  position: relative;
+  display: inline-block;
   
-  @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 2.8rem;
+  &:hover {
+    animation: ${glitch} 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
   }
-  
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    font-size: 3.2rem;
+
+  &::before, &::after {
+    display: none;
   }
 `;
 
 const HeroSubtitle = styled(motion.h2)`
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 1.5rem;
-  
-  @media (min-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 1.5rem;
-  }
+  font-size: clamp(1.2rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ff00c1, #00fff9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
-const HeroText = styled(motion.p)`
-  font-size: 0.95rem;
-  color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 2rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    margin-left: 0;
-    margin-right: 0;
-  }
+const CrazyLine = styled(motion.p)`
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-family: 'Courier New', monospace;
+  color: ${props => props.theme.colors.primary};
+  margin-bottom: 3rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  min-height: 1.5em; /* Prevent layout shift */
 `;
 
 const ButtonContainer = styled(motion.div)`
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: center;
-  
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    justify-content: flex-start;
-  }
+  margin-bottom: 4rem;
+  transform: translateZ(50px); /* Lift off the page */
 `;
 
-const PrimaryButton = styled(motion.a)`
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: ${props => props.theme.gradients.primary};
-  color: white;
-  border-radius: 50px;
+const ModernButton = styled(motion.a)`
+  padding: 1rem 2.5rem;
+  border-radius: 100px;
   font-weight: 600;
+  font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: ${props => props.theme.shadows.md};
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: ${props => props.theme.shadows.lg};
-  }
-`;
-
-const SecondaryButton = styled(motion.a)`
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: transparent;
-  color: ${props => props.theme.colors.text};
-  border: 2px solid ${props => props.theme.colors.primary};
-  border-radius: 50px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-3px);
-    background: ${props => props.theme.colors.primary}10;
-  }
-`;
-
-const AnimationContainer = styled(motion.div)`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  backdrop-filter: blur(10px);
   position: relative;
-  max-width: 500px;
-`;
-
-const BackgroundCircle = styled(motion.div)`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: ${props => props.theme.gradients.primary};
-  opacity: 0.1;
-  z-index: -1;
+  overflow: hidden;
+  
+  ${props => props.primary ? `
+    background: ${props.theme.colors.text};
+    color: ${props.theme.colors.background};
+    border: 1px solid ${props.theme.colors.text};
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
+    }
+  ` : `
+    background: rgba(0,0,0,0.3);
+    color: ${props.theme.colors.text};
+    border: 1px solid ${props.theme.colors.border};
+    
+    &:hover {
+      border-color: #00fff9;
+      color: #00fff9;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0, 255, 249, 0.3);
+    }
+  `}
 `;
 
 const SocialLinks = styled(motion.div)`
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 2rem;
   justify-content: center;
-  
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    justify-content: flex-start;
-  }
+  align-items: center;
+  transform: translateZ(30px);
 `;
 
 const SocialLink = styled(motion.a)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: ${props => props.theme.colors.cardBg};
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   transition: all 0.3s ease;
-  box-shadow: ${props => props.theme.shadows.sm};
   
   &:hover {
-    color: ${props => props.theme.colors.primary};
-    transform: translateY(-3px);
-    box-shadow: ${props => props.theme.shadows.md};
+    color: #00fff9;
+    transform: scale(1.5) rotate(15deg);
+    text-shadow: 0 0 15px #00fff9;
   }
 `;
 
+// Scramble Hook
+const useScramble = (text) => {
+  const [display, setDisplay] = useState(text);
+  const chars = "!@#$%^&*()_+-=[]{}|;:,.<>?/";
+
+  useEffect(() => {
+    let interval;
+    let iteration = 0;
+
+    const startScramble = () => {
+      interval = setInterval(() => {
+        setDisplay(
+          text
+            .split("")
+            .map((letter, index) => {
+              if (index < iteration) {
+                return text[index];
+              }
+              return chars[Math.floor(Math.random() * 26)];
+            })
+            .join("")
+        );
+
+        if (iteration >= text.length) {
+          clearInterval(interval);
+        }
+
+        iteration += 1 / 3;
+      }, 30);
+    };
+
+    // Delay start slightly
+    setTimeout(startScramble, 1000);
+
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return display;
+};
+
 const Hero = () => {
-  const { isDarkMode } = useTheme();
-  
+  const { isGyroEnabled } = useGyro();
+
+  // Motion Values
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [0, window.innerHeight], [10, -10]);
+  const rotateY = useTransform(x, [0, window.innerWidth], [-10, 10]);
+
+  // Handle Mouse Move for Tilt & Spotlight (Desktop / Default)
+  useEffect(() => {
+    if (isGyroEnabled) return; // Skip mouse logic if gyro is on
+
+    const handleMove = (e) => {
+      x.set(e.clientX);
+      y.set(e.clientY);
+    };
+    window.addEventListener('mousemove', handleMove);
+    return () => window.removeEventListener('mousemove', handleMove);
+  }, [x, y, isGyroEnabled]);
+
+  // Handle Gyroscope (Mobile)
+  useEffect(() => {
+    if (!isGyroEnabled) return;
+
+    const handleOrientation = (e) => {
+      // Gamma: Left/Right tilt (-90 to 90) -> Map to Y rotation
+      // Beta: Front/Back tilt (-180 to 180) -> Map to X rotation
+
+      const gamma = e.gamma || 0;
+      const beta = e.beta || 0;
+
+      // Normalize inputs for smoother effect
+      // Clamp values to avoid extreme flips
+      const limitedGamma = Math.max(-45, Math.min(45, gamma));
+      const limitedBeta = Math.max(-45, Math.min(45, beta));
+
+      // Map to screen coordinates (simulating mouse position)
+      const screenX = (limitedGamma + 45) / 90 * window.innerWidth;
+      const screenY = (limitedBeta + 45) / 90 * window.innerHeight;
+
+      x.set(screenX);
+      y.set(screenY);
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
+  }, [isGyroEnabled, x, y]);
+
+  // Scramble Text
+  const scrambledText = useScramble("Architecting Data. Broadcasting Chaos.");
+
   return (
     <HeroSection id="home">
-      <HeroContainer>
-        <HeroContent>
-          <HeroTitle
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Hi, I'm Saynam Sharma
-          </HeroTitle>
-          
-          <HeroSubtitle
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            Data Engineer & Full Stack Developer
-          </HeroSubtitle>
-          
-          <HeroText
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            I specialize in building robust data pipelines and creating scalable web applications. 
-            With expertise in both data engineering and full-stack development, I deliver end-to-end 
-            solutions that transform data into valuable insights.
-          </HeroText>
-          
-          <ButtonContainer
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <PrimaryButton 
-              href="#contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Get In Touch
-            </PrimaryButton>
-            
-            <SecondaryButton 
-              href="/resume.pdf" 
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Download Resume
-            </SecondaryButton>
-          </ButtonContainer>
-          
-          <SocialLinks
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <SocialLink 
-              href="https://www.linkedin.com/in/saynam-sharma/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <i className="fab fa-linkedin-in"></i>
-            </SocialLink>
-            
-            <SocialLink 
-              href="https://github.com/Saynam221b" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <i className="fab fa-github"></i>
-            </SocialLink>
-            
-            <SocialLink 
-              href="mailto:saynam1101@gmail.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <i className="fas fa-envelope"></i>
-            </SocialLink>
-            
-            <SocialLink 
-              href="https://twitter.com/saynam_sharma" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <i className="fab fa-twitter"></i>
-            </SocialLink>
-          </SocialLinks>
-        </HeroContent>
-        
-        <AnimationContainer
-          initial={{ opacity: 0, scale: 0.8 }}
+      <Spotlight style={{ '--x': x, '--y': y }} />
+
+      <TiltContainer style={{ rotateX, rotateY }}>
+        <GlitchTitle
+          initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
         >
-          <BackgroundCircle
-            animate={{ 
-              scale: [1, 1.05, 1],
-            }}
-            transition={{
-              duration: 3,
-              ease: "easeInOut",
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-          />
-          
-          <Player
-            autoplay
-            loop
-            src="https://assets9.lottiefiles.com/packages/lf20_w51pcehl.json"
-            style={{ width: '100%', height: '100%' }}
-          />
-        </AnimationContainer>
-      </HeroContainer>
+          SAYNAM SHARMA
+        </GlitchTitle>
+
+        <HeroSubtitle
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          DATA ENGINEER | PART-TIME YOUTUBER
+        </HeroSubtitle>
+
+        <CrazyLine>
+          {scrambledText}
+        </CrazyLine>
+
+        <ButtonContainer
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 1.5 }}
+        >
+          <ModernButton href="#projects" primary theme={{ colors: { text: '#fff', background: '#000', border: '#333' } }}>
+            View Work
+          </ModernButton>
+          <ModernButton href="#contact">
+            Contact Me
+          </ModernButton>
+        </ButtonContainer>
+
+        <SocialLinks
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.8 }}
+        >
+          <SocialLink href="https://github.com/Saynam221b" target="_blank"><i className="fab fa-github"></i></SocialLink>
+          <SocialLink href="https://www.linkedin.com/in/saynam-sharma/" target="_blank"><i className="fab fa-linkedin-in"></i></SocialLink>
+          <SocialLink href="https://twitter.com/saynam_sharma" target="_blank"><i className="fab fa-twitter"></i></SocialLink>
+          <SocialLink href="https://d3xtrverse.vercel.app/" target="_blank"><i className="fas fa-gamepad"></i></SocialLink>
+        </SocialLinks>
+      </TiltContainer>
     </HeroSection>
   );
 };
 
-export default Hero; 
+export default Hero;

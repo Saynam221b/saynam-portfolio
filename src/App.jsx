@@ -1,15 +1,12 @@
 import React, { useState, useEffect, createContext, useContext, useRef, useCallback, useMemo } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 import { Global, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import Experience from './components/Experience';
-import Projects from './components/Projects';
-import Skills from './components/Skills';
-import Contact from './components/Contact';
+import Home from './components/Home';
+import D3xTRverse from './components/D3xTRverse';
 import Footer from './components/Footer';
 import Loader from './components/Loader';
 import ScrollToTop from './components/ScrollToTop';
@@ -87,6 +84,8 @@ const darkTheme = {
 // Global styles
 const globalStyles = (theme) => css`
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Courier+New&display=swap');
   
   * {
     box-sizing: border-box;
@@ -186,22 +185,22 @@ const globalStyles = (theme) => css`
   }
   
   .section {
-    padding: 5rem 1.5rem;
-    padding-top: calc(5rem + 70px);
+    padding: 3rem 1.5rem;
+    padding-top: calc(3rem + 70px);
     
     @media (max-width: 768px) {
-      padding: 3rem 1.5rem;
-      padding-top: calc(3rem + 60px);
+      padding: 2rem 1.5rem;
+      padding-top: calc(2rem + 60px);
     }
     
     @media (min-width: ${theme.breakpoints.md}) {
-      padding: 6rem 2rem;
-      padding-top: calc(6rem + 70px);
+      padding: 4rem 2rem;
+      padding-top: calc(4rem + 70px);
     }
     
     @media (min-width: ${theme.breakpoints.lg}) {
-      padding: 8rem 2rem;
-      padding-top: calc(8rem + 70px);
+      padding: 5rem 2rem;
+      padding-top: calc(5rem + 70px);
     }
   }
   
@@ -238,6 +237,9 @@ const globalStyles = (theme) => css`
 // Create context for theme
 export const ThemeContext = createContext();
 
+// Create context for Gyroscope
+export const GyroContext = createContext();
+
 // Create custom hook for accessing theme
 export const useTheme = () => {
   const context = useContext(ThemeContext);
@@ -247,15 +249,27 @@ export const useTheme = () => {
   return context;
 };
 
+// Create custom hook for accessing Gyro
+export const useGyro = () => {
+  const context = useContext(GyroContext);
+  if (!context) {
+    throw new Error('useGyro must be used within a GyroProvider');
+  }
+  return context;
+};
+
 const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default to Dark Mode
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     // Check user preference only once on initial load
     if (!isInitialized) {
-      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(prefersDarkMode);
+      // Logic to check local storage could go here, but for now we default to true (Dark)
+      // If we wanted to respect system pref ONLY if it's explicitly light, we could do:
+      // const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      // if (prefersLight) setIsDarkMode(false);
+
       setIsInitialized(true);
     }
   }, [isInitialized]);
@@ -273,6 +287,48 @@ const ThemeProvider = ({ children }) => {
     <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
+  );
+};
+
+const GyroProvider = ({ children }) => {
+  const [isGyroEnabled, setIsGyroEnabled] = useState(false);
+
+  useEffect(() => {
+    // Auto-enable on mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    if (isMobile) {
+      setIsGyroEnabled(true);
+    }
+  }, []);
+
+  const toggleGyro = useCallback(() => {
+    // For iOS 13+ devices, permission must be requested via user interaction
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === 'granted') {
+            setIsGyroEnabled(prev => !prev);
+          } else {
+            console.warn('Gyroscope permission denied');
+            alert('Gyroscope permission denied. Please allow motion sensors for full experience.');
+          }
+        })
+        .catch(console.error);
+    } else {
+      // Non-iOS or older devices don't need explicit permission for motion
+      setIsGyroEnabled(prev => !prev);
+    }
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    isGyroEnabled,
+    toggleGyro
+  }), [isGyroEnabled, toggleGyro]);
+
+  return (
+    <GyroContext.Provider value={contextValue}>
+      {children}
+    </GyroContext.Provider>
   );
 };
 
@@ -299,16 +355,20 @@ const Main = styled(motion.main)`
 
 const App = React.memo(() => {
   const [isThemeChanging, setIsThemeChanging] = useState(false);
-  
+
   return (
-    <ThemeProvider>
-      <SectionProvider>
-        <AppContent 
-          isThemeChanging={isThemeChanging}
-          setIsThemeChanging={setIsThemeChanging}
-        />
-      </SectionProvider>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider>
+        <GyroProvider> {/* Wrap app in GyroProvider */}
+          <SectionProvider>
+            <AppContent
+              isThemeChanging={isThemeChanging}
+              setIsThemeChanging={setIsThemeChanging}
+            />
+          </SectionProvider>
+        </GyroProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 });
 
@@ -320,12 +380,12 @@ const FloatingThemeToggle = styled(motion.button)`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: ${props => props.isDarkMode ? 
-    'linear-gradient(135deg, #1F2937 0%, #374151 100%)' : 
+  background: ${props => props.isDarkMode ?
+    'linear-gradient(135deg, #1F2937 0%, #374151 100%)' :
     'linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%)'
   };
-  border: 2px solid ${props => props.isDarkMode ? 
-    'rgba(255, 255, 255, 0.1)' : 
+  border: 2px solid ${props => props.isDarkMode ?
+    'rgba(255, 255, 255, 0.1)' :
     'rgba(0, 0, 0, 0.05)'
   };
   color: ${props => props.isDarkMode ? '#F9FAFB' : '#4B5563'};
@@ -340,10 +400,10 @@ const FloatingThemeToggle = styled(motion.button)`
   
   &:hover {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: ${props => props.isDarkMode ? 
-      '0 0 15px rgba(255, 255, 255, 0.2)' : 
-      '0 0 15px rgba(0, 0, 0, 0.2)'
-    };
+    box-shadow: ${props => props.isDarkMode ?
+    '0 0 15px rgba(255, 255, 255, 0.2)' :
+    '0 0 15px rgba(0, 0, 0, 0.2)'
+  };
   }
   
   &:before {
@@ -358,6 +418,7 @@ const FloatingThemeToggle = styled(motion.button)`
     border-radius: 50%;
     opacity: 0;
     transition: opacity 0.3s ease;
+    z-index: -1;
   }
   
   &:hover:before {
@@ -381,10 +442,13 @@ const iconVariants = {
 
 function AppContent({ isThemeChanging, setIsThemeChanging }) {
   const { isDarkMode, toggleTheme } = useTheme();
+  // We can consume useGyro() here if we want floating Gyro button, 
+  // but Header is better for that.
+
   const theme = useMemo(() => isDarkMode ? darkTheme : lightTheme, [isDarkMode]);
   const prevThemeRef = useRef(isDarkMode);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     // Only trigger the theme change animation when the theme actually changes
     // Not on initial render
@@ -393,16 +457,16 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
       const timeoutId = setTimeout(() => {
         setIsThemeChanging(false);
       }, 300);
-      
+
       prevThemeRef.current = isDarkMode;
       return () => clearTimeout(timeoutId);
     }
   }, [isDarkMode, setIsThemeChanging]);
-  
+
   return (
     <EmotionThemeProvider theme={theme}>
       <Global styles={globalStyles(theme)} />
-      
+
       <AnimatePresence mode='wait'>
         {isThemeChanging && (
           <ThemeTransition
@@ -415,7 +479,7 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
           />
         )}
       </AnimatePresence>
-      
+
       <AnimatePresence mode="wait">
         {loading ? (
           <Loader finishLoading={() => setLoading(false)} key="loader" />
@@ -427,25 +491,17 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
             transition={{ duration: 0.5 }}
           >
             <Header />
-            
-            <Main
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Hero />
-              <About />
-              <Skills />
-              <Experience />
-              <Projects />
-              <Contact />
-            </Main>
-            
+
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/d3xtrverse" element={<D3xTRverse />} />
+            </Routes>
+
             <Footer />
-            
+
             <ScrollToTop />
-            
-            <ToastContainer 
+
+            <ToastContainer
               position="bottom-right"
               autoClose={3000}
               hideProgressBar={false}
@@ -457,7 +513,7 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
               pauseOnHover
               theme={isDarkMode ? "dark" : "light"}
             />
-            
+
             {/* Floating Theme Toggle Button */}
             <FloatingThemeToggle
               onClick={toggleTheme}

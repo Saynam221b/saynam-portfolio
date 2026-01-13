@@ -227,7 +227,7 @@ const SocialLink = styled(motion.a)`
 
 function Introduction() {
   const { isDarkMode } = useTheme();
-  
+
   return (
     <IntroContainer id="introduction">
       <IntroContent>
@@ -239,7 +239,7 @@ function Introduction() {
           >
             Hello, I'm
           </Greeting>
-          
+
           <Title
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -247,79 +247,85 @@ function Introduction() {
           >
             Saynam Sharma
           </Title>
-          
+
           <Subtitle
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Data Engineer & Full Stack Developer
+            Data Engineer
           </Subtitle>
-          
+
           <Description
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            I specialize in building robust data pipelines and creating scalable web applications. 
-            With expertise in both data engineering and full-stack development, I deliver end-to-end 
-            solutions that transform data into valuable insights.
+            Data Engineer with 3+ years of experience designing and owning scalable batch and real-time data pipelines on Databricks, AWS, and Snowflake. Proficient in PySpark, SQL, and Airflow, with expertise in high-scale data processing, data observability, and building resilient ETL architectures optimized for low latency and operational stability.
           </Description>
-          
+
           <ButtonsContainer
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <PrimaryButton href="#contact">Get In Touch</PrimaryButton>
-            <SecondaryButton 
-              href="/resume.pdf" 
-              target="_blank" 
+            <SecondaryButton
+              href="/resume.pdf"
+              target="_blank"
               rel="noopener noreferrer"
             >
               Download Resume
             </SecondaryButton>
           </ButtonsContainer>
-          
+
           <SocialLinks
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.7 }}
           >
-            <SocialLink 
-              href="https://www.linkedin.com/in/saynam-sharma/" 
-              target="_blank" 
+            <SocialLink
+              href="https://www.linkedin.com/in/saynam-sharma/"
+              target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -5 }}
             >
               <i className="fab fa-linkedin"></i>
             </SocialLink>
-            <SocialLink 
-              href="https://github.com/Saynam221b" 
-              target="_blank" 
+            <SocialLink
+              href="https://github.com/Saynam221b"
+              target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -5 }}
             >
               <i className="fab fa-github"></i>
             </SocialLink>
-            <SocialLink 
-              href="mailto:saynam1101@gmail.com" 
-              target="_blank" 
+            <SocialLink
+              href="mailto:saynam1101@gmail.com"
+              target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -5 }}
             >
               <i className="fas fa-envelope"></i>
             </SocialLink>
+            <SocialLink
+              href="https://d3xtrverse.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ y: -5 }}
+            >
+              <i className="fas fa-gamepad"></i>
+            </SocialLink>
           </SocialLinks>
         </IntroText>
-        
+
         <ImageContainer
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <BackgroundCircle
-            animate={{ 
+            animate={{
               scale: [1, 1.05, 1],
               rotate: [0, 5, 0],
             }}
@@ -329,9 +335,9 @@ function Introduction() {
               repeat: Infinity,
             }}
           />
-          <ProfileImage 
-            src="/profile.jpg" 
-            alt="Saynam Sharma" 
+          <ProfileImage
+            src="/profile.jpg"
+            alt="Saynam Sharma"
             onError={(e) => {
               e.target.src = "https://via.placeholder.com/350x350.png?text=Saynam+Sharma";
             }}
