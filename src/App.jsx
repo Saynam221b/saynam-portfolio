@@ -232,6 +232,16 @@ const globalStyles = (theme) => css`
       font-size: 2.2rem;
     }
   }
+
+  /* Reduced motion accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 `;
 
 // Create context for theme

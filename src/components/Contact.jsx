@@ -5,6 +5,7 @@ import { useTheme } from '../App';
 import { toast } from 'react-toastify';
 import emailjs from 'emailjs-com';
 import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
+import AnimatedSection from './AnimatedSection';
 
 const ContactSection = styled.section`
   padding: 3rem 1.5rem 5rem;
@@ -349,19 +350,19 @@ const Contact = () => {
   return (
     <ContactSection id="contact">
       <ContactContainer>
-        <SectionTitle>Get In Touch</SectionTitle>
-        <SectionSubtitle>
-          Have a question or want to work together? Feel free to contact me!
-        </SectionSubtitle>
+        <AnimatedSection animation="clipRevealUp">
+          <SectionTitle>Get In Touch</SectionTitle>
+        </AnimatedSection>
+        <AnimatedSection animation="fadeUp" delay={0.1}>
+          <SectionSubtitle>
+            Have a data engineering challenge or want to collaborate on something interesting? Let's connect.
+          </SectionSubtitle>
+        </AnimatedSection>
 
         <ContactContent>
           <ContactInfo>
-            <ContactInfoCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
+          <AnimatedSection animation="fadeRight" delay={0.15}>
+            <ContactInfoCard>
               <ContactInfoTitle>Contact Information</ContactInfoTitle>
 
               <ContactItem>
@@ -436,15 +437,13 @@ const Contact = () => {
                 </SocialLink>
               </SocialLinks>
             </ContactInfoCard>
+          </AnimatedSection>
           </ContactInfo>
 
+          <AnimatedSection animation="fadeLeft" delay={0.2}>
           <ContactForm
             ref={formRef}
             onSubmit={handleSubmit}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
           >
             {/* Hidden fields for EmailJS template */}
             <input
@@ -559,6 +558,7 @@ const Contact = () => {
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </SubmitButton>
           </ContactForm>
+          </AnimatedSection>
         </ContactContent>
       </ContactContainer>
     </ContactSection>

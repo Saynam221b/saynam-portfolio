@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useTheme } from '../App';
+import AnimatedSection from './AnimatedSection';
 
 const FooterWrapper = styled.footer`
   background-color: ${props => props.theme.colors.cardBg};
@@ -157,6 +158,7 @@ const Footer = () => {
 
   return (
     <FooterWrapper>
+      <AnimatedSection animation="fadeUp" threshold={0.1}>
       <FooterContainer>
         <FooterTop>
           <FooterInfo>
@@ -164,7 +166,7 @@ const Footer = () => {
               Saynam<span>.</span>
             </FooterLogo>
             <FooterDescription>
-              Data Engineer and Full Stack Developer specializing in building robust data pipelines and creating scalable web applications.
+              Data Engineer specializing in building scalable ETL pipelines and lakehouse architectures on Databricks, AWS, and Snowflake.
             </FooterDescription>
             <FooterSocialLinks>
               <FooterSocialLink
@@ -276,6 +278,7 @@ const Footer = () => {
           </FooterBottomLinks>
         </FooterBottom>
       </FooterContainer>
+      </AnimatedSection>
     </FooterWrapper>
   );
 };

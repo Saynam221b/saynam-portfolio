@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
 import { useTheme, useGyro } from '../App';
 
 const HeroSection = styled.section`
@@ -246,11 +246,15 @@ const Hero = () => {
   }, [isGyroEnabled, x, y]);
 
   // Scramble Text
-  const scrambledText = useScramble("Architecting Data. Broadcasting Chaos.");
+  const scrambledText = useScramble("Building data systems that scale.");
+
+  // Parallax scroll for spotlight
+  const { scrollY } = useScroll();
+  const spotlightY = useTransform(scrollY, [0, 500], [0, 150]);
 
   return (
     <HeroSection id="home">
-      <Spotlight style={{ '--x': x, '--y': y }} />
+      <Spotlight style={{ '--x': x, '--y': y, y: spotlightY }} />
 
       <TiltContainer style={{ rotateX, rotateY }}>
         <GlitchTitle
@@ -266,7 +270,7 @@ const Hero = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          DATA ENGINEER | PART-TIME YOUTUBER
+          DATA ENGINEER | PIPELINE ARCHITECT
         </HeroSubtitle>
 
         <CrazyLine>
@@ -274,12 +278,15 @@ const Hero = () => {
         </CrazyLine>
 
         <ButtonContainer
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 1.5 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <ModernButton href="#projects" primary theme={{ colors: { text: '#fff', background: '#000', border: '#333' } }}>
             View Work
+          </ModernButton>
+          <ModernButton href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            Resume
           </ModernButton>
           <ModernButton href="#contact">
             Contact Me

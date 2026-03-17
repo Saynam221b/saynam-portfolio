@@ -2,6 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useTheme } from '../App';
+import AnimatedSection from './AnimatedSection';
+import { staggerDelay } from '../hooks/useScrollAnimation';
 
 const ProjectsSection = styled.section`
   padding: 4rem 1.5rem;
@@ -39,12 +41,12 @@ const ProjectCard = styled(motion.a)`
   overflow: hidden;
   text-decoration: none;
   border: 1px solid ${props => props.theme.colors.border};
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   
   &:hover {
     transform: translateY(-8px);
     border-color: ${props => props.theme.colors.primary};
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.12), 0 0 0 1px ${props => props.theme.colors.primary}33;
   }
 `;
 
@@ -52,17 +54,30 @@ const CardContent = styled.div`
   padding: 2rem;
 `;
 
+const ProjectIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: ${props => props.theme.gradients.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  color: white;
+`;
+
 const ProjectTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   color: ${props => props.theme.colors.text};
 `;
 
 const ProjectDesc = styled.p`
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.6;
+  line-height: 1.65;
   margin-bottom: 1.5rem;
 `;
 
@@ -86,57 +101,68 @@ const Projects = () => {
 
   const projects = [
     {
-      title: "Real-time Data Streaming Pipeline",
-      desc: "Built a low-latency pipeline using Kafka and Spark Streaming to process IoT sensor data, enabling sub-second analytics.",
-      tags: ["Spark Streaming", "Kafka", "Scala"],
+      icon: "fas fa-database",
+      title: "Oracle Fusion → Snowflake ETL Platform",
+      desc: "End-to-end AWS ETL platform ingesting Oracle Fusion BI data into Snowflake with incremental loads, dbt transformations, schema drift handling, and built-in data quality checks.",
+      tags: ["AWS", "Snowflake", "Airflow", "dbt", "Python", "SQL"],
       link: "https://github.com/Saynam221b"
     },
     {
-      title: "Cloud Data Warehouse Migration",
-      desc: "Led the migration of on-premise Oracle data warehouses to Snowflake, reducing operational costs by 35%.",
-      tags: ["Snowflake", "AWS DMS", "PL/SQL"],
+      icon: "fas fa-bolt",
+      title: "Databricks Lakehouse Pipelines",
+      desc: "Large-scale PySpark batch pipelines on Databricks achieving ~50% runtime reduction through optimized partitioning, Delta Lake merge patterns, and structured error handling.",
+      tags: ["PySpark", "Databricks", "Delta Lake", "Spark SQL"],
       link: "https://github.com/Saynam221b"
     },
     {
-      title: "Automated Data Quality Framework",
-      desc: "Developed a Python-based framework running on Airflow to automatically validate data quality across 50+ pipelines.",
-      tags: ["Python", "Airflow", "Great Expectations"],
-      link: "https://github.com/Saynam221b"
-    },
-    {
+      icon: "fas fa-gamepad",
       title: "D3xTRverse Community Platform",
-      desc: "A modern web platform for the gaming and coding community, featuring events, forums, and content sharing.",
-      tags: ["React", "Node.js", "Firebase"],
+      desc: "A modern web platform for the gaming and coding community featuring events, tournaments, eFootball card systems, and AI-powered content — built with React and Django.",
+      tags: ["React", "Django", "Supabase", "Vercel"],
       link: "https://d3xtrverse.vercel.app/"
+    },
+    {
+      icon: "fas fa-chart-line",
+      title: "Data Quality & Observability Framework",
+      desc: "Python-based framework running on Airflow to automatically validate data quality across pipelines with structured logging, audit tables, and alerting for faster troubleshooting.",
+      tags: ["Python", "Airflow", "Snowflake", "dbt Tests"],
+      link: "https://github.com/Saynam221b"
     }
   ];
 
   return (
     <ProjectsSection id="projects" isDarkMode={isDarkMode}>
       <ProjectsContainer>
-        <SectionTitle>Featured Work</SectionTitle>
+        <AnimatedSection animation="clipRevealUp">
+          <SectionTitle>Featured Work</SectionTitle>
+        </AnimatedSection>
+
         <ProjectGrid>
           {projects.map((project, index) => (
-            <ProjectCard
-              href={project.link}
+            <AnimatedSection
               key={index}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              animation="fadeUp"
+              delay={staggerDelay(index, 0.1, 0.1)}
             >
-              <CardContent>
-                <ProjectTitle>{project.title}</ProjectTitle>
-                <ProjectDesc>{project.desc}</ProjectDesc>
-                <TagContainer>
-                  {project.tags.map((tag, i) => (
-                    <Tag key={i}>{tag}</Tag>
-                  ))}
-                </TagContainer>
-              </CardContent>
-            </ProjectCard>
+              <ProjectCard
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <CardContent>
+                  <ProjectIcon>
+                    <i className={project.icon} />
+                  </ProjectIcon>
+                  <ProjectTitle>{project.title}</ProjectTitle>
+                  <ProjectDesc>{project.desc}</ProjectDesc>
+                  <TagContainer>
+                    {project.tags.map((tag, i) => (
+                      <Tag key={i}>{tag}</Tag>
+                    ))}
+                  </TagContainer>
+                </CardContent>
+              </ProjectCard>
+            </AnimatedSection>
           ))}
         </ProjectGrid>
       </ProjectsContainer>

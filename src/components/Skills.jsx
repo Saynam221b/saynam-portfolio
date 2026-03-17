@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
 import { useTheme } from '../App';
+import AnimatedSection from './AnimatedSection';
+import { staggerDelay } from '../hooks/useScrollAnimation';
 
 const SkillsSection = styled.section`
   padding: 4rem 1.5rem;
@@ -26,21 +27,43 @@ const SectionTitle = styled.h2`
   letter-spacing: -0.02em;
 `;
 
+const CategoryBlock = styled.div`
+  margin-bottom: 2.5rem;
+`;
+
+const CategoryTitle = styled.h3`
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: ${props => props.theme.colors.textSecondary};
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  &::before {
+    content: '';
+    width: 3px;
+    height: 1.2rem;
+    background: ${props => props.theme.gradients.primary};
+    border-radius: 2px;
+  }
+`;
+
 const SkillsGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 4rem;
+  gap: 0.75rem;
 `;
 
-const SkillTag = styled(motion.div)`
-  padding: 0.75rem 1.5rem;
+const SkillTag = styled.div`
+  padding: 0.6rem 1.25rem;
   background: ${props => props.theme.colors.cardBg};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: 100px;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
@@ -56,15 +79,17 @@ const SkillTag = styled(motion.div)`
 
   i {
     color: ${props => props.theme.colors.primary};
+    font-size: 0.9rem;
   }
 `;
 
 const CertificationsContainer = styled.div`
   text-align: center;
+  margin-top: 1rem;
 `;
 
 const CertTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: ${props => props.theme.colors.textSecondary};
@@ -74,23 +99,29 @@ const CertGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1rem;
 `;
 
-const CertItem = styled(motion.a)`
-  display: block;
-  padding: 1rem 1.5rem;
+const CertItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
   background: ${props => props.theme.colors.cardBg};
   border-radius: 12px;
-  text-decoration: none;
   color: ${props => props.theme.colors.text};
   font-weight: 500;
+  font-size: 0.9rem;
   border: 1px solid transparent;
   transition: all 0.3s ease;
 
   &:hover {
     border-color: ${props => props.theme.colors.primary};
     transform: translateY(-2px);
+  }
+
+  i {
+    color: #f59e0b;
   }
 `;
 
@@ -100,78 +131,106 @@ const getSkillIcon = (skill) => {
     "JavaScript": "fab fa-js",
     "SQL": "fas fa-database",
     "Scala": "fas fa-code",
-    "Apache Airflow": "fas fa-wind",
-    "Spark": "fas fa-bolt",
-    "Kafka": "fas fa-project-diagram",
+    "Apache Spark": "fas fa-bolt",
+    "Airflow": "fas fa-wind",
     "Snowflake": "far fa-snowflake",
     "Databricks": "fas fa-layer-group",
+    "Hadoop": "fas fa-server",
+    "dbt": "fas fa-cogs",
     "AWS": "fab fa-aws",
+    "Azure": "fab fa-microsoft",
     "Docker": "fab fa-docker",
     "Git": "fab fa-git-alt",
-    "React": "fab fa-react",
     "Django": "fab fa-python",
     "Pandas": "fas fa-table",
-    "Terraform": "fas fa-cubes"
+    "Scikit-learn": "fas fa-brain",
+    "React": "fab fa-react",
+    "Tableau": "fas fa-chart-bar",
+    "Terraform": "fas fa-cubes",
   };
   return icons[skill] || "fas fa-code";
 };
 
+const skillCategories = [
+  {
+    title: "Languages",
+    skills: ["Python", "Scala", "SQL"],
+  },
+  {
+    title: "Data Engineering",
+    skills: ["Apache Spark", "Airflow", "Snowflake", "Databricks", "Hadoop", "dbt"],
+  },
+  {
+    title: "Cloud & DevOps",
+    skills: ["AWS", "Azure", "Docker", "Git"],
+  },
+  {
+    title: "Frameworks & Libraries",
+    skills: ["Django", "React", "Pandas", "Scikit-learn"],
+  },
+  {
+    title: "Visualization",
+    skills: ["Tableau"],
+  },
+];
+
+const certifications = [
+  "Databricks Certified Data Engineer Associate",
+  "Databricks Certified Data Engineer Professional",
+  "Python Programming",
+  "Apache Spark Lakehouse Fundamentals",
+];
+
 const Skills = () => {
   const { isDarkMode } = useTheme();
-
-  const skills = [
-    "Python", "Scala", "SQL", "Apache Airflow", "Spark", "Kafka",
-    "Snowflake", "Databricks", "AWS", "Docker", "Git", "Terraform",
-    "React", "Django", "Pandas"
-  ];
-
-  const certifications = [
-    "Databricks Certified Data Engineer Associate",
-    "Databricks Certified Data Engineer Professional",
-    "Apache Spark Lake House Fundamentals"
-  ];
 
   return (
     <SkillsSection id="skills" isDarkMode={isDarkMode}>
       <SkillsContainer>
-        <SectionTitle>Technologies</SectionTitle>
+        <AnimatedSection animation="clipRevealUp">
+          <SectionTitle>Technologies</SectionTitle>
+        </AnimatedSection>
 
-        <SkillsGrid>
-          {skills.map((skill, index) => (
-            <SkillTag
-              key={skill}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              viewport={{ once: true }}
-            >
-              <i className={getSkillIcon(skill)}></i>
-              {skill}
-            </SkillTag>
-          ))}
-        </SkillsGrid>
+        {skillCategories.map((category, catIndex) => (
+          <AnimatedSection
+            key={category.title}
+            animation="fadeUp"
+            delay={staggerDelay(catIndex, 0.1, 0.1)}
+          >
+            <CategoryBlock>
+              <CategoryTitle>{category.title}</CategoryTitle>
+              <SkillsGrid>
+                {category.skills.map((skill, skillIndex) => (
+                  <SkillTag
+                    key={skill}
+                  >
+                    <i className={getSkillIcon(skill)} />
+                    {skill}
+                  </SkillTag>
+                ))}
+              </SkillsGrid>
+            </CategoryBlock>
+          </AnimatedSection>
+        ))}
 
-        <CertificationsContainer>
-          <CertTitle>Certifications</CertTitle>
-          <CertGrid>
-            {certifications.map((cert, index) => (
-              <CertItem
-                href="#"
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <i className="fas fa-certificate" style={{ marginRight: '8px', color: '#f59e0b' }}></i>
-                {cert}
-              </CertItem>
-            ))}
-          </CertGrid>
-        </CertificationsContainer>
+        <AnimatedSection animation="fadeUp" delay={0.3}>
+          <CertificationsContainer>
+            <CertTitle>Certifications</CertTitle>
+            <CertGrid>
+              {certifications.map((cert, index) => (
+                <CertItem
+                  key={index}
+                >
+                  <i className="fas fa-certificate" />
+                  {cert}
+                </CertItem>
+              ))}
+            </CertGrid>
+          </CertificationsContainer>
+        </AnimatedSection>
       </SkillsContainer>
     </SkillsSection>
   );
 };
 
-export default Skills; 
+export default Skills;
