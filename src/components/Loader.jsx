@@ -1,189 +1,165 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { keyframes } from '@emotion/react';
 
-const LoaderContainer = styled.div`
+const meshMove = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
+
+const orbitSpin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const orbitSpinReverse = keyframes`
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+`;
+
+const pulse = keyframes`
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+`;
+
+const LoaderContainer = styled(motion.div)`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: ${props => props.theme.colors.background};
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   z-index: 9999;
-`;
-
-const pulse = keyframes`
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-`;
-
-const gradient = keyframes`
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-`;
-
-const LoaderCircle = styled(motion.div)`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-  background-size: 200% 200%;
-  animation: ${gradient} 2s ease infinite;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
   
-  &:before {
+  /* Subtle mesh gradient background */
+  &::before {
     content: '';
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: ${props => props.theme.colors.background};
-    z-index: 1;
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 30% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
+    background-size: 200% 200%;
+    animation: ${meshMove} 8s ease infinite;
   }
 `;
 
-const LoaderText = styled(motion.h2)`
-  margin-top: 2rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: ${props => props.theme.colors.text};
-  letter-spacing: 0.5px;
-  text-align: center;
-`;
-
-const CreativeText = styled(motion.span)`
-  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: ${gradient} 3s linear infinite;
-`;
-
-const LoadingBar = styled(motion.div)`
-  width: 200px;
-  height: 4px;
-  background: rgba(124, 58, 237, 0.2);
-  border-radius: 4px;
-  margin-top: 1.5rem;
-  overflow: hidden;
+const OrbitalSystem = styled.div`
   position: relative;
-`;
-
-const LoadingBarFill = styled(motion.div)`
-  height: 100%;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
-  border-radius: 4px;
-`;
-
-const LoaderRing = styled(motion.div)`
-  position: absolute;
   width: 100px;
   height: 100px;
-  border-radius: 50%;
-  border: 4px solid transparent;
-  border-top-color: #ec4899;
-  border-left-color: #8b5cf6;
-  animation: ${pulse} 1.5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { duration: 0.5 }
-  },
-  exit: { 
-    opacity: 0,
-    transition: { duration: 0.5 }
-  }
-};
+const CoreDot = styled(motion.div)`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  animation: ${pulse} 2s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.5), 0 0 60px rgba(124, 58, 237, 0.2);
+  z-index: 2;
+`;
 
-const textVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { 
-      delay: 0.5,
-      duration: 0.5
-    }
-  }
-};
+const OrbitRing = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+`;
 
-const barVariants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { 
-      delay: 0.8,
-      duration: 0.5
-    }
-  }
-};
+const Ring1 = styled(OrbitRing)`
+  width: 60px;
+  height: 60px;
+  border-top-color: rgba(124, 58, 237, 0.6);
+  border-right-color: rgba(124, 58, 237, 0.15);
+  animation: ${orbitSpin} 2s linear infinite;
+`;
 
-const fillVariants = {
-  hidden: { width: 0 },
-  visible: { 
-    width: '100%',
-    transition: { 
-      delay: 1,
-      duration: 2,
-      ease: "easeInOut"
-    }
+const Ring2 = styled(OrbitRing)`
+  width: 85px;
+  height: 85px;
+  border-bottom-color: rgba(236, 72, 153, 0.5);
+  border-left-color: rgba(236, 72, 153, 0.1);
+  animation: ${orbitSpinReverse} 3s linear infinite;
+`;
+
+const Ring3 = styled(OrbitRing)`
+  width: 100px;
+  height: 100px;
+  border-top-color: rgba(59, 130, 246, 0.3);
+  animation: ${orbitSpin} 5s linear infinite;
+`;
+
+const LoaderText = styled(motion.div)`
+  margin-top: 2.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+`;
+
+const BrandName = styled(motion.h2)`
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: ${props => props.theme.colors.text};
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  
+  span {
+    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-};
+`;
+
+const StatusText = styled(motion.p)`
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
+  color: ${props => props.theme.colors.textLight};
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+`;
+
+const ProgressTrack = styled(motion.div)`
+  width: 160px;
+  height: 2px;
+  background: ${props => props.theme.colors.border};
+  border-radius: 2px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+`;
+
+const ProgressFill = styled(motion.div)`
+  height: 100%;
+  background: linear-gradient(90deg, #7C3AED, #EC4899);
+  border-radius: 2px;
+`;
 
 const phrases = [
-  "Brewing data magic...",
-  "Crafting digital experiences...",
-  "Transforming code into art...",
-  "Assembling digital brilliance...",
-  "Igniting innovation...",
-  "Unleashing creativity..."
+  "initializing",
+  "loading assets",
+  "building layout",
+  "almost ready",
 ];
 
 const Loader = ({ finishLoading }) => {
-  const [currentPhrase, setCurrentPhrase] = useState(phrases[0]);
+  const [phraseIndex, setPhraseIndex] = useState(0);
   
   useEffect(() => {
-    // Change phrase every 500ms
     const phraseInterval = setInterval(() => {
-      setCurrentPhrase(prev => {
-        const currentIndex = phrases.indexOf(prev);
-        const nextIndex = (currentIndex + 1) % phrases.length;
-        return phrases[nextIndex];
-      });
-    }, 500);
+      setPhraseIndex(prev => Math.min(prev + 1, phrases.length - 1));
+    }, 600);
     
-    // Set timeout for finishing loading
     const timer = setTimeout(() => {
       finishLoading();
-    }, 3000); // 3 seconds loading time
+    }, 2800);
 
     return () => {
       clearTimeout(timer);
@@ -193,25 +169,64 @@ const Loader = ({ finishLoading }) => {
 
   return (
     <LoaderContainer
-      as={motion.div}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      variants={containerVariants}
+      initial={{ opacity: 1 }}
+      exit={{ 
+        opacity: 0,
+        scale: 1.05,
+        filter: 'blur(10px)',
+      }}
+      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <LoaderCircle>
-        <LoaderRing />
-      </LoaderCircle>
+      <OrbitalSystem>
+        <Ring3 />
+        <Ring2 />
+        <Ring1 />
+        <CoreDot
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+        />
+      </OrbitalSystem>
       
-      <LoaderText variants={textVariants}>
-        <CreativeText>{currentPhrase}</CreativeText>
+      <LoaderText>
+        <BrandName
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          Saynam<span>.</span>
+        </BrandName>
+        
+        <AnimatePresence mode="wait">
+          <StatusText
+            key={phraseIndex}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            {phrases[phraseIndex]}
+          </StatusText>
+        </AnimatePresence>
+        
+        <ProgressTrack
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <ProgressFill
+            initial={{ width: 0 }}
+            animate={{ width: '100%' }}
+            transition={{ 
+              delay: 0.6,
+              duration: 2,
+              ease: [0.25, 0.1, 0.25, 1]
+            }}
+          />
+        </ProgressTrack>
       </LoaderText>
-      
-      <LoadingBar variants={barVariants}>
-        <LoadingBarFill variants={fillVariants} />
-      </LoadingBar>
     </LoaderContainer>
   );
 };
 
-export default Loader; 
+export default Loader;

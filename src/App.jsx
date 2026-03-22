@@ -1,4 +1,70 @@
 import React, { useState, useEffect, createContext, useContext, useRef, useCallback, useMemo } from 'react';
+
+// Custom cursor component
+const CustomCursor = React.memo(() => {
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+  useEffect(() => {
+    if (isMobile) return;
+
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+
+    const handleMouseMove = (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!isVisible) setIsVisible(true);
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+      }
+    };
+
+    const animate = () => {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px)`;
+      }
+      requestAnimationFrame(animate);
+    };
+
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
+
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
+    animate();
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
+    };
+  }, [isMobile, isVisible]);
+
+  if (isMobile) return null;
+
+  return (
+    <>
+      <div ref={dotRef} style={{
+        position: 'fixed', top: 0, left: 0, width: 8, height: 8,
+        background: 'rgba(124, 58, 237, 0.9)', borderRadius: '50%',
+        pointerEvents: 'none', zIndex: 10001, mixBlendMode: 'difference',
+        opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease',
+      }} />
+      <div ref={ringRef} style={{
+        position: 'fixed', top: 0, left: 0, width: 32, height: 32,
+        border: '1.5px solid rgba(124, 58, 237, 0.4)', borderRadius: '50%',
+        pointerEvents: 'none', zIndex: 10000,
+        opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease',
+      }} />
+    </>
+  );
+});
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 import { Global, css } from '@emotion/react';
@@ -111,6 +177,16 @@ const globalStyles = (theme) => css`
     line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
+    
+    @media (min-width: 768px) {
+      cursor: none;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    a, button, input, textarea, [role="button"] {
+      cursor: none;
+    }
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -500,6 +576,7 @@ function AppContent({ isThemeChanging, setIsThemeChanging }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
+            <CustomCursor />
             <Header />
 
             <Routes>

@@ -1,13 +1,42 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../App';
 import AnimatedSection from './AnimatedSection';
 
+const gradientLine = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
+
 const FooterWrapper = styled.footer`
-  background-color: ${props => props.theme.colors.cardBg};
+  background-color: ${props => props.isDarkMode
+    ? 'rgba(17, 24, 39, 0.8)'
+    : 'rgba(249, 250, 251, 0.9)'
+  };
+  backdrop-filter: blur(10px);
   padding: 4rem 1.5rem 2rem;
   position: relative;
+  
+  /* Animated gradient line at top */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      ${props => props.theme.colors.primary},
+      ${props => props.theme.colors.secondary},
+      ${props => props.theme.colors.accent},
+      ${props => props.theme.colors.primary}
+    );
+    background-size: 300% 100%;
+    animation: ${gradientLine} 6s ease infinite;
+  }
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     padding: 5rem 2rem 2rem;
@@ -53,25 +82,28 @@ const FooterLogo = styled.a`
 const FooterDescription = styled.p`
   color: ${props => props.theme.colors.textSecondary};
   margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.7;
 `;
 
 const FooterSocialLinks = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 `;
 
 const FooterSocialLink = styled(motion.a)`
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: ${props => props.theme.colors.background};
+  border-radius: 12px;
+  background: ${props => props.isDarkMode
+    ? 'rgba(255, 255, 255, 0.05)'
+    : 'rgba(0, 0, 0, 0.04)'
+  };
   color: ${props => props.theme.colors.textSecondary};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
   
   &:hover {
@@ -83,10 +115,13 @@ const FooterSocialLink = styled(motion.a)`
 
 const FooterNavSection = styled.div`
   h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     color: ${props => props.theme.colors.text};
     margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
   }
 `;
 
@@ -103,11 +138,19 @@ const FooterNavLink = styled.li`
     color: ${props => props.theme.colors.textSecondary};
     text-decoration: none;
     transition: all 0.3s ease;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
     
     &:hover {
       color: ${props => props.theme.colors.primary};
       transform: translateX(5px);
+    }
+    
+    i {
+      font-size: 0.75rem;
+      color: ${props => props.theme.colors.textLight};
     }
   }
 `;
@@ -118,7 +161,10 @@ const FooterBottom = styled.div`
   align-items: center;
   justify-content: center;
   padding-top: 2rem;
-  border-top: 1px solid ${props => props.theme.colors.border};
+  border-top: 1px solid ${props => props.isDarkMode
+    ? 'rgba(255, 255, 255, 0.06)'
+    : 'rgba(0, 0, 0, 0.06)'
+  };
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     flex-direction: row;
@@ -128,27 +174,21 @@ const FooterBottom = styled.div`
 
 const FooterCopyright = styled.p`
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
   
   @media (min-width: ${props => props.theme.breakpoints.md}) {
     margin-bottom: 0;
   }
 `;
 
-const FooterBottomLinks = styled.div`
-  display: flex;
-  gap: 1.5rem;
-`;
-
-const FooterBottomLink = styled.a`
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: color 0.3s ease;
+const MadeWith = styled.span`
+  color: ${props => props.theme.colors.textLight};
+  font-size: 0.8rem;
   
-  &:hover {
-    color: ${props => props.theme.colors.primary};
+  i {
+    color: #ef4444;
+    margin: 0 0.25rem;
   }
 `;
 
@@ -157,7 +197,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <FooterWrapper>
+    <FooterWrapper isDarkMode={isDarkMode}>
       <AnimatedSection animation="fadeUp" threshold={0.1}>
       <FooterContainer>
         <FooterTop>
@@ -173,6 +213,7 @@ const Footer = () => {
                 href="https://www.linkedin.com/in/saynam-sharma/"
                 target="_blank"
                 rel="noopener noreferrer"
+                isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -183,6 +224,7 @@ const Footer = () => {
                 href="https://github.com/Saynam221b"
                 target="_blank"
                 rel="noopener noreferrer"
+                isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -193,6 +235,7 @@ const Footer = () => {
                 href="mailto:saynam1101@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -203,6 +246,7 @@ const Footer = () => {
                 href="https://twitter.com/saynam_sharma"
                 target="_blank"
                 rel="noopener noreferrer"
+                isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -213,6 +257,7 @@ const Footer = () => {
                 href="https://d3xtrverse.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
+                isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -224,24 +269,12 @@ const Footer = () => {
           <FooterNavSection>
             <h3>Navigation</h3>
             <FooterNavLinks>
-              <FooterNavLink>
-                <a href="#home">Home</a>
-              </FooterNavLink>
-              <FooterNavLink>
-                <a href="#about">About</a>
-              </FooterNavLink>
-              <FooterNavLink>
-                <a href="#skills">Skills</a>
-              </FooterNavLink>
-              <FooterNavLink>
-                <a href="#experience">Experience</a>
-              </FooterNavLink>
-              <FooterNavLink>
-                <a href="#projects">Projects</a>
-              </FooterNavLink>
-              <FooterNavLink>
-                <a href="#contact">Contact</a>
-              </FooterNavLink>
+              <FooterNavLink><a href="#home">Home</a></FooterNavLink>
+              <FooterNavLink><a href="#about">About</a></FooterNavLink>
+              <FooterNavLink><a href="#skills">Skills</a></FooterNavLink>
+              <FooterNavLink><a href="#experience">Experience</a></FooterNavLink>
+              <FooterNavLink><a href="#projects">Projects</a></FooterNavLink>
+              <FooterNavLink><a href="#contact">Contact</a></FooterNavLink>
             </FooterNavLinks>
           </FooterNavSection>
 
@@ -250,32 +283,30 @@ const Footer = () => {
             <FooterNavLinks>
               <FooterNavLink>
                 <a href="mailto:saynam1101@gmail.com">
-                  <i className="fas fa-envelope mr-2"></i> saynam1101@gmail.com
+                  <i className="fas fa-envelope"></i> saynam1101@gmail.com
                 </a>
               </FooterNavLink>
               <FooterNavLink>
                 <a href="tel:+919419271101">
-                  <i className="fas fa-phone mr-2"></i> +91 9419271101
+                  <i className="fas fa-phone"></i> +91 9419271101
                 </a>
               </FooterNavLink>
               <FooterNavLink>
                 <a href="#contact">
-                  <i className="fas fa-map-marker-alt mr-2"></i> Jammu, India
+                  <i className="fas fa-map-marker-alt"></i> Jammu, India
                 </a>
               </FooterNavLink>
             </FooterNavLinks>
           </FooterNavSection>
         </FooterTop>
 
-        <FooterBottom>
+        <FooterBottom isDarkMode={isDarkMode}>
           <FooterCopyright>
             © {currentYear} Saynam Sharma. All rights reserved.
           </FooterCopyright>
-
-          <FooterBottomLinks>
-            <FooterBottomLink href="#">Privacy Policy</FooterBottomLink>
-            <FooterBottomLink href="#">Terms of Service</FooterBottomLink>
-          </FooterBottomLinks>
+          <MadeWith>
+            Made with <i className="fas fa-heart"></i> and lots of data
+          </MadeWith>
         </FooterBottom>
       </FooterContainer>
       </AnimatedSection>
