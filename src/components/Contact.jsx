@@ -194,7 +194,7 @@ const SocialLink = styled(motion.a)`
   }
 `;
 
-const ContactForm = styled(motion.form)`
+const ContactForm = styled.form`
   background: ${props => props.isDarkMode
     ? 'rgba(31, 41, 55, 0.5)'
     : 'rgba(255, 255, 255, 0.8)'
@@ -270,7 +270,7 @@ const gradientShimmer = keyframes`
   100% { background-position: 0% 50%; }
 `;
 
-const SubmitButton = styled(motion.button)`
+const SubmitButton = styled.button`
   padding: 0.9rem 2rem;
   background: ${props => props.theme.gradients.primary};
   background-size: 200% 200%;
@@ -559,8 +559,6 @@ const Contact = () => {
             <SubmitButton
               type="submit"
               disabled={isSubmitting}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
               {isSubmitting ? 'Sending...' : 'Send Message →'}
             </SubmitButton>

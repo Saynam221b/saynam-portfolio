@@ -45,6 +45,9 @@ const Timeline = styled.div`
   position: relative;
   padding-left: 3rem;
   margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
   
   /* Animated gradient timeline line */
   &::before {
@@ -69,7 +72,6 @@ const Timeline = styled.div`
 `;
 
 const ExperienceCard = styled.div`
-  margin-bottom: 3rem;
   position: relative;
   padding: 2rem;
   border-radius: 16px;
@@ -83,10 +85,6 @@ const ExperienceCard = styled.div`
     : 'rgba(0, 0, 0, 0.06)'
   };
   transition: all 0.3s ease;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
   
   &:hover {
     border-color: ${props => props.theme.colors.primary}33;
