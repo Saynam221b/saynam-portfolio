@@ -287,11 +287,6 @@ const Footer = () => {
                 </a>
               </FooterNavLink>
               <FooterNavLink>
-                <a href="tel:+919419271101">
-                  <i className="fas fa-phone"></i> +91 9419271101
-                </a>
-              </FooterNavLink>
-              <FooterNavLink>
                 <a href="#contact">
                   <i className="fas fa-map-marker-alt"></i> Jammu, India
                 </a>

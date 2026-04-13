@@ -393,15 +393,6 @@ const Contact = () => {
                 </ContactText>
               </ContactItem>
 
-              <ContactItem>
-                <ContactIcon>
-                  <i className="fas fa-phone"></i>
-                </ContactIcon>
-                <ContactText>
-                  <h4>Phone</h4>
-                  <a href="tel:+919419271101">+91 9419271101</a>
-                </ContactText>
-              </ContactItem>
 
               <ContactItem>
                 <ContactIcon>
