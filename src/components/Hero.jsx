@@ -1,526 +1,308 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-import { keyframes, css } from '@emotion/react';
-import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
-import { useTheme, useGyro } from '../App';
-
-// ─── Animated mesh gradient background ───
-const meshMove = keyframes`
-  0% { background-position: 0% 50%; }
-  25% { background-position: 50% 0%; }
-  50% { background-position: 100% 50%; }
-  75% { background-position: 50% 100%; }
-  100% { background-position: 0% 50%; }
-`;
-
-const float1 = keyframes`
-  0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-  25% { transform: translate(30px, -40px) rotate(90deg) scale(1.1); }
-  50% { transform: translate(-20px, 20px) rotate(180deg) scale(0.95); }
-  75% { transform: translate(40px, 10px) rotate(270deg) scale(1.05); }
-`;
-
-const float2 = keyframes`
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(-50px, 30px) rotate(120deg); }
-  66% { transform: translate(30px, -50px) rotate(240deg); }
-`;
-
-const float3 = keyframes`
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(20px, -30px) scale(1.15); }
-`;
-
-const pulseGlow = keyframes`
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
+import { motion } from 'framer-motion';
 
 const HeroSection = styled.section`
-  min-height: 100vh;
+  position: relative;
+  min-height: calc(100svh - 72px);
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
+  padding: 4.1rem 1.25rem 3.1rem;
   overflow: hidden;
-  padding: 0 1.5rem;
-  background: ${props => props.theme.colors.background};
-  perspective: 1000px;
 `;
 
-// Animated mesh gradient overlay
-const MeshGradient = styled.div`
+const Atmosphere = styled.div`
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 40% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
-  background-size: 200% 200%;
-  animation: ${meshMove} 20s ease infinite;
-  z-index: 0;
   pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 24%, rgba(43, 108, 240, 0.24), transparent 35%),
+    radial-gradient(circle at 86% 28%, rgba(21, 184, 166, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(7, 14, 34, 0.08) 0%, rgba(7, 14, 34, 0) 44%);
 `;
 
-// Floating geometric shapes for depth
-const FloatingShape = styled.div`
+const GridTexture = styled.div`
   position: absolute;
-  border-radius: ${props => props.shape === 'circle' ? '50%' : props.shape === 'ring' ? '50%' : '8px'};
+  inset: 0;
   pointer-events: none;
-  z-index: 1;
-  
-  ${props => props.shape === 'ring' && css`
-    border: 2px solid rgba(124, 58, 237, ${props.opacity || 0.15});
-    background: transparent;
-  `}
-  
-  ${props => props.shape === 'circle' && css`
-    background: radial-gradient(circle, rgba(124, 58, 237, ${props.opacity || 0.08}), transparent);
-  `}
-  
-  ${props => props.shape === 'square' && css`
-    background: rgba(236, 72, 153, ${props.opacity || 0.06});
-    transform: rotate(45deg);
-  `}
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(143, 167, 226, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(143, 167, 226, 0.14) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 88%);
 `;
 
-const Shape1 = styled(FloatingShape)`
-  width: 120px;
-  height: 120px;
-  top: 15%;
-  left: 8%;
-  animation: ${float1} 18s ease-in-out infinite;
-`;
-
-const Shape2 = styled(FloatingShape)`
-  width: 80px;
-  height: 80px;
-  top: 70%;
-  right: 12%;
-  animation: ${float2} 15s ease-in-out infinite;
-`;
-
-const Shape3 = styled(FloatingShape)`
-  width: 60px;
-  height: 60px;
-  bottom: 20%;
-  left: 15%;
-  animation: ${float3} 12s ease-in-out infinite;
-`;
-
-const Shape4 = styled(FloatingShape)`
-  width: 200px;
-  height: 200px;
-  top: 10%;
-  right: 5%;
-  animation: ${float2} 22s ease-in-out infinite reverse;
-`;
-
-const Shape5 = styled(FloatingShape)`
-  width: 40px;
-  height: 40px;
-  top: 45%;
-  left: 60%;
-  animation: ${float1} 14s ease-in-out infinite;
-`;
-
-const Spotlight = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
+const HeroContainer = styled.div`
   width: 100%;
-  height: 100%;
-  background: radial-gradient(
-    600px circle at var(--x) var(--y),
-    rgba(124, 58, 237, 0.25),
-    rgba(59, 130, 246, 0.12),
-    transparent 50%
-  );
-  z-index: 1;
-  pointer-events: none;
-  filter: blur(30px);
-  mix-blend-mode: screen;
-  transition: background 0.15s ease;
-`;
-
-const TiltContainer = styled(motion.div)`
-  width: 100%;
-  max-width: 1200px;
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  transform-style: preserve-3d;
-`;
-
-const glitch = keyframes`
-  0% { transform: translate(0); text-shadow: none; }
-  20% { transform: translate(-2px, 2px); text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; }
-  40% { transform: translate(-2px, -2px); text-shadow: 3px 0 #ff00c1, -3px 0 #00fff9; }
-  60% { transform: translate(2px, 2px); text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; }
-  80% { transform: translate(2px, -2px); text-shadow: 3px 0 #ff00c1, -3px 0 #00fff9; }
-  100% { transform: translate(0); text-shadow: none; }
-`;
-
-const GlitchTitle = styled(motion.h1)`
-  font-size: clamp(3rem, 12vw, 9rem);
-  font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  margin-bottom: 1rem;
-  color: ${props => props.theme.colors.text};
-  position: relative;
-  display: inline-block;
-  
-  &:hover {
-    animation: ${glitch} 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-  }
-
-  &::before, &::after {
-    display: none;
-  }
-`;
-
-const HeroSubtitle = styled(motion.h2)`
-  font-size: clamp(1.2rem, 3vw, 2.5rem);
-  font-weight: 700;
-  color: ${props => props.theme.colors.text};
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background: linear-gradient(90deg, #ff00c1, #00fff9, #ff00c1);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: ${shimmer} 4s linear infinite;
-`;
-
-const CrazyLine = styled(motion.p)`
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  font-family: 'Courier New', monospace;
-  color: ${props => props.theme.colors.primary};
-  margin-bottom: 3rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  min-height: 1.5em;
-`;
-
-const ButtonContainer = styled(motion.div)`
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  margin-bottom: 4rem;
-  transform: translateZ(50px);
-  flex-wrap: wrap;
-`;
-
-const glowPulse = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.4), 0 0 40px rgba(124, 58, 237, 0.1); }
-  50% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.6), 0 0 60px rgba(124, 58, 237, 0.2); }
-`;
-
-const ModernButton = styled(motion.a)`
-  padding: 1rem 2.5rem;
-  border-radius: 100px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-  
-  /* Shimmer overlay */
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    transition: left 0.5s ease;
-  }
-  
-  &:hover::after {
-    left: 100%;
-  }
-  
-  ${props => props.primary ? `
-    background: ${props.theme.colors.text};
-    color: ${props.theme.colors.background};
-    border: 1px solid ${props.theme.colors.text};
-    animation: ${glowPulse} 3s ease-in-out infinite;
-    
-    &:hover {
-      transform: scale(1.08) translateY(-2px);
-      box-shadow: 0 0 50px rgba(124, 58, 237, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
-    }
-  ` : `
-    background: rgba(0,0,0,0.2);
-    color: ${props.theme.colors.text};
-    border: 1px solid ${props.theme.colors.border};
-    
-    &:hover {
-      border-color: #00fff9;
-      color: #00fff9;
-      transform: scale(1.08) translateY(-2px);
-      box-shadow: 0 0 30px rgba(0, 255, 249, 0.3), inset 0 0 10px rgba(0, 255, 249, 0.05);
-    }
-  `}
-`;
-
-const SocialLinks = styled(motion.div)`
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  align-items: center;
-  transform: translateZ(30px);
-`;
-
-const SocialLink = styled(motion.a)`
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 1.5rem;
-  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%) scale(0);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: #00fff9;
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover {
-    color: #00fff9;
-    transform: scale(1.4) translateY(-3px);
-    text-shadow: 0 0 20px rgba(0, 255, 249, 0.5);
-    
-    &::after {
-      transform: translateX(-50%) scale(1);
-    }
-  }
-`;
-
-// Scroll indicator
-const ScrollIndicator = styled(motion.div)`
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  max-width: 1120px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  z-index: 2;
-  
-  @media (max-width: 768px) {
-    bottom: 1rem;
-  }
-`;
-
-const scrollBounce = keyframes`
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(8px); opacity: 0.5; }
-`;
-
-const ScrollDot = styled.div`
-  width: 20px;
-  height: 32px;
-  border: 2px solid ${props => props.theme.colors.textLight};
-  border-radius: 12px;
+  gap: 2.05rem;
   position: relative;
-  
-  &::after {
+  z-index: 1;
+`;
+
+const Eyebrow = styled(motion.span)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #9fc2ff;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.73rem;
+  margin-bottom: 1rem;
+
+  &::before {
     content: '';
-    position: absolute;
-    top: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    height: 6px;
-    border-radius: 2px;
-    background: ${props => props.theme.colors.primary};
-    animation: ${scrollBounce} 2s ease-in-out infinite;
+    width: 24px;
+    height: 1px;
+    background: rgba(159, 194, 255, 0.7);
   }
 `;
 
-const ScrollText = styled.span`
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: ${props => props.theme.colors.textLight};
-  font-weight: 500;
+const HeroTitle = styled(motion.h1)`
+  font-size: clamp(2.25rem, 8vw, 5rem);
+  line-height: 0.93;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+  color: #f2f6ff;
+  max-width: 980px;
 `;
 
-// Scramble Hook
-const useScramble = (text) => {
-  const [display, setDisplay] = useState(text);
-  const chars = "!@#$%^&*()_+-=[]{}|;:,.<>?/";
+const HeroSubtitle = styled(motion.p)`
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  color: rgba(209, 222, 255, 0.9);
+  max-width: 760px;
+  margin-bottom: 1.25rem;
+`;
 
-  useEffect(() => {
-    let interval;
-    let iteration = 0;
+const TrustLine = styled(motion.p)`
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(167, 196, 255, 0.9);
+  margin-bottom: 1.2rem;
+`;
 
-    const startScramble = () => {
-      interval = setInterval(() => {
-        setDisplay(
-          text
-            .split("")
-            .map((letter, index) => {
-              if (index < iteration) {
-                return text[index];
-              }
-              return chars[Math.floor(Math.random() * 26)];
-            })
-            .join("")
-        );
+const CTAGroup = styled(motion.div)`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+`;
 
-        if (iteration >= text.length) {
-          clearInterval(interval);
-        }
+const PrimaryButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 999px;
+  padding: 0 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: linear-gradient(135deg, #2b6cf0 0%, #15b8a6 100%);
+  box-shadow: 0 12px 26px rgba(17, 102, 232, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-        iteration += 1 / 3;
-      }, 30);
-    };
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 28px rgba(17, 102, 232, 0.38);
+  }
+`;
 
-    setTimeout(startScramble, 1000);
+const SecondaryButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 999px;
+  padding: 0 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(228, 236, 255, 0.95);
+  border: 1px solid rgba(126, 151, 214, 0.45);
+  background: rgba(17, 31, 66, 0.65);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 
-    return () => clearInterval(interval);
-  }, [text]);
+  &:hover,
+  &:focus-visible {
+    border-color: rgba(126, 171, 255, 0.72);
+    background: rgba(29, 47, 93, 0.72);
+  }
+`;
 
-  return display;
-};
+const TertiaryText = styled.p`
+  font-size: 0.9rem;
+  color: rgba(177, 200, 250, 0.95);
+  font-weight: 500;
+
+  a {
+    color: #75c9ff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+`;
+
+const StatRow = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  max-width: 720px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const StatCard = styled.div`
+  border-radius: 14px;
+  border: 1px solid rgba(126, 151, 214, 0.26);
+  background: rgba(15, 28, 58, 0.72);
+  padding: 0.95rem 0.95rem 0.85rem;
+`;
+
+const StatValue = styled.p`
+  font-size: 1.18rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #f2f6ff;
+  margin-bottom: 0.22rem;
+`;
+
+const StatLabel = styled.p`
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(167, 190, 244, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+`;
+
+const SidePanel = styled(motion.aside)`
+  border-radius: 18px;
+  border: 1px solid rgba(126, 151, 214, 0.22);
+  background: rgba(11, 22, 49, 0.62);
+  box-shadow: 0 16px 44px rgba(2, 6, 20, 0.28);
+  padding: 1.1rem;
+  max-width: 880px;
+`;
+
+const PanelTitle = styled.h2`
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f2f6ff;
+  margin-bottom: 0.9rem;
+`;
+
+const PanelList = styled.ul`
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+
+  @media (min-width: 860px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
+const PanelItem = styled.li`
+  padding: 0.72rem;
+  border-radius: 12px;
+  background: rgba(19, 34, 72, 0.7);
+  border: 1px solid rgba(126, 151, 214, 0.2);
+
+  strong {
+    display: block;
+    font-size: 0.89rem;
+    color: #eff4ff;
+    margin-bottom: 0.2rem;
+  }
+
+  span {
+    font-size: 0.8rem;
+    color: rgba(173, 195, 245, 0.9);
+  }
+`;
+
+const PanelFoot = styled.p`
+  font-size: 0.78rem;
+  color: rgba(173, 195, 245, 0.88);
+`;
 
 const Hero = () => {
-  const { isGyroEnabled } = useGyro();
-
-  // Motion Values
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [0, window.innerHeight], [10, -10]);
-  const rotateY = useTransform(x, [0, window.innerWidth], [-10, 10]);
-
-  // Handle Mouse Move for Tilt & Spotlight (Desktop / Default)
-  useEffect(() => {
-    if (isGyroEnabled) return;
-
-    const handleMove = (e) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
-    };
-    window.addEventListener('mousemove', handleMove);
-    return () => window.removeEventListener('mousemove', handleMove);
-  }, [x, y, isGyroEnabled]);
-
-  // Handle Gyroscope (Mobile)
-  useEffect(() => {
-    if (!isGyroEnabled) return;
-
-    const handleOrientation = (e) => {
-      const gamma = e.gamma || 0;
-      const beta = e.beta || 0;
-
-      const limitedGamma = Math.max(-45, Math.min(45, gamma));
-      const limitedBeta = Math.max(-45, Math.min(45, beta));
-
-      const screenX = (limitedGamma + 45) / 90 * window.innerWidth;
-      const screenY = (limitedBeta + 45) / 90 * window.innerHeight;
-
-      x.set(screenX);
-      y.set(screenY);
-    };
-
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, [isGyroEnabled, x, y]);
-
-  // Scramble Text
-  const scrambledText = useScramble("Building data systems that scale.");
-
-  // Parallax scroll for spotlight
-  const { scrollY } = useScroll();
-  const spotlightY = useTransform(scrollY, [0, 500], [0, 150]);
-
   return (
     <HeroSection id="home">
-      <MeshGradient />
-      <Shape1 shape="ring" opacity={0.12} />
-      <Shape2 shape="circle" opacity={0.06} />
-      <Shape3 shape="square" opacity={0.05} />
-      <Shape4 shape="ring" opacity={0.08} />
-      <Shape5 shape="circle" opacity={0.1} />
-      
-      <Spotlight style={{ '--x': x, '--y': y, y: spotlightY }} />
+      <Atmosphere />
+      <GridTexture />
+      <HeroContainer>
+        <div>
+          <Eyebrow initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            Saynam Sharma Studio
+          </Eyebrow>
+          <HeroTitle initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.05 }}>
+            Data systems and premium web products, designed and delivered end-to-end.
+          </HeroTitle>
+          <HeroSubtitle initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.1 }}>
+            I help teams launch reliable ETL and lakehouse pipelines while also shipping production-grade web experiences in React and Next.js.
+            The goal is the same in both worlds: faster delivery, fewer failures, better outcomes.
+          </HeroSubtitle>
+          <TrustLine initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.14 }}>
+            Open to select freelance builds and full-time product/data engineering opportunities.
+          </TrustLine>
+          <CTAGroup initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.18 }}>
+            <PrimaryButton href="#contact">Start a Project</PrimaryButton>
+            <SecondaryButton href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+              View Resume
+            </SecondaryButton>
+          </CTAGroup>
+          <TertiaryText>
+            Available for select freelance and full-time roles. <a href="#contact">See availability and contact lanes</a>.
+          </TertiaryText>
+          <StatRow initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.42, delay: 0.24 }}>
+            <StatCard>
+              <StatValue>45-60%</StatValue>
+              <StatLabel>Pipeline Runtime Reduction</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatValue>3+ yrs</StatValue>
+              <StatLabel>Production Data Engineering</StatLabel>
+            </StatCard>
+            <StatCard>
+              <StatValue>Multi-TB</StatValue>
+              <StatLabel>Scale Processed</StatLabel>
+            </StatCard>
+          </StatRow>
+        </div>
 
-      <TiltContainer style={{ rotateX, rotateY }}>
-        <GlitchTitle
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
-        >
-          SAYNAM SHARMA
-        </GlitchTitle>
-
-        <HeroSubtitle
-          initial={{ opacity: 0, x: -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          DATA ENGINEER | PIPELINE ARCHITECT
-        </HeroSubtitle>
-
-        <CrazyLine>
-          {scrambledText}
-        </CrazyLine>
-
-        <ButtonContainer
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
-        >
-          <ModernButton href="#projects" primary>
-            View Work
-          </ModernButton>
-          <ModernButton href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-            Resume
-          </ModernButton>
-          <ModernButton href="#contact">
-            Contact Me
-          </ModernButton>
-        </ButtonContainer>
-
-        <SocialLinks
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.8 }}
-        >
-          <SocialLink href="https://github.com/Saynam221b" target="_blank"><i className="fab fa-github"></i></SocialLink>
-          <SocialLink href="https://www.linkedin.com/in/saynam-sharma/" target="_blank"><i className="fab fa-linkedin-in"></i></SocialLink>
-          <SocialLink href="https://twitter.com/saynam_sharma" target="_blank"><i className="fab fa-twitter"></i></SocialLink>
-          <SocialLink href="https://d3xtrverse.vercel.app/" target="_blank"><i className="fas fa-gamepad"></i></SocialLink>
-        </SocialLinks>
-      </TiltContainer>
-      
-      <ScrollIndicator
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 0.5 }}
-      >
-        <ScrollDot />
-        <ScrollText>Scroll</ScrollText>
-      </ScrollIndicator>
+        <SidePanel initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.46, delay: 0.22 }}>
+          <PanelTitle>Recent Delivery Highlights</PanelTitle>
+          <PanelList>
+            <PanelItem>
+              <strong>Oracle Fusion to Snowflake ETL</strong>
+              <span>Idempotent incremental loads with dbt quality gates and schema drift handling.</span>
+            </PanelItem>
+            <PanelItem>
+              <strong>Databricks Lakehouse Pipelines</strong>
+              <span>Delta merge patterns for late-arriving records, rerun safety, and operational stability.</span>
+            </PanelItem>
+            <PanelItem>
+              <strong>Observability and Alerting</strong>
+              <span>Structured telemetry for faster failure triage and lower on-call effort.</span>
+            </PanelItem>
+          </PanelList>
+          <PanelFoot>Tools: Databricks, Spark, Airflow, dbt, Snowflake, AWS, Python, SQL</PanelFoot>
+        </SidePanel>
+      </HeroContainer>
     </HeroSection>
   );
 };

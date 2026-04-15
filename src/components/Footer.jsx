@@ -206,13 +206,14 @@ const Footer = () => {
               Saynam<span>.</span>
             </FooterLogo>
             <FooterDescription>
-              Data Engineer specializing in building scalable ETL pipelines and lakehouse architectures on Databricks, AWS, and Snowflake.
+              Hybrid data and web product engineer focused on resilient ETL platforms, modern React interfaces, and freelance-ready delivery.
             </FooterDescription>
             <FooterSocialLinks>
               <FooterSocialLink
                 href="https://www.linkedin.com/in/saynam-sharma/"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open LinkedIn profile"
                 isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -224,6 +225,7 @@ const Footer = () => {
                 href="https://github.com/Saynam221b"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open GitHub profile"
                 isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -233,8 +235,7 @@ const Footer = () => {
 
               <FooterSocialLink
                 href="mailto:saynam1101@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                aria-label="Send an email"
                 isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -246,6 +247,7 @@ const Footer = () => {
                 href="https://twitter.com/saynam_sharma"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open X profile"
                 isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -257,6 +259,7 @@ const Footer = () => {
                 href="https://d3xtrverse.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open D3xTRverse site"
                 isDarkMode={isDarkMode}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -269,12 +272,12 @@ const Footer = () => {
           <FooterNavSection>
             <h3>Navigation</h3>
             <FooterNavLinks>
-              <FooterNavLink><a href="#home">Home</a></FooterNavLink>
-              <FooterNavLink><a href="#about">About</a></FooterNavLink>
-              <FooterNavLink><a href="#skills">Skills</a></FooterNavLink>
-              <FooterNavLink><a href="#experience">Experience</a></FooterNavLink>
-              <FooterNavLink><a href="#projects">Projects</a></FooterNavLink>
-              <FooterNavLink><a href="#contact">Contact</a></FooterNavLink>
+              <FooterNavLink><a href="/#home">Home</a></FooterNavLink>
+              <FooterNavLink><a href="/#services">Services</a></FooterNavLink>
+              <FooterNavLink><a href="/#outcomes">Outcomes</a></FooterNavLink>
+              <FooterNavLink><a href="/#projects">Case Studies</a></FooterNavLink>
+              <FooterNavLink><a href="/#experience">Credibility</a></FooterNavLink>
+              <FooterNavLink><a href="/#contact">Contact</a></FooterNavLink>
             </FooterNavLinks>
           </FooterNavSection>
 
@@ -287,7 +290,7 @@ const Footer = () => {
                 </a>
               </FooterNavLink>
               <FooterNavLink>
-                <a href="#contact">
+                <a href="/#contact">
                   <i className="fas fa-map-marker-alt"></i> Jammu, India
                 </a>
               </FooterNavLink>
@@ -300,7 +303,7 @@ const Footer = () => {
             © {currentYear} Saynam Sharma. All rights reserved.
           </FooterCopyright>
           <MadeWith>
-            Made with <i className="fas fa-heart"></i> and lots of data
+            Built with <i className="fas fa-heart"></i> for data and product impact
           </MadeWith>
         </FooterBottom>
       </FooterContainer>

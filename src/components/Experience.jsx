@@ -354,8 +354,8 @@ const Experience = () => {
     <ExperienceSection id="experience">
       <ExperienceContainer>
         <AnimatedSection animation="clipRevealUp">
-          <SectionTitle>Experience</SectionTitle>
-          <SectionSubtitle>Building and scaling production data systems.</SectionSubtitle>
+          <SectionTitle>Credibility Timeline</SectionTitle>
+          <SectionSubtitle>Roles and delivery history across data engineering and full-stack product execution.</SectionSubtitle>
         </AnimatedSection>
 
         <Timeline>

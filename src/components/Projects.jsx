@@ -1,477 +1,368 @@
-import React, { useRef, useCallback } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
-import { motion } from 'framer-motion';
-import { useTheme } from '../App';
 import AnimatedSection from './AnimatedSection';
-import { staggerDelay } from '../hooks/useScrollAnimation';
 
-const borderShimmer = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+const Section = styled.section`
+  padding: 4.2rem 1.25rem 2.5rem;
 `;
 
-const ProjectsSection = styled.section`
-  padding: 5rem 1.5rem;
-  position: relative;
-  background-color: ${props => props.theme.colors.background};
-`;
-
-const ProjectsContainer = styled.div`
+const Container = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1120px;
   margin: 0 auto;
 `;
 
-const SectionTitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 800;
-  text-align: center;
+const Header = styled.div`
+  margin-bottom: 1.7rem;
+`;
+
+const Eyebrow = styled.p`
+  color: rgba(164, 188, 244, 0.95);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+`;
+
+const Title = styled.h2`
+  font-size: clamp(1.8rem, 4.1vw, 3rem);
+  color: ${props => props.theme.colors.text};
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+`;
+
+const Subtitle = styled.p`
+  max-width: 760px;
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.98rem;
+  line-height: 1.7;
+`;
+
+const CaseBand = styled.article`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1.15rem;
+  border-radius: 18px;
+  border: 1px solid rgba(126, 151, 214, 0.22);
+  background: rgba(10, 22, 52, 0.52);
   margin-bottom: 1rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(124, 190, 255, 0.52);
+  }
+
+  @media (min-width: 920px) {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+  }
+`;
+
+const CaseBandReverse = styled(CaseBand)`
+  @media (min-width: 920px) {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+`;
+
+const CaseLeft = styled.div``;
+const CaseRight = styled.div``;
+
+const CaseType = styled.p`
+  font-size: 0.74rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(145, 185, 255, 0.92);
+  font-weight: 700;
+  margin-bottom: 0.55rem;
+`;
+
+const CaseTitle = styled.h3`
+  font-size: 1.45rem;
   color: ${props => props.theme.colors.text};
   letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
 `;
 
-const SectionSubtitle = styled.p`
-  text-align: center;
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 1rem;
-  margin-bottom: 3.5rem;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const PremiumGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const StandardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const CardWrapper = styled.div`
-  perspective: 1000px;
-  height: 100%;
-`;
-
-const ProjectCard = styled.a`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  height: 100%;
-  background: ${props => props.isDarkMode
-    ? 'rgba(31, 41, 55, 0.5)'
-    : 'rgba(255, 255, 255, 0.8)'
-  };
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  overflow: hidden;
-  text-decoration: none;
-  border: 1px solid ${props => props.isDarkMode
-    ? 'rgba(255, 255, 255, 0.06)'
-    : 'rgba(0, 0, 0, 0.06)'
-  };
-  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-  transform-style: preserve-3d;
-  
-  &:hover {
-    transform: translateY(-8px);
-    border-color: transparent;
-    box-shadow: 
-      0 20px 60px rgba(124, 58, 237, 0.12),
-      0 0 0 1px rgba(124, 58, 237, 0.2);
-  }
-`;
-
-// Gradient header strip
-const CardGradientStrip = styled.div`
-  height: 4px;
-  background: ${props => props.gradient};
-  background-size: 200% 200%;
-  animation: ${borderShimmer} 4s ease infinite;
-`;
-
-const FeaturedBadge = styled.div`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.25rem 0.75rem;
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  color: white;
-  font-size: 0.7rem;
-  font-weight: 700;
-  border-radius: 100px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  z-index: 2;
-`;
-
-const CardContent = styled.div`
-  padding: 2rem;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-`;
-
-const ProjectIcon = styled.div`
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: ${props => props.gradient || props.theme.gradients.primary};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.25rem;
-  font-size: 1.25rem;
-  color: white;
-  transition: transform 0.3s ease;
-  
-  ${CardWrapper}:hover & {
-    transform: scale(1.1) rotate(-5deg);
-  }
-`;
-
-const ProjectTitle = styled.h3`
-  font-size: 1.2rem;
+const Role = styled.p`
+  color: rgba(129, 194, 255, 0.95);
+  font-size: 0.88rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
-  color: ${props => props.theme.colors.text};
-  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 `;
 
-const ProjectDesc = styled.p`
-  font-size: 0.9rem;
+const Scope = styled.p`
   color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+  font-size: 0.94rem;
+  line-height: 1.72;
 `;
 
-const TagContainer = styled.div`
+const DetailGrid = styled.div`
+  display: grid;
+  gap: 0.68rem;
+`;
+
+const DetailBlock = styled.div`
+  padding: 0.78rem 0.82rem;
+  background: rgba(15, 32, 70, 0.55);
+  border-left: 2px solid rgba(88, 166, 255, 0.6);
+`;
+
+const DetailTitle = styled.p`
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  color: rgba(168, 198, 250, 0.92);
+  margin-bottom: 0.3rem;
+`;
+
+const DetailBody = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  line-height: 1.65;
+`;
+
+const StackRow = styled.div`
+  margin-top: 0.8rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.45rem;
 `;
 
-const Tag = styled.span`
+const StackPill = styled.span`
   font-size: 0.72rem;
-  padding: 0.2rem 0.7rem;
-  background: ${props => props.isDarkMode
-    ? 'rgba(255, 255, 255, 0.05)'
-    : 'rgba(0, 0, 0, 0.04)'
-  };
-  color: ${props => props.theme.colors.textSecondary};
-  border-radius: 100px;
-  border: 1px solid ${props => props.isDarkMode
-    ? 'rgba(255, 255, 255, 0.08)'
-    : 'rgba(0, 0, 0, 0.08)'
-  };
-  font-weight: 500;
-  transition: all 0.2s ease;
-  
-  ${CardWrapper}:hover & {
-    border-color: ${props => props.theme.colors.primary}33;
-  }
+  padding: 0.22rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid rgba(126, 151, 214, 0.3);
+  background: rgba(17, 31, 66, 0.65);
+  color: rgba(193, 211, 248, 0.95);
 `;
 
-const CardArrow = styled.div`
-  position: absolute;
-  bottom: 2rem;
-  right: 2rem;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: ${props => props.isDarkMode
-    ? 'rgba(255, 255, 255, 0.05)'
-    : 'rgba(0, 0, 0, 0.04)'
-  };
+const LinkRow = styled.div`
+  margin-top: 0.95rem;
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+`;
+
+const PrimaryLink = styled.a`
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.theme.colors.textLight};
-  font-size: 0.8rem;
-  transition: all 0.3s ease;
-  
-  ${CardWrapper}:hover & {
-    background: ${props => props.theme.gradients.primary};
-    color: white;
-    transform: translateX(3px);
-  }
-`;
-
-const ProjectRole = styled.div`
-  font-size: 0.85rem;
-  color: ${props => props.theme.colors.primary};
+  min-height: 40px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.83rem;
   font-weight: 700;
-  margin-top: -0.25rem;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-`;
+  color: #fff;
+  background: linear-gradient(135deg, #2b6cf0 0%, #15b8a6 100%);
+  transition: transform 0.2s ease;
 
-const HighlightsList = styled.ul`
-  margin: 1rem 0 1.5rem 0;
-  padding-left: 1.2rem;
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
-  line-height: 1.6;
-  
-  li {
-    margin-bottom: 0.5rem;
-    &::marker {
-      color: ${props => props.theme.colors.primary};
-    }
-  }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: auto;
-  padding-top: 1.5rem;
-  flex-wrap: wrap;
-`;
-
-const GlowingButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.4rem;
-  background: ${props => props.gradient || props.theme.gradients.primary};
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
-  position: relative;
-  z-index: 10;
-  
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
-    color: white;
+    transform: translateY(-1px);
   }
 `;
 
-const SecondaryButton = styled.a`
+const QuietLink = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.4rem;
-  background: transparent;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: rgba(220, 231, 255, 0.96);
+  border: 1px solid rgba(126, 151, 214, 0.45);
+  background: rgba(17, 31, 66, 0.45);
+`;
+
+const SupportingGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-top: 0.4rem;
+
+  @media (min-width: 780px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+`;
+
+const SupportingItem = styled.div`
+  padding: 1rem;
+  border: 1px solid rgba(126, 151, 214, 0.2);
+  border-radius: 14px;
+  background: rgba(11, 24, 54, 0.42);
+`;
+
+const SupportingTitle = styled.h4`
   color: ${props => props.theme.colors.text};
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 10px;
-  text-decoration: none;
-  border: 1px solid ${props => props.isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'};
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 10;
-  
-  &:hover {
-    background: ${props => props.isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
-    transform: translateY(-2px);
-  }
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.01em;
 `;
 
-const projectGradients = [
-  'linear-gradient(135deg, #7C3AED, #3B82F6)',
-  'linear-gradient(135deg, #EC4899, #F59E0B)',
-  'linear-gradient(135deg, #10B981, #3B82F6)',
-  'linear-gradient(135deg, #6366F1, #EC4899)',
-];
+const SupportingCopy = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.88rem;
+  line-height: 1.66;
+  margin-bottom: 0.7rem;
+`;
 
 const Projects = () => {
-  const { isDarkMode } = useTheme();
-
-  const projects = [
-    {
-      icon: "fas fa-project-diagram",
-      title: "D3xTRverse Flow",
-      role: "Creator & Lead Engineer",
-      desc: "AST-driven SQL lineage visualizer that transforms nested SQL into deterministic DAGs. Integrates Groq Llama 3 for real-time node logic analysis.",
-      highlights: [
-        "Path-highlighting engine for dependency tracing",
-        "Compound graph layout system for CTE nodes",
-        "Browser history state-syncing via lz-string"
-      ],
-      tags: ["Next.js", "React Flow", "Llama 3", "AST"],
-      link: "https://dex-floww.vercel.app/",
-      github: "https://github.com/Saynam221b",
-      featured: true,
-      isPremium: true,
-    },
-    {
-      icon: "fas fa-gamepad",
-      title: "D3xTRverse Community",
-      role: "Full-Stack Developer",
-      desc: "A modern web platform for the gaming and coding community featuring automated tournaments, eFootball card systems, and dynamic event modules.",
-      highlights: [
-        "High-performance React UI with Vercel edge capabilities",
-        "Robust Django and Supabase relational backend architecture",
-        "Real-time event and match state orchestration"
-      ],
-      tags: ["React", "Django", "Supabase", "REST API"],
-      link: "https://d3xtrverse.vercel.app/",
-      featured: true,
-      isPremium: true,
-    },
-    {
-      icon: "fas fa-database",
-      title: "Oracle → Snowflake ETL",
-      desc: "AWS ETL platform ingesting Oracle BI data into Snowflake with incremental loads and dbt transformations.",
-      tags: ["AWS", "Snowflake", "Airflow", "dbt"],
-      link: "https://github.com/Saynam221b",
-    },
-    {
-      icon: "fas fa-bolt",
-      title: "Databricks Pipelines",
-      desc: "Large-scale PySpark batch pipelines achieving 50% runtime reduction via Delta sets.",
-      tags: ["PySpark", "Databricks", "Delta Lake"],
-      link: "https://github.com/Saynam221b",
-    },
-    {
-      icon: "fas fa-chart-line",
-      title: "Data Observability",
-      desc: "Python framework validating pipeline telemetry and alerts for rapid monitoring and troubleshooting.",
-      tags: ["Python", "Airflow", "Data Quality"],
-      link: "https://github.com/Saynam221b",
-    }
-  ];
-
-  // 3D tilt handler
-  const handleMouseMove = useCallback((e) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / centerY * -5;
-    const rotateY = (x - centerX) / centerX * 5;
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
-  }, []);
-
-  const handleMouseLeave = useCallback((e) => {
-    e.currentTarget.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
-  }, []);
-
-  const premiumProjects = projects.filter(p => p.isPremium);
-  const standardProjects = projects.filter(p => !p.isPremium);
-
-  const renderCard = (project, gradientIndex, staggerIndex) => (
-    <AnimatedSection
-      key={project.title}
-      animation="fadeUp"
-      delay={staggerDelay(staggerIndex, 0.1, 0.1)}
-      style={{ height: '100%' }}
-    >
-      <CardWrapper>
-        <ProjectCard
-          as={project.isPremium ? 'div' : 'a'}
-          href={project.isPremium ? undefined : project.link}
-          target={project.isPremium ? undefined : "_blank"}
-          rel={project.isPremium ? undefined : "noopener noreferrer"}
-          isDarkMode={isDarkMode}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
-          <CardGradientStrip gradient={projectGradients[gradientIndex % projectGradients.length]} />
-          {project.featured && <FeaturedBadge>Featured</FeaturedBadge>}
-          <CardContent>
-            <ProjectIcon gradient={projectGradients[gradientIndex % projectGradients.length]}>
-              <i className={project.icon} />
-            </ProjectIcon>
-            <ProjectTitle>{project.title}</ProjectTitle>
-            {project.role && <ProjectRole>{project.role}</ProjectRole>}
-            <ProjectDesc>{project.desc}</ProjectDesc>
-            
-            {project.highlights && (
-              <HighlightsList>
-                {project.highlights.map((highlight, i) => (
-                  <li key={i}>{highlight}</li>
-                ))}
-              </HighlightsList>
-            )}
-
-            <TagContainer>
-              {project.tags.map((tag, i) => (
-                <Tag key={i} isDarkMode={isDarkMode}>{tag}</Tag>
-              ))}
-            </TagContainer>
-
-            {project.isPremium ? (
-              <ButtonGroup>
-                <GlowingButton 
-                  href={project.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  gradient={projectGradients[gradientIndex % projectGradients.length]}
-                >
-                  Launch App <i className="fas fa-external-link-alt" style={{ fontSize: '0.8em', marginLeft: '2px' }} />
-                </GlowingButton>
-                {project.github && (
-                  <SecondaryButton 
-                    href={project.github} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    isDarkMode={isDarkMode}
-                  >
-                    <i className="fab fa-github" /> Repo
-                  </SecondaryButton>
-                )}
-              </ButtonGroup>
-            ) : (
-              <CardArrow isDarkMode={isDarkMode}>
-                <i className="fas fa-arrow-right" />
-              </CardArrow>
-            )}
-          </CardContent>
-        </ProjectCard>
-      </CardWrapper>
-    </AnimatedSection>
-  );
-
   return (
-    <ProjectsSection id="projects">
-      <ProjectsContainer>
-        <AnimatedSection animation="clipRevealUp">
-          <SectionTitle>Featured Work</SectionTitle>
-          <SectionSubtitle>Production systems and side projects I've built and scaled.</SectionSubtitle>
+    <Section id="projects">
+      <Container>
+        <AnimatedSection animation="fadeUp">
+          <Header>
+            <Eyebrow>Case Studies</Eyebrow>
+            <Title>Featured delivery across data platforms and web product builds.</Title>
+            <Subtitle>
+              These case studies focus on scope, implementation choices, and measurable outcomes. They are selected to show both core data engineering depth and freelance-ready web development capability.
+            </Subtitle>
+          </Header>
         </AnimatedSection>
 
-        <PremiumGrid>
-          {premiumProjects.map((project, i) => renderCard(project, i, i))}
-        </PremiumGrid>
+        <AnimatedSection animation="fadeUp" delay={0.08}>
+          <CaseBand>
+            <CaseLeft>
+              <CaseType>Data Platform</CaseType>
+              <CaseTitle>Oracle Fusion to Snowflake ETL Platform</CaseTitle>
+              <Role>Data Engineer</Role>
+              <Scope>
+                Designed an AWS-based ingestion and transformation flow for Oracle Fusion BI into Snowflake with rerun safety,
+                incremental logic, and stronger quality controls for downstream reporting.
+              </Scope>
+              <StackRow>
+                <StackPill>AWS</StackPill>
+                <StackPill>Airflow (MWAA)</StackPill>
+                <StackPill>Snowflake</StackPill>
+                <StackPill>Python</StackPill>
+                <StackPill>dbt</StackPill>
+                <StackPill>SQL</StackPill>
+              </StackRow>
+            </CaseLeft>
+            <CaseRight>
+              <DetailGrid>
+                <DetailBlock>
+                  <DetailTitle>Scope</DetailTitle>
+                  <DetailBody>Incremental ingestion, transformations, quality checks, audit columns, and schema drift handling.</DetailBody>
+                </DetailBlock>
+                <DetailBlock>
+                  <DetailTitle>Outcome</DetailTitle>
+                  <DetailBody>Stable reruns and fewer reporting defects through idempotent load design and tighter model governance.</DetailBody>
+                </DetailBlock>
+                <DetailBlock>
+                  <DetailTitle>Result Signal</DetailTitle>
+                  <DetailBody>Higher pipeline reliability and faster troubleshooting with structured logs and Snowflake query history.</DetailBody>
+                </DetailBlock>
+              </DetailGrid>
+            </CaseRight>
+          </CaseBand>
+        </AnimatedSection>
 
-        <StandardGrid>
-          {standardProjects.map((project, i) => renderCard(project, i + premiumProjects.length, i + premiumProjects.length))}
-        </StandardGrid>
-      </ProjectsContainer>
-    </ProjectsSection>
+        <AnimatedSection animation="fadeUp" delay={0.12}>
+          <CaseBandReverse>
+            <CaseRight>
+              <CaseType>Web Product + Data Tooling</CaseType>
+              <CaseTitle>D3xTRverse Flow</CaseTitle>
+              <Role>Creator & Lead Engineer</Role>
+              <Scope>
+                Built an AST-driven SQL lineage visualizer that converts nested SQL into deterministic DAGs with interactive dependency tracing and node-level insight workflows.
+              </Scope>
+              <StackRow>
+                <StackPill>Next.js</StackPill>
+                <StackPill>React Flow</StackPill>
+                <StackPill>AST Parsing</StackPill>
+                <StackPill>Llama 3 (Groq)</StackPill>
+              </StackRow>
+              <LinkRow>
+                <PrimaryLink href="https://dex-floww.vercel.app/" target="_blank" rel="noopener noreferrer">Launch App</PrimaryLink>
+                <QuietLink href="https://github.com/Saynam221b" target="_blank" rel="noopener noreferrer">Source</QuietLink>
+              </LinkRow>
+            </CaseRight>
+            <CaseLeft>
+              <DetailGrid>
+                <DetailBlock>
+                  <DetailTitle>Scope</DetailTitle>
+                  <DetailBody>Dependency tracing, CTE-aware graph layouts, and real-time node logic analysis.</DetailBody>
+                </DetailBlock>
+                <DetailBlock>
+                  <DetailTitle>Outcome</DetailTitle>
+                  <DetailBody>Faster SQL debugging and clearer lineage communication for complex analytical workloads.</DetailBody>
+                </DetailBlock>
+                <DetailBlock>
+                  <DetailTitle>Result Signal</DetailTitle>
+                  <DetailBody>Demonstrates freelance-ready capability in both frontend UX and data-centric product interaction design.</DetailBody>
+                </DetailBlock>
+              </DetailGrid>
+            </CaseLeft>
+          </CaseBandReverse>
+        </AnimatedSection>
+
+        <AnimatedSection animation="fadeUp" delay={0.15}>
+          <CaseBand>
+            <CaseLeft>
+              <CaseType>Full-Stack Community Product</CaseType>
+              <CaseTitle>D3xTRverse Community</CaseTitle>
+              <Role>Full-Stack Developer</Role>
+              <Scope>
+                Delivered a modern community platform with event and tournament modules, balancing fast frontend interactions with maintainable backend architecture.
+              </Scope>
+              <StackRow>
+                <StackPill>React</StackPill>
+                <StackPill>Django</StackPill>
+                <StackPill>Supabase</StackPill>
+                <StackPill>REST API</StackPill>
+              </StackRow>
+              <LinkRow>
+                <PrimaryLink href="https://d3xtrverse.vercel.app/" target="_blank" rel="noopener noreferrer">Launch App</PrimaryLink>
+              </LinkRow>
+            </CaseLeft>
+            <CaseRight>
+              <DetailGrid>
+                <DetailBlock>
+                  <DetailTitle>Scope</DetailTitle>
+                  <DetailBody>Event workflows, stateful interaction modules, and scalable data-backed community features.</DetailBody>
+                </DetailBlock>
+                <DetailBlock>
+                  <DetailTitle>Outcome</DetailTitle>
+                  <DetailBody>A production-ready product surface suitable as reference work for freelance web development clients.</DetailBody>
+                </DetailBlock>
+                <DetailBlock>
+                  <DetailTitle>Result Signal</DetailTitle>
+                  <DetailBody>Validates end-to-end product delivery from UI/UX to backend integration and deployment.</DetailBody>
+                </DetailBlock>
+              </DetailGrid>
+            </CaseRight>
+          </CaseBand>
+        </AnimatedSection>
+
+        <AnimatedSection animation="fadeUp" delay={0.18}>
+          <SupportingGrid>
+            <SupportingItem>
+              <SupportingTitle>Databricks Lakehouse Pipelines</SupportingTitle>
+              <SupportingCopy>
+                Built large-scale PySpark pipelines with Delta merge patterns and achieved ~45-60% runtime reduction through workload tuning.
+              </SupportingCopy>
+              <QuietLink href="https://github.com/Saynam221b" target="_blank" rel="noopener noreferrer">Reference</QuietLink>
+            </SupportingItem>
+            <SupportingItem>
+              <SupportingTitle>Data Observability Framework</SupportingTitle>
+              <SupportingCopy>
+                Implemented telemetry and validation checks for proactive alerting and faster root-cause identification in pipeline operations.
+              </SupportingCopy>
+              <QuietLink href="https://github.com/Saynam221b" target="_blank" rel="noopener noreferrer">Reference</QuietLink>
+            </SupportingItem>
+          </SupportingGrid>
+        </AnimatedSection>
+      </Container>
+    </Section>
   );
 };
 

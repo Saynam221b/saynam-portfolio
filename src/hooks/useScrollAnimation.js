@@ -7,43 +7,43 @@ import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
  */
 const presets = {
   fadeUp: {
-    hidden: { opacity: 0, transform: 'translate3d(0, 30px, 0)' },
+    hidden: { opacity: 0.9, transform: 'translate3d(0, 12px, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeDown: {
-    hidden: { opacity: 0, transform: 'translate3d(0, -30px, 0)' },
+    hidden: { opacity: 0.9, transform: 'translate3d(0, -12px, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeLeft: {
-    hidden: { opacity: 0, transform: 'translate3d(-30px, 0, 0)' },
+    hidden: { opacity: 0.9, transform: 'translate3d(-12px, 0, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeRight: {
-    hidden: { opacity: 0, transform: 'translate3d(30px, 0, 0)' },
+    hidden: { opacity: 0.9, transform: 'translate3d(12px, 0, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   scaleIn: {
-    hidden: { opacity: 0, transform: 'scale3d(0.9, 0.9, 1)' },
+    hidden: { opacity: 0.92, transform: 'scale3d(0.98, 0.98, 1)' },
     visible: { opacity: 1, transform: 'scale3d(1, 1, 1)' },
   },
   blurIn: {
-    hidden: { opacity: 0, filter: 'blur(8px)', transform: 'translate3d(0, 10px, 0)' },
+    hidden: { opacity: 0.9, filter: 'blur(2px)', transform: 'translate3d(0, 10px, 0)' },
     visible: { opacity: 1, filter: 'blur(0px)', transform: 'translate3d(0, 0, 0)' },
   },
   clipRevealUp: {
-    hidden: { clipPath: 'inset(100% 0 0 0)', opacity: 0 },
+    hidden: { clipPath: 'inset(6% 0 0 0)', opacity: 0.9 },
     visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
   },
   clipRevealLeft: {
-    hidden: { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
+    hidden: { clipPath: 'inset(0 8% 0 0)', opacity: 0.9 },
     visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
   },
   clipRevealRight: {
-    hidden: { clipPath: 'inset(0 0 0 100%)', opacity: 0 },
+    hidden: { clipPath: 'inset(0 0 0 8%)', opacity: 0.9 },
     visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
   },
   clipRevealCenter: {
-    hidden: { clipPath: 'inset(50% 50% 50% 50%)', opacity: 0 },
+    hidden: { clipPath: 'inset(4% 4% 4% 4%)', opacity: 0.9 },
     visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
   },
 };

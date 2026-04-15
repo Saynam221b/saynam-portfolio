@@ -1,379 +1,272 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link as ScrollLink } from 'react-scroll';
-import { Link, useLocation } from 'react-router-dom';
-import { useTheme, useGyro } from '../App';
+import { AnimatePresence, motion } from 'framer-motion';
 
-const HeaderWrapper = styled(motion.header)`
-  position: fixed;
+const HeaderWrapper = styled.header`
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 70px;
-  background: ${props => props.isDarkMode ?
-    'rgba(17, 24, 39, 0.85)' :
-    'rgba(255, 255, 255, 0.85)'
-  };
-  backdrop-filter: blur(10px);
   z-index: 1000;
-  box-shadow: ${props => props.theme.shadows.sm};
-  transform: translateY(${props => props.isVisible ? '0' : '-100%'});
-  transition: transform 0.3s ease, background-color 0.3s ease;
-  
-  @media (max-width: 768px) {
-    height: 60px;
-  }
+  backdrop-filter: blur(12px);
+  background: rgba(6, 13, 32, 0.82);
+  border-bottom: 1px solid rgba(126, 151, 214, 0.2);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  ${props => props.scrolled && `
+    background: rgba(6, 13, 32, 0.92);
+    border-bottom-color: rgba(126, 151, 214, 0.32);
+    box-shadow: 0 12px 28px rgba(2, 6, 20, 0.28);
+  `}
 `;
 
 const HeaderContainer = styled.div`
-  max-width: 1200px;
-  height: 100%;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  height: 72px;
+  padding: 0 1.25rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const Logo = styled.a`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: ${props => props.theme.colors.text};
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  
+  font-size: 1.28rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f2f6ff;
+
   span {
-    background: ${props => props.theme.gradients.primary};
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  @media (max-width: 768px) {
-    font-size: 1.25rem;
+    color: #15b8a6;
   }
 `;
 
-const Nav = styled.nav`
+const DesktopNav = styled.nav`
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
+  gap: 1.25rem;
+
+  @media (max-width: 900px) {
     display: none;
   }
 `;
 
-const NavLinks = styled.div`
-  display: flex;
-  gap: 2rem;
-`;
-
 const NavLink = styled.a`
-  color: ${props => props.theme.colors.text};
-  font-weight: 500;
-  text-decoration: none;
-  position: relative;
-  transition: color 0.3s ease;
-  cursor: pointer;
-  
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: ${props => props.theme.gradients.primary};
-    transition: width 0.3s ease;
-  }
-  
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-    
-    &:after {
-      width: 100%;
-    }
-  }
-  
-  &.active {
-    color: ${props => props.theme.colors.primary};
-    
-    &:after {
-      width: 100%;
-    }
+  color: rgba(227, 235, 255, 0.85);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.4rem 0.15rem;
+  transition: color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: #fff;
   }
 `;
 
-const ControlButton = styled.button`
-  background: transparent;
-  border: 2px solid ${props => props.active ? props.theme.colors.primary : props.theme.colors.border};
-  color: ${props => props.active ? props.theme.colors.primary : props.theme.colors.text};
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+const HeaderActions = styled.div`
   display: flex;
   align-items: center;
+  gap: 0.55rem;
+`;
+
+const CTAButton = styled.a`
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: ${props => props.theme.colors.primary};
-    color: ${props => props.theme.colors.primary};
-    transform: rotate(15deg);
+  height: 38px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #eaf0ff;
+  border: 1px solid rgba(126, 151, 214, 0.36);
+  background: rgba(23, 37, 74, 0.45);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(43, 108, 240, 0.32);
+    border-color: rgba(90, 148, 255, 0.65);
+  }
+
+  @media (max-width: 900px) {
+    display: none;
   }
 `;
 
-const MobileMenuButton = styled.button`
+const SecondaryAction = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(217, 229, 255, 0.95);
+  border: 1px solid rgba(126, 151, 214, 0.26);
+  background: rgba(16, 28, 58, 0.42);
+  transition: border-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgba(126, 171, 255, 0.55);
+  }
+
+  @media (max-width: 1080px) {
+    display: none;
+  }
+`;
+
+const MenuButton = styled.button`
   width: 38px;
   height: 38px;
-  border-radius: 50%;
-  background: transparent;
-  border: none;
-  color: ${props => props.theme.colors.text};
-  font-size: 1.25rem;
-  cursor: pointer;
+  border: 1px solid rgba(126, 151, 214, 0.36);
+  border-radius: 10px;
+  color: #f2f6ff;
+  background: rgba(16, 28, 58, 0.7);
   display: none;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  
-  @media (max-width: 768px) {
-    display: flex;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(43, 108, 240, 0.34);
   }
-  
-  &:hover {
-    background: ${props => props.theme.colors.primary}20;
-    color: ${props => props.theme.colors.primary};
+
+  @media (max-width: 900px) {
+    display: inline-flex;
   }
 `;
 
-const MobileMenu = styled(motion.div)`
+const MobileOverlay = styled(motion.div)`
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 7, 18, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: 1100;
+`;
+
+const MobileSheet = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
-  bottom: 0;
-  width: 280px;
-  background: ${props => props.theme.colors.background};
-  box-shadow: ${props => props.theme.shadows.lg};
-  padding: 1.5rem;
-  z-index: 1001;
+  width: min(85vw, 320px);
+  height: 100vh;
+  background: rgba(8, 16, 36, 0.97);
+  border-left: 1px solid rgba(126, 151, 214, 0.24);
+  padding: 1.4rem;
+  z-index: 1101;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  
-  @media (max-width: 350px) {
-    width: 100%;
-  }
+  gap: 0.85rem;
 `;
 
-const MobileMenuHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+const MobileLink = styled.a`
+  color: rgba(227, 235, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.65rem 0.2rem;
+  border-bottom: 1px solid rgba(126, 151, 214, 0.12);
 `;
 
-const MobileMenuClose = styled.button`
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: transparent;
-  border: none;
-  color: ${props => props.theme.colors.text};
-  font-size: 1.25rem;
-  cursor: pointer;
-  display: flex;
+const MobileCTA = styled.a`
+  margin-top: 0.8rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: ${props => props.theme.colors.primary}20;
-    color: ${props => props.theme.colors.primary};
-  }
+  height: 42px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  background: linear-gradient(135deg, #2b6cf0 0%, #15b8a6 100%);
+  color: #fff;
 `;
 
-const MobileNavLinks = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
-
-const MobileNavLink = styled.a`
-  color: ${props => props.theme.colors.text};
-  font-weight: 500;
-  font-size: 1.25rem;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  padding: 0.5rem 0;
-  
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-  }
-`;
-
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 1000;
-`;
+const navItems = [
+  { label: 'Services', href: '/#services' },
+  { label: 'Outcomes', href: '/#outcomes' },
+  { label: 'Case Studies', href: '/#projects' },
+  { label: 'Credibility', href: '/#experience' },
+  { label: 'Contact', href: '/#contact' },
+];
 
 const Header = () => {
-  const { isDarkMode, toggleTheme } = useTheme();
-  const { isGyroEnabled, toggleGyro } = useGyro();
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
-  const isHome = location.pathname === '/';
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY && currentScrollY > 80) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
+    document.body.style.overflow = open ? 'hidden' : 'auto';
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [lastScrollY]);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-
-    if (!isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
       document.body.style.overflow = 'auto';
-    }
-  };
+    };
+  }, [open]);
 
-  const navItems = [
-    { name: 'Home', href: '/#home' },
-    { name: 'About', href: '/#about' },
-    { name: 'Skills', href: '/#skills' },
-    { name: 'Experience', href: '/#experience' },
-    { name: 'Projects', href: '/#projects' },
-    { name: 'Contact', href: '/#contact' },
-    { name: 'D3xTRverse', href: '/d3xtrverse' }
-  ];
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <>
-      <HeaderWrapper isVisible={isVisible} isDarkMode={isDarkMode}>
+      <HeaderWrapper scrolled={scrolled}>
         <HeaderContainer>
-          <Logo href="#home">
+          <Logo href="/#home">
             Saynam<span>.</span>
           </Logo>
-
-          <Nav>
-            <NavLinks>
-              {navItems.map((item, index) => (
-                <NavLink
-                  key={index}
-                  as={item.href.startsWith('/#') && isHome ? ScrollLink : Link}
-                  to={item.href.startsWith('/#') && isHome ? item.href.substring(2) : item.href}
-                  href={item.href}
-                  smooth={item.href.startsWith('/#') ? true : undefined}
-                  duration={500}
-                  offset={-70}
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-            </NavLinks>
-
-            <ControlButton onClick={toggleGyro} active={isGyroEnabled} title="Toggle 3D Gyro Effect">
-              <i className="fas fa-mobile-alt" style={{ transform: isGyroEnabled ? 'rotate(0deg)' : 'rotate(0deg)' }}></i>
-            </ControlButton>
-
-            <ControlButton onClick={toggleTheme} title="Toggle Dark Mode">
-              {isDarkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
-            </ControlButton>
-          </Nav>
-
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <ControlButton className="mobile-only" onClick={toggleGyro} active={isGyroEnabled} style={{ display: 'none' }}>
-              <i className="fas fa-mobile-alt"></i>
-            </ControlButton>
-            <MobileMenuButton onClick={toggleMobileMenu}>
-              <i className="fas fa-bars"></i>
-            </MobileMenuButton>
-          </div>
+          <DesktopNav aria-label="Primary">
+            {navItems.map((item) => (
+              <NavLink key={item.label} href={item.href}>
+                {item.label}
+              </NavLink>
+            ))}
+          </DesktopNav>
+          <HeaderActions>
+            <SecondaryAction href="/resume.pdf" target="_blank" rel="noopener noreferrer">Hiring? Resume</SecondaryAction>
+            <CTAButton href="/#contact">Start a Project</CTAButton>
+            <MenuButton
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              aria-label={open ? 'Close menu' : 'Open menu'}
+            >
+              <i className={open ? 'fas fa-times' : 'fas fa-bars'} />
+            </MenuButton>
+          </HeaderActions>
         </HeaderContainer>
       </HeaderWrapper>
 
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {open && (
           <>
-            <Overlay
+            <MobileOverlay
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={toggleMobileMenu}
+              onClick={() => setOpen(false)}
             />
-
-            <MobileMenu
-              initial={{ x: 300 }}
+            <MobileSheet
+              initial={{ x: 320 }}
               animate={{ x: 0 }}
-              exit={{ x: 300 }}
-              transition={{ type: 'tween', duration: 0.3 }}
+              exit={{ x: 320 }}
+              transition={{ duration: 0.22, ease: [0.3, 0, 0.2, 1] }}
             >
-              <MobileMenuHeader>
-                <Logo href="#home" onClick={toggleMobileMenu}>
-                  Saynam<span>.</span>
-                </Logo>
-
-                <MobileMenuClose onClick={toggleMobileMenu}>
-                  <i className="fas fa-times"></i>
-                </MobileMenuClose>
-              </MobileMenuHeader>
-
-              <MobileNavLinks>
-                {navItems.map((item, index) => (
-                  <MobileNavLink
-                    key={index}
-                    as={item.href.startsWith('/#') && isHome ? ScrollLink : Link}
-                    to={item.href.startsWith('/#') && isHome ? item.href.substring(2) : item.href}
-                    href={item.href}
-                    smooth={item.href.startsWith('/#') ? true : undefined}
-                    duration={500}
-                    offset={-70}
-                    onClick={toggleMobileMenu}
-                  >
-                    {item.name}
-                  </MobileNavLink>
-                ))}
-
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                  <ControlButton onClick={() => { toggleGyro(); toggleMobileMenu(); }} active={isGyroEnabled}>
-                    <i className="fas fa-mobile-alt"></i>
-                  </ControlButton>
-                  <ControlButton onClick={() => { toggleTheme(); toggleMobileMenu(); }} active={isDarkMode}>
-                    {isDarkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
-                  </ControlButton>
-                </div>
-              </MobileNavLinks>
-            </MobileMenu>
+              {navItems.map((item) => (
+                <MobileLink key={item.label} href={item.href} onClick={() => setOpen(false)}>
+                  {item.label}
+                </MobileLink>
+              ))}
+              <MobileCTA href="/#contact" onClick={() => setOpen(false)}>
+                Start a Project
+              </MobileCTA>
+              <MobileCTA href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+                View Resume
+              </MobileCTA>
+            </MobileSheet>
           </>
         )}
       </AnimatePresence>

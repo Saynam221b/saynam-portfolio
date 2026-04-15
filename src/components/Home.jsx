@@ -6,7 +6,6 @@ import Skills from './Skills';
 import Experience from './Experience';
 import Projects from './Projects';
 import Contact from './Contact';
-import SectionDivider from './SectionDivider';
 
 const Home = () => {
   return (
@@ -17,15 +16,10 @@ const Home = () => {
       transition={{ duration: 0.5 }}
     >
       <Hero />
-      <SectionDivider />
       <About />
-      <SectionDivider />
       <Skills />
-      <SectionDivider />
-      <Experience />
-      <SectionDivider />
       <Projects />
-      <SectionDivider />
+      <Experience />
       <Contact />
     </motion.div>
   );
