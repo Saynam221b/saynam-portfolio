@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 /**
  * Animation presets for scroll-triggered reveals.
@@ -7,23 +7,23 @@ import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
  */
 const presets = {
   fadeUp: {
-    hidden: { opacity: 0.9, transform: 'translate3d(0, 12px, 0)' },
+    hidden: { opacity: 0.94, transform: 'translate3d(0, 10px, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeDown: {
-    hidden: { opacity: 0.9, transform: 'translate3d(0, -12px, 0)' },
+    hidden: { opacity: 0.94, transform: 'translate3d(0, -10px, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeLeft: {
-    hidden: { opacity: 0.9, transform: 'translate3d(-12px, 0, 0)' },
+    hidden: { opacity: 0.94, transform: 'translate3d(-10px, 0, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeRight: {
-    hidden: { opacity: 0.9, transform: 'translate3d(12px, 0, 0)' },
+    hidden: { opacity: 0.94, transform: 'translate3d(10px, 0, 0)' },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   scaleIn: {
-    hidden: { opacity: 0.92, transform: 'scale3d(0.98, 0.98, 1)' },
+    hidden: { opacity: 0.95, transform: 'scale3d(0.99, 0.99, 1)' },
     visible: { opacity: 1, transform: 'scale3d(1, 1, 1)' },
   },
   blurIn: {

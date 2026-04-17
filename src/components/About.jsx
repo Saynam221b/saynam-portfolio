@@ -2,142 +2,152 @@ import React from 'react';
 import styled from '@emotion/styled';
 import AnimatedSection from './AnimatedSection';
 
-const ServicesSection = styled.section`
-  padding: 4.8rem 1.25rem 1.5rem;
-  position: relative;
+const Section = styled.section`
+  padding: 4.7rem 1.25rem 2.1rem;
 `;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 1120px;
+  max-width: 1160px;
   margin: 0 auto;
 `;
 
-const SectionHeader = styled.div`
-  margin-bottom: 2rem;
+const Header = styled.div`
+  margin-bottom: 1.9rem;
 `;
 
 const Eyebrow = styled.p`
-  color: rgba(164, 188, 244, 0.95);
-  font-size: 0.74rem;
+  font-size: 0.71rem;
+  color: rgba(170, 194, 245, 0.94);
   text-transform: uppercase;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.16em;
   font-weight: 700;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.75rem;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(1.75rem, 4vw, 3rem);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.95rem, 4.3vw, 3.55rem);
   color: ${props => props.theme.colors.text};
-  max-width: 760px;
-  margin-bottom: 0.8rem;
+  max-width: 900px;
+  margin-bottom: 0.85rem;
+
+  span {
+    font-family: 'Instrument Serif', Georgia, serif;
+    color: #95d6ce;
+  }
 `;
 
 const Intro = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
   max-width: 760px;
-  font-size: 1rem;
-  line-height: 1.75;
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.98rem;
+  line-height: 1.74;
 `;
 
-const SplitGrid = styled.div`
+const Split = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 0.95rem;
 
   @media (min-width: 980px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
   }
 `;
 
-const ServicePane = styled.article`
-  padding: 1.35rem 1.25rem;
+const Pane = styled.article`
+  border: 1px solid rgba(151, 176, 234, 0.23);
   border-radius: 18px;
-  border: 1px solid rgba(126, 151, 214, 0.22);
-  background: rgba(10, 22, 52, 0.55);
+  background: rgba(12, 22, 48, 0.5);
+  padding: 1.2rem;
 `;
 
-const ServiceTitle = styled.h3`
-  font-size: 1.22rem;
-  color: ${props => props.theme.colors.text};
-  letter-spacing: -0.01em;
+const PaneLabel = styled.p`
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: rgba(167, 194, 248, 0.95);
   margin-bottom: 0.5rem;
 `;
 
-const ServiceCopy = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.95rem;
-  line-height: 1.75;
-  margin-bottom: 0.95rem;
+const PaneTitle = styled.h3`
+  color: ${props => props.theme.colors.text};
+  font-size: 1.38rem;
+  margin-bottom: 0.55rem;
 `;
 
-const ServicePoints = styled.ul`
+const PaneCopy = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.93rem;
+  line-height: 1.72;
+  margin-bottom: 0.82rem;
+`;
+
+const PointList = styled.ul`
   list-style: none;
   display: grid;
-  gap: 0.45rem;
+  gap: 0.46rem;
 `;
 
-const ServicePoint = styled.li`
-  font-size: 0.87rem;
-  color: rgba(198, 214, 247, 0.95);
-  line-height: 1.6;
-  display: flex;
-  gap: 0.55rem;
-
-  &::before {
-    content: '•';
-    color: #59b5ff;
-  }
+const Point = styled.li`
+  color: rgba(202, 218, 249, 0.95);
+  font-size: 0.86rem;
+  line-height: 1.62;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(96, 168, 255, 0.58);
 `;
 
 const About = () => {
   return (
-    <ServicesSection id="services">
+    <Section id="services">
       <Container>
         <AnimatedSection animation="fadeUp">
-          <SectionHeader>
+          <Header>
             <Eyebrow>Service Split</Eyebrow>
-            <Title>What I build: dependable data platforms and polished web products.</Title>
+            <Title>
+              One engineer across <span>data systems</span> and <span>web product delivery</span>.
+            </Title>
             <Intro>
-              I work across data and frontend delivery so teams can move from architecture decisions to production outcomes with less handoff friction.
-              You get a builder who can ship robust pipelines, but also package them into usable product experiences.
+              This hybrid model removes handoff friction. Architecture, implementation, and user-facing quality stay aligned from the first
+              technical decision to production release.
             </Intro>
-          </SectionHeader>
+          </Header>
         </AnimatedSection>
 
-        <SplitGrid>
+        <Split>
           <AnimatedSection animation="fadeRight" delay={0.08}>
-            <ServicePane>
-              <ServiceTitle>Data Engineering</ServiceTitle>
-              <ServiceCopy>
-                Production ETL and lakehouse work focused on reliability, cost-aware performance, and clean downstream analytics.
-              </ServiceCopy>
-              <ServicePoints>
-                <ServicePoint>Batch + incremental pipelines on Databricks, AWS, Airflow, and Snowflake.</ServicePoint>
-                <ServicePoint>Schema evolution, idempotent reruns, and data quality guardrails with dbt.</ServicePoint>
-                <ServicePoint>Observability-first design to reduce incident response time and on-call fatigue.</ServicePoint>
-              </ServicePoints>
-            </ServicePane>
+            <Pane>
+              <PaneLabel>Data Engineering</PaneLabel>
+              <PaneTitle>ETL, lakehouse, reliability, and observability</PaneTitle>
+              <PaneCopy>
+                I build robust analytics pipelines that are rerun-safe, cost-aware, and ready for long-term operations.
+              </PaneCopy>
+              <PointList>
+                <Point>Batch and incremental ingestion with strict idempotency and schema drift controls.</Point>
+                <Point>dbt model layers with quality checks and audit-ready transformation design.</Point>
+                <Point>Operational observability that reduces triage time and pipeline incidents.</Point>
+              </PointList>
+            </Pane>
           </AnimatedSection>
 
           <AnimatedSection animation="fadeLeft" delay={0.12}>
-            <ServicePane>
-              <ServiceTitle>Web Development</ServiceTitle>
-              <ServiceCopy>
-                Product-grade web interfaces and full-stack experiences that communicate complex systems clearly and convert users effectively.
-              </ServiceCopy>
-              <ServicePoints>
-                <ServicePoint>React and Next.js product interfaces with strong visual hierarchy and performance discipline.</ServicePoint>
-                <ServicePoint>Full-stack delivery for dashboards, community products, and data-driven interaction flows.</ServicePoint>
-                <ServicePoint>Freelance-friendly execution: scoped delivery, rapid iteration, and production-ready handoff.</ServicePoint>
-              </ServicePoints>
-            </ServicePane>
+            <Pane>
+              <PaneLabel>Web Development</PaneLabel>
+              <PaneTitle>React and Next.js product builds for teams and freelance clients</PaneTitle>
+              <PaneCopy>
+                I ship production-ready interfaces with strong interaction quality, clear hierarchy, and performance discipline.
+              </PaneCopy>
+              <PointList>
+                <Point>Modern frontend architecture for dashboards, tools, and customer-facing product surfaces.</Point>
+                <Point>Full-stack delivery where data-heavy systems still feel clear and easy to use.</Point>
+                <Point>Freelance-friendly execution with tight scope, iterative checkpoints, and clean handoff.</Point>
+              </PointList>
+            </Pane>
           </AnimatedSection>
-        </SplitGrid>
+        </Split>
       </Container>
-    </ServicesSection>
+    </Section>
   );
 };
 

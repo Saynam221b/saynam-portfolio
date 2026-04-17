@@ -4,7 +4,7 @@ import { keyframes } from '@emotion/react';
 import { motion } from 'framer-motion';
 
 const sweep = keyframes`
-  0% { transform: translateX(-120%); }
+  0% { transform: translateX(-110%); }
   100% { transform: translateX(120%); }
 `;
 
@@ -15,57 +15,69 @@ const LoaderContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #070e22;
+  background:
+    radial-gradient(circle at 14% 22%, rgba(47, 109, 255, 0.15), transparent 34%),
+    radial-gradient(circle at 86% 70%, rgba(24, 182, 164, 0.12), transparent 36%),
+    #060b1a;
 `;
 
-const LoaderCard = styled.div`
-  width: min(360px, 88vw);
-  border-radius: 16px;
-  border: 1px solid rgba(126, 151, 214, 0.32);
-  background: rgba(13, 25, 54, 0.88);
-  padding: 1rem 1rem 0.9rem;
+const Frame = styled.div`
+  width: min(460px, 90vw);
+  border: 1px solid rgba(152, 177, 236, 0.3);
+  border-radius: 18px;
+  padding: 1.1rem 1.1rem 0.95rem;
+  background: rgba(13, 23, 51, 0.82);
+  box-shadow: 0 20px 48px rgba(3, 8, 26, 0.42);
 `;
 
-const Brand = styled.h2`
-  color: #f2f6ff;
-  font-size: 1.05rem;
-  font-weight: 800;
+const Label = styled.p`
+  font-size: 0.7rem;
+  color: rgba(175, 197, 245, 0.92);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
   margin-bottom: 0.45rem;
 `;
 
-const Caption = styled.p`
-  color: rgba(182, 199, 239, 0.95);
-  font-size: 0.82rem;
-  margin-bottom: 0.78rem;
+const Brand = styled.h2`
+  font-size: clamp(1.28rem, 2.8vw, 1.62rem);
+  font-weight: 600;
+  color: #f6f8ff;
+  margin-bottom: 0.72rem;
+
+  span {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    color: #8dd6ce;
+  }
 `;
 
-const ProgressTrack = styled.div`
-  position: relative;
-  overflow: hidden;
+const Track = styled.div`
   height: 5px;
   border-radius: 999px;
-  background: rgba(138, 162, 222, 0.2);
+  overflow: hidden;
+  background: rgba(136, 160, 220, 0.2);
 `;
 
-const ProgressSweep = styled.div`
-  position: absolute;
-  inset: 0;
-  width: 40%;
+const Sweep = styled.div`
+  width: 36%;
+  height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #2b6cf0 0%, #15b8a6 100%);
-  animation: ${sweep} 0.7s ease-in-out infinite;
+  background: linear-gradient(90deg, #2f6dff 0%, #18b6a4 100%);
+  animation: ${sweep} 0.66s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 `;
 
 const Loader = () => {
   return (
-    <LoaderContainer initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
-      <LoaderCard>
-        <Brand>Saynam Sharma</Brand>
-        <Caption>Loading portfolio snapshot...</Caption>
-        <ProgressTrack>
-          <ProgressSweep />
-        </ProgressTrack>
-      </LoaderCard>
+    <LoaderContainer initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+      <Frame>
+        <Label>Studio Loading</Label>
+        <Brand>
+          Saynam <span>Sharma</span>
+        </Brand>
+        <Track>
+          <Sweep />
+        </Track>
+      </Frame>
     </LoaderContainer>
   );
 };

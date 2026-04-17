@@ -14,27 +14,23 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const theme = {
   colors: {
-    primary: '#2B6CF0',
-    secondary: '#15B8A6',
-    accent: '#0E172E',
-    background: '#070E22',
-    cardBg: '#0F1B39',
-    text: '#F3F6FF',
-    textSecondary: '#B5C0E1',
-    textLight: '#7F8CB0',
-    border: 'rgba(130, 153, 214, 0.28)',
-    success: '#14B87A',
-    error: '#D74452',
-    warning: '#E2A039',
+    primary: '#2f6dff',
+    secondary: '#18b6a4',
+    accent: '#b8cbff',
+    background: '#060b1a',
+    surface: '#0d1733',
+    text: '#f6f8ff',
+    textSecondary: '#b6c4e9',
+    textLight: '#7f93c2',
+    border: 'rgba(144, 168, 227, 0.26)',
   },
   shadows: {
-    sm: '0 2px 10px rgba(2, 6, 20, 0.24)',
-    md: '0 12px 30px rgba(2, 6, 20, 0.3)',
-    lg: '0 24px 48px rgba(2, 6, 20, 0.4)',
+    sm: '0 8px 20px rgba(3, 8, 26, 0.28)',
+    md: '0 16px 36px rgba(3, 8, 26, 0.36)',
+    lg: '0 26px 60px rgba(3, 8, 26, 0.48)',
   },
   gradients: {
-    primary: 'linear-gradient(135deg, #2B6CF0 0%, #15B8A6 100%)',
-    surface: 'linear-gradient(180deg, rgba(17, 30, 63, 0.92) 0%, rgba(9, 18, 40, 0.92) 100%)',
+    primary: 'linear-gradient(135deg, #2f6dff 0%, #18b6a4 100%)',
   },
   breakpoints: {
     sm: '640px',
@@ -45,6 +41,17 @@ const theme = {
 };
 
 const globalStyles = css`
+  :root {
+    --bg: #060b1a;
+    --surface: #0d1733;
+    --surface-soft: rgba(14, 27, 57, 0.56);
+    --border: rgba(144, 168, 227, 0.26);
+    --text: #f6f8ff;
+    --text-muted: #b6c4e9;
+    --accent: #2f6dff;
+    --accent-2: #18b6a4;
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -54,19 +61,29 @@ const globalStyles = css`
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 84px;
+    background: var(--bg);
   }
 
   body {
-    font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background:
-      radial-gradient(circle at 12% 0%, rgba(39, 105, 240, 0.2), transparent 34%),
-      radial-gradient(circle at 86% 0%, rgba(20, 177, 166, 0.14), transparent 30%),
-      #070e22;
-    color: ${theme.colors.text};
+      radial-gradient(circle at 8% -10%, rgba(53, 108, 255, 0.16), transparent 32%),
+      radial-gradient(circle at 92% 0%, rgba(24, 182, 164, 0.14), transparent 32%),
+      var(--bg);
+    color: var(--text);
     line-height: 1.6;
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.02em;
+    line-height: 1.06;
   }
 
   a {
@@ -80,8 +97,14 @@ const globalStyles = css`
   }
 
   ::selection {
-    background: rgba(43, 108, 240, 0.45);
+    background: rgba(47, 109, 255, 0.42);
     color: #fff;
+  }
+
+  .display-serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+    letter-spacing: -0.012em;
+    font-weight: 400;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -96,9 +119,7 @@ const globalStyles = css`
 const GlobalAtmosphere = styledAtmosphere();
 
 function styledAtmosphere() {
-  return {
-    Layer: motion.div,
-  };
+  return { Layer: motion.div };
 }
 
 export const ThemeContext = createContext();
@@ -114,8 +135,9 @@ export const useTheme = () => {
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const { scrollYProgress } = useScroll();
-  const glowY = useTransform(scrollYProgress, [0, 1], ['-8%', '28%']);
-  const glowOpacity = useTransform(scrollYProgress, [0, 0.45, 1], [0.7, 0.3, 0.1]);
+  const washY = useTransform(scrollYProgress, [0, 1], ['-10%', '26%']);
+  const washOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.75, 0.32, 0.1]);
+  const gridOpacity = useTransform(scrollYProgress, [0, 1], [0.16, 0.06]);
 
   useEffect(() => {
     const hasSeenLoader = sessionStorage.getItem('portfolio-loader-seen') === 'true';
@@ -127,7 +149,7 @@ function AppContent() {
     const timer = setTimeout(() => {
       sessionStorage.setItem('portfolio-loader-seen', 'true');
       setIsLoading(false);
-    }, 550);
+    }, 620);
 
     return () => clearTimeout(timer);
   }, []);
@@ -142,10 +164,24 @@ function AppContent() {
           inset: 0,
           pointerEvents: 'none',
           zIndex: 0,
-          y: glowY,
-          opacity: glowOpacity,
+          y: washY,
+          opacity: washOpacity,
           background:
-            'radial-gradient(circle at 80% 20%, rgba(68, 156, 255, 0.16), transparent 34%), radial-gradient(circle at 16% 70%, rgba(26, 192, 172, 0.14), transparent 36%)',
+            'radial-gradient(circle at 76% 18%, rgba(88, 153, 255, 0.28), transparent 34%), radial-gradient(circle at 14% 72%, rgba(35, 183, 170, 0.2), transparent 38%)',
+        }}
+      />
+      <GlobalAtmosphere.Layer
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 0,
+          opacity: gridOpacity,
+          backgroundImage:
+            'linear-gradient(rgba(145, 168, 230, 0.32) 1px, transparent 1px), linear-gradient(90deg, rgba(145, 168, 230, 0.32) 1px, transparent 1px)',
+          backgroundSize: '56px 56px',
+          maskImage: 'radial-gradient(circle at 50% 28%, rgba(0,0,0,0.45), transparent 74%)',
         }}
       />
       <AnimatePresence mode="wait">
@@ -156,7 +192,7 @@ function AppContent() {
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.36 }}
             style={{ position: 'relative', zIndex: 1 }}
           >
             <Header />

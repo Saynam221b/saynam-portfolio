@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const HeaderWrapper = styled.header`
+const HeaderShell = styled.header`
   position: sticky;
   top: 0;
   z-index: 1000;
-  backdrop-filter: blur(12px);
-  background: rgba(6, 13, 32, 0.82);
-  border-bottom: 1px solid rgba(126, 151, 214, 0.2);
-  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(14px);
+  background: rgba(6, 11, 26, 0.72);
+  border-bottom: 1px solid rgba(144, 168, 227, 0.16);
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 
-  ${props => props.scrolled && `
-    background: rgba(6, 13, 32, 0.92);
-    border-bottom-color: rgba(126, 151, 214, 0.32);
-    box-shadow: 0 12px 28px rgba(2, 6, 20, 0.28);
+  ${props =>
+    props.scrolled &&
+    `
+    background: rgba(6, 11, 26, 0.9);
+    border-bottom-color: rgba(144, 168, 227, 0.3);
+    box-shadow: 0 12px 32px rgba(3, 8, 26, 0.4);
   `}
 `;
 
-const HeaderContainer = styled.div`
-  max-width: 1120px;
+const HeaderInner = styled.div`
+  max-width: 1160px;
   margin: 0 auto;
   height: 72px;
   padding: 0 1.25rem;
@@ -28,93 +30,101 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
 `;
 
-const Logo = styled.a`
-  font-size: 1.28rem;
-  font-weight: 800;
+const Brand = styled.a`
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28rem;
+  color: #f6f8ff;
+  font-weight: 700;
+  font-size: 1.14rem;
   letter-spacing: -0.02em;
-  color: #f2f6ff;
 
-  span {
-    color: #15b8a6;
+  small {
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(173, 196, 244, 0.88);
   }
 `;
 
 const DesktopNav = styled.nav`
   display: flex;
-  gap: 1.25rem;
+  gap: 1.2rem;
 
-  @media (max-width: 900px) {
+  @media (max-width: 980px) {
     display: none;
   }
 `;
 
 const NavLink = styled.a`
-  color: rgba(227, 235, 255, 0.85);
-  font-size: 0.92rem;
+  color: rgba(219, 230, 255, 0.9);
+  font-size: 0.86rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  padding: 0.4rem 0.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.1rem;
   transition: color 0.2s ease;
 
   &:hover,
   &:focus-visible {
-    color: #fff;
+    color: #ffffff;
   }
 `;
 
-const HeaderActions = styled.div`
+const Actions = styled.div`
   display: flex;
   align-items: center;
   gap: 0.55rem;
 `;
 
-const CTAButton = styled.a`
+const QuietCta = styled.a`
+  height: 38px;
+  border-radius: 999px;
+  padding: 0 0.95rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 38px;
-  padding: 0 1rem;
-  border-radius: 999px;
-  font-size: 0.84rem;
+  font-size: 0.77rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  color: #eaf0ff;
-  border: 1px solid rgba(126, 151, 214, 0.36);
-  background: rgba(23, 37, 74, 0.45);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(229, 236, 255, 0.95);
+  border: 1px solid rgba(144, 168, 227, 0.34);
+  background: rgba(14, 27, 57, 0.58);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 
   &:hover,
   &:focus-visible {
-    background: rgba(43, 108, 240, 0.32);
-    border-color: rgba(90, 148, 255, 0.65);
+    border-color: rgba(167, 204, 255, 0.74);
+    transform: translateY(-1px);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1120px) {
     display: none;
   }
 `;
 
-const SecondaryAction = styled.a`
+const PrimaryCta = styled.a`
+  height: 38px;
+  border-radius: 999px;
+  padding: 0 1.05rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 38px;
-  padding: 0 0.95rem;
-  border-radius: 999px;
-  font-size: 0.82rem;
+  font-size: 0.77rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  color: rgba(217, 229, 255, 0.95);
-  border: 1px solid rgba(126, 151, 214, 0.26);
-  background: rgba(16, 28, 58, 0.42);
-  transition: border-color 0.2s ease;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(130deg, #2f6dff 0%, #18b6a4 100%);
+  transition: transform 0.2s ease;
 
   &:hover,
   &:focus-visible {
-    border-color: rgba(126, 171, 255, 0.55);
+    transform: translateY(-1px);
   }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 980px) {
     display: none;
   }
 `;
@@ -122,22 +132,21 @@ const SecondaryAction = styled.a`
 const MenuButton = styled.button`
   width: 38px;
   height: 38px;
-  border: 1px solid rgba(126, 151, 214, 0.36);
   border-radius: 10px;
-  color: #f2f6ff;
-  background: rgba(16, 28, 58, 0.7);
+  border: 1px solid rgba(144, 168, 227, 0.36);
+  background: rgba(14, 27, 57, 0.7);
+  color: #f5f8ff;
   display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
 
   &:hover,
   &:focus-visible {
-    background: rgba(43, 108, 240, 0.34);
+    background: rgba(28, 50, 100, 0.76);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 980px) {
     display: inline-flex;
   }
 `;
@@ -145,7 +154,7 @@ const MenuButton = styled.button`
 const MobileOverlay = styled(motion.div)`
   position: fixed;
   inset: 0;
-  background: rgba(2, 7, 18, 0.55);
+  background: rgba(3, 8, 24, 0.62);
   backdrop-filter: blur(3px);
   z-index: 1100;
 `;
@@ -154,42 +163,59 @@ const MobileSheet = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
-  width: min(85vw, 320px);
+  width: min(84vw, 320px);
   height: 100vh;
-  background: rgba(8, 16, 36, 0.97);
-  border-left: 1px solid rgba(126, 151, 214, 0.24);
-  padding: 1.4rem;
   z-index: 1101;
+  padding: 1.2rem 1.15rem;
+  background: rgba(8, 15, 34, 0.96);
+  border-left: 1px solid rgba(144, 168, 227, 0.28);
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.6rem;
 `;
 
 const MobileLink = styled.a`
-  color: rgba(227, 235, 255, 0.9);
-  font-size: 1rem;
+  padding: 0.7rem 0.2rem;
+  border-bottom: 1px solid rgba(144, 168, 227, 0.12);
+  color: rgba(227, 236, 255, 0.95);
+  font-size: 0.95rem;
   font-weight: 600;
-  padding: 0.65rem 0.2rem;
-  border-bottom: 1px solid rgba(126, 151, 214, 0.12);
 `;
 
-const MobileCTA = styled.a`
-  margin-top: 0.8rem;
+const MobilePrimary = styled.a`
+  margin-top: 0.7rem;
+  min-height: 42px;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 42px;
-  border-radius: 999px;
+  font-size: 0.83rem;
   font-weight: 700;
-  font-size: 0.88rem;
-  background: linear-gradient(135deg, #2b6cf0 0%, #15b8a6 100%);
-  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background: linear-gradient(130deg, #2f6dff 0%, #18b6a4 100%);
+`;
+
+const MobileQuiet = styled.a`
+  min-height: 42px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.83rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(227, 236, 255, 0.95);
+  border: 1px solid rgba(144, 168, 227, 0.34);
+  background: rgba(14, 27, 57, 0.58);
 `;
 
 const navItems = [
   { label: 'Services', href: '/#services' },
   { label: 'Outcomes', href: '/#outcomes' },
-  { label: 'Case Studies', href: '/#projects' },
+  { label: 'Work', href: '/#projects' },
   { label: 'Credibility', href: '/#experience' },
   { label: 'Contact', href: '/#contact' },
 ];
@@ -206,7 +232,7 @@ const Header = () => {
   }, [open]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -214,31 +240,31 @@ const Header = () => {
 
   return (
     <>
-      <HeaderWrapper scrolled={scrolled}>
-        <HeaderContainer>
-          <Logo href="/#home">
-            Saynam<span>.</span>
-          </Logo>
+      <HeaderShell scrolled={scrolled}>
+        <HeaderInner>
+          <Brand href="/#home">
+            Saynam Sharma <small>Studio</small>
+          </Brand>
+
           <DesktopNav aria-label="Primary">
-            {navItems.map((item) => (
+            {navItems.map(item => (
               <NavLink key={item.label} href={item.href}>
                 {item.label}
               </NavLink>
             ))}
           </DesktopNav>
-          <HeaderActions>
-            <SecondaryAction href="/resume.pdf" target="_blank" rel="noopener noreferrer">Hiring? Resume</SecondaryAction>
-            <CTAButton href="/#contact">Start a Project</CTAButton>
-            <MenuButton
-              type="button"
-              onClick={() => setOpen((prev) => !prev)}
-              aria-label={open ? 'Close menu' : 'Open menu'}
-            >
+
+          <Actions>
+            <QuietCta href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+              View Resume
+            </QuietCta>
+            <PrimaryCta href="/#contact">Start a Project</PrimaryCta>
+            <MenuButton type="button" onClick={() => setOpen(prev => !prev)} aria-label={open ? 'Close menu' : 'Open menu'}>
               <i className={open ? 'fas fa-times' : 'fas fa-bars'} />
             </MenuButton>
-          </HeaderActions>
-        </HeaderContainer>
-      </HeaderWrapper>
+          </Actions>
+        </HeaderInner>
+      </HeaderShell>
 
       <AnimatePresence>
         {open && (
@@ -255,17 +281,17 @@ const Header = () => {
               exit={{ x: 320 }}
               transition={{ duration: 0.22, ease: [0.3, 0, 0.2, 1] }}
             >
-              {navItems.map((item) => (
+              {navItems.map(item => (
                 <MobileLink key={item.label} href={item.href} onClick={() => setOpen(false)}>
                   {item.label}
                 </MobileLink>
               ))}
-              <MobileCTA href="/#contact" onClick={() => setOpen(false)}>
+              <MobilePrimary href="/#contact" onClick={() => setOpen(false)}>
                 Start a Project
-              </MobileCTA>
-              <MobileCTA href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+              </MobilePrimary>
+              <MobileQuiet href="/resume.pdf" target="_blank" rel="noopener noreferrer">
                 View Resume
-              </MobileCTA>
+              </MobileQuiet>
             </MobileSheet>
           </>
         )}

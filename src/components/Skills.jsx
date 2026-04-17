@@ -2,170 +2,175 @@ import React from 'react';
 import styled from '@emotion/styled';
 import AnimatedSection from './AnimatedSection';
 
-const OutcomesSection = styled.section`
-  padding: 3.6rem 1.25rem 2rem;
+const Section = styled.section`
+  padding: 3.3rem 1.25rem 2rem;
 `;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 1120px;
+  max-width: 1160px;
   margin: 0 auto;
 `;
 
-const HeaderRow = styled.div`
+const Header = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
 
-  @media (min-width: 880px) {
-    grid-template-columns: 0.6fr 1.4fr;
+  @media (min-width: 960px) {
+    grid-template-columns: 0.7fr 1.3fr;
     align-items: end;
   }
 `;
 
 const Title = styled.h2`
-  font-size: clamp(1.65rem, 3vw, 2.45rem);
+  font-size: clamp(1.85rem, 4vw, 3.3rem);
   color: ${props => props.theme.colors.text};
-  letter-spacing: -0.02em;
 `;
 
-const HeaderCopy = styled.p`
+const Copy = styled.p`
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.98rem;
-  line-height: 1.7;
-  max-width: 720px;
+  max-width: 760px;
+  font-size: 0.96rem;
+  line-height: 1.74;
 `;
 
 const OutcomeStrip = styled.div`
-  display: grid;
-  gap: 0.85rem;
-  grid-template-columns: 1fr;
-  margin-bottom: 1.2rem;
+  border-top: 1px solid rgba(151, 176, 234, 0.28);
+  border-bottom: 1px solid rgba(151, 176, 234, 0.2);
+`;
 
-  @media (min-width: 720px) {
+const OutcomeRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 860px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 `;
 
-const OutcomeCard = styled.div`
-  padding: 1.1rem 1rem;
-  border-top: 2px solid rgba(84, 153, 255, 0.55);
-  border-bottom: 1px solid rgba(126, 151, 214, 0.2);
-  background: rgba(10, 22, 52, 0.38);
-`;
+const Outcome = styled.div`
+  padding: 1.15rem 0.95rem 1.1rem;
+  border-bottom: 1px solid rgba(151, 176, 234, 0.16);
 
-const OutcomeValue = styled.p`
-  font-size: clamp(1.35rem, 3vw, 2rem);
-  color: ${props => props.theme.colors.text};
-  font-weight: 800;
-  margin-bottom: 0.3rem;
-`;
+  @media (min-width: 860px) {
+    border-bottom: none;
+    border-right: 1px solid rgba(151, 176, 234, 0.16);
 
-const OutcomeLabel = styled.p`
-  font-size: 0.8rem;
-  color: rgba(168, 192, 244, 0.9);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  margin-bottom: 0.35rem;
-  font-weight: 700;
-`;
-
-const OutcomeBody = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.89rem;
-  line-height: 1.62;
-`;
-
-const StackPanel = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.95rem;
-  margin-top: 0.95rem;
-
-  @media (min-width: 880px) {
-    grid-template-columns: 1fr 1fr;
+    &:last-of-type {
+      border-right: none;
+    }
   }
 `;
 
-const StackColumn = styled.div`
-  border: 1px solid rgba(126, 151, 214, 0.2);
-  border-radius: 14px;
-  background: rgba(11, 24, 54, 0.5);
-  padding: 1rem;
+const OutcomeValue = styled.p`
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+  color: ${props => props.theme.colors.text};
+  font-weight: 700;
+  margin-bottom: 0.35rem;
 `;
 
-const StackTitle = styled.h3`
-  font-size: 0.93rem;
-  color: rgba(203, 220, 255, 0.95);
+const OutcomeLabel = styled.p`
+  font-size: 0.71rem;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
-  margin-bottom: 0.65rem;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+  color: rgba(164, 194, 248, 0.94);
+  margin-bottom: 0.33rem;
 `;
 
-const StackItems = styled.p`
+const OutcomeBody = styled.p`
+  font-size: 0.87rem;
+  line-height: 1.64;
+  color: ${props => props.theme.colors.textSecondary};
+`;
+
+const CapabilityRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-top: 1.1rem;
+
+  @media (min-width: 860px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+`;
+
+const Capability = styled.div`
+  padding: 0.95rem 0.95rem 0.9rem;
+  background: rgba(11, 22, 48, 0.46);
+  border: 1px solid rgba(151, 176, 234, 0.2);
+  border-radius: 14px;
+`;
+
+const CapabilityTitle = styled.p`
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: rgba(164, 194, 248, 0.94);
+  margin-bottom: 0.52rem;
+`;
+
+const CapabilityBody = styled.p`
   color: ${props => props.theme.colors.textSecondary};
   font-size: 0.9rem;
-  line-height: 1.7;
+  line-height: 1.66;
 `;
 
 const Skills = () => {
   return (
-    <OutcomesSection id="outcomes">
+    <Section id="outcomes">
       <Container>
         <AnimatedSection animation="fadeUp">
-          <HeaderRow>
+          <Header>
             <Title>Selected Outcomes</Title>
-            <HeaderCopy>
-              Delivery is measured by stability, speed, and business usefulness. These are representative outcomes from production data and web product work.
-            </HeaderCopy>
-          </HeaderRow>
+            <Copy>
+              The goal is measurable impact, not visual noise. These outcomes represent delivery quality across both production data engineering
+              and modern web product work.
+            </Copy>
+          </Header>
         </AnimatedSection>
 
-        <OutcomeStrip>
-          <AnimatedSection animation="fadeUp" delay={0.06}>
-            <OutcomeCard>
-              <OutcomeValue>45-60%</OutcomeValue>
-              <OutcomeLabel>Runtime Improvement</OutcomeLabel>
-              <OutcomeBody>Optimized Spark pipelines through better partitioning and shuffle reduction.</OutcomeBody>
-            </OutcomeCard>
-          </AnimatedSection>
-          <AnimatedSection animation="fadeUp" delay={0.1}>
-            <OutcomeCard>
-              <OutcomeValue>Idempotent ETL</OutcomeValue>
-              <OutcomeLabel>Reliability</OutcomeLabel>
-              <OutcomeBody>Safe reruns and schema drift handling to keep downstream analytics consistent.</OutcomeBody>
-            </OutcomeCard>
-          </AnimatedSection>
-          <AnimatedSection animation="fadeUp" delay={0.14}>
-            <OutcomeCard>
-              <OutcomeValue>Full-Stack Delivery</OutcomeValue>
-              <OutcomeLabel>Web Product Builds</OutcomeLabel>
-              <OutcomeBody>Designed and shipped React-driven experiences for community and data-centric products.</OutcomeBody>
-            </OutcomeCard>
-          </AnimatedSection>
-        </OutcomeStrip>
+        <AnimatedSection animation="fadeUp" delay={0.07}>
+          <OutcomeStrip>
+            <OutcomeRow>
+              <Outcome>
+                <OutcomeValue>45-60%</OutcomeValue>
+                <OutcomeLabel>Runtime Improvement</OutcomeLabel>
+                <OutcomeBody>Spark workloads optimized through partition strategy and shuffle reduction.</OutcomeBody>
+              </Outcome>
+              <Outcome>
+                <OutcomeValue>Idempotent ETL</OutcomeValue>
+                <OutcomeLabel>Reliability</OutcomeLabel>
+                <OutcomeBody>Safe reruns and schema evolution controls for stable downstream analytics.</OutcomeBody>
+              </Outcome>
+              <Outcome>
+                <OutcomeValue>End-to-End Delivery</OutcomeValue>
+                <OutcomeLabel>Web + Data</OutcomeLabel>
+                <OutcomeBody>Built data-heavy products where engineering depth and UI quality ship together.</OutcomeBody>
+              </Outcome>
+            </OutcomeRow>
+          </OutcomeStrip>
+        </AnimatedSection>
 
-        <StackPanel>
+        <CapabilityRow>
           <AnimatedSection animation="fadeRight" delay={0.12}>
-            <StackColumn>
-              <StackTitle>Data Stack</StackTitle>
-              <StackItems>
-                Databricks, PySpark, Airflow, Snowflake, dbt, Delta Lake, AWS, SQL, Python.
-              </StackItems>
-            </StackColumn>
+            <Capability>
+              <CapabilityTitle>Data Stack</CapabilityTitle>
+              <CapabilityBody>Databricks, PySpark, Airflow, Snowflake, dbt, Delta Lake, AWS, SQL, Python.</CapabilityBody>
+            </Capability>
           </AnimatedSection>
-          <AnimatedSection animation="fadeLeft" delay={0.15}>
-            <StackColumn>
-              <StackTitle>Web Stack</StackTitle>
-              <StackItems>
-                React, Next.js, TypeScript, API integration, modern UI systems, product-focused frontend architecture.
-              </StackItems>
-            </StackColumn>
+          <AnimatedSection animation="fadeLeft" delay={0.14}>
+            <Capability>
+              <CapabilityTitle>Web Stack</CapabilityTitle>
+              <CapabilityBody>React, Next.js, TypeScript, API integration, frontend systems, and product-focused architecture.</CapabilityBody>
+            </Capability>
           </AnimatedSection>
-        </StackPanel>
+        </CapabilityRow>
       </Container>
-    </OutcomesSection>
+    </Section>
   );
 };
 
