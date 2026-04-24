@@ -13,6 +13,7 @@
             "@emotion/styled": "^11.14.0",
             "@lottiefiles/react-lottie-player": "^3.6.0",
             "@react-spring/web": "^10.0.1",
+            "@remotion/player": "4.0.451",
             "emailjs-com": "^3.2.0",
             "framer-motion": "^10.18.0",
             "nodemailer": "^6.9.8",

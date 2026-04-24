@@ -18,10 +18,10 @@ import { useScrollAnimation } from '../hooks/useScrollAnimation';
  */
 const AnimatedSection = ({
   children,
-  animation = 'fadeUp',
+  animation = 'cinematicReveal',
   delay = 0,
-  duration = 0.7,
-  threshold = 0.12,
+  duration = 0.95,
+  threshold = 0.08,
   once = true,
   className,
   style,

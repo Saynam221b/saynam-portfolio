@@ -5,48 +5,67 @@ import { useRef, useEffect, useState } from 'react';
  * Uses opacity + transform only (GPU-accelerated, no layout shifts).
  * Each preset returns CSS properties for hidden and visible states.
  */
-const presets = {
+const resolveDistance = () => {
+  if (typeof window === 'undefined') {
+    return 26;
+  }
+  return Math.max(22, Math.min(44, window.innerHeight * 0.05));
+};
+
+const getPresets = distance => ({
+  cinematicReveal: {
+    hidden: {
+      opacity: 0.02,
+      filter: 'blur(8px)',
+      transform: `translate3d(0, ${distance}px, 0) scale3d(0.985, 0.985, 1)`,
+    },
+    visible: {
+      opacity: 1,
+      filter: 'blur(0px)',
+      transform: 'translate3d(0, 0, 0) scale3d(1, 1, 1)',
+    },
+  },
   fadeUp: {
-    hidden: { opacity: 0.94, transform: 'translate3d(0, 10px, 0)' },
+    hidden: { opacity: 0.02, transform: `translate3d(0, ${distance * 0.72}px, 0)` },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeDown: {
-    hidden: { opacity: 0.94, transform: 'translate3d(0, -10px, 0)' },
+    hidden: { opacity: 0.02, transform: `translate3d(0, ${-distance * 0.72}px, 0)` },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeLeft: {
-    hidden: { opacity: 0.94, transform: 'translate3d(-10px, 0, 0)' },
+    hidden: { opacity: 0.02, transform: `translate3d(${-distance * 0.72}px, 0, 0)` },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   fadeRight: {
-    hidden: { opacity: 0.94, transform: 'translate3d(10px, 0, 0)' },
+    hidden: { opacity: 0.02, transform: `translate3d(${distance * 0.72}px, 0, 0)` },
     visible: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
   },
   scaleIn: {
-    hidden: { opacity: 0.95, transform: 'scale3d(0.99, 0.99, 1)' },
+    hidden: { opacity: 0.04, transform: 'scale3d(0.975, 0.975, 1)' },
     visible: { opacity: 1, transform: 'scale3d(1, 1, 1)' },
   },
   blurIn: {
-    hidden: { opacity: 0.9, filter: 'blur(2px)', transform: 'translate3d(0, 10px, 0)' },
+    hidden: { opacity: 0.02, filter: 'blur(10px)', transform: `translate3d(0, ${distance * 0.68}px, 0)` },
     visible: { opacity: 1, filter: 'blur(0px)', transform: 'translate3d(0, 0, 0)' },
   },
   clipRevealUp: {
-    hidden: { clipPath: 'inset(6% 0 0 0)', opacity: 0.9 },
-    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
+    hidden: { clipPath: 'inset(10% 0 0 0)', opacity: 0.02, filter: 'blur(4px)' },
+    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1, filter: 'blur(0px)' },
   },
   clipRevealLeft: {
-    hidden: { clipPath: 'inset(0 8% 0 0)', opacity: 0.9 },
-    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
+    hidden: { clipPath: 'inset(0 12% 0 0)', opacity: 0.02, filter: 'blur(4px)' },
+    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1, filter: 'blur(0px)' },
   },
   clipRevealRight: {
-    hidden: { clipPath: 'inset(0 0 0 8%)', opacity: 0.9 },
-    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
+    hidden: { clipPath: 'inset(0 0 0 12%)', opacity: 0.02, filter: 'blur(4px)' },
+    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1, filter: 'blur(0px)' },
   },
   clipRevealCenter: {
-    hidden: { clipPath: 'inset(4% 4% 4% 4%)', opacity: 0.9 },
-    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1 },
+    hidden: { clipPath: 'inset(8% 8% 8% 8%)', opacity: 0.02, filter: 'blur(4px)' },
+    visible: { clipPath: 'inset(0 0 0 0)', opacity: 1, filter: 'blur(0px)' },
   },
-};
+});
 
 /**
  * Check if user prefers reduced motion.
@@ -74,17 +93,18 @@ function prefersReducedMotion() {
  * @param {boolean} options.once - Trigger only once (default: true)
  */
 export function useScrollAnimation({
-  animation = 'fadeUp',
+  animation = 'cinematicReveal',
   delay = 0,
-  duration = 0.7,
-  threshold = 0.12,
+  duration = 0.95,
+  threshold = 0.08,
   once = true,
 } = {}) {
   const ref = useRef(null);
   const [hasTriggered, setHasTriggered] = useState(false);
   const reducedMotion = prefersReducedMotion();
 
-  const preset = presets[animation] || presets.fadeUp;
+  const presets = getPresets(resolveDistance());
+  const preset = presets[animation] || presets.cinematicReveal;
 
   useEffect(() => {
     const el = ref.current;
@@ -113,7 +133,7 @@ export function useScrollAnimation({
         if (entry.isIntersecting) {
           // Build transition string
           const transitionProps = willChangeProps.map(
-            (prop) => `${prop} ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`
+            (prop) => `${prop} ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`
           );
           el.style.transition = transitionProps.join(', ');
 
@@ -137,7 +157,7 @@ export function useScrollAnimation({
           el._cleanupTimer = cleanupTimer;
         }
       },
-      { threshold, rootMargin: '0px 0px -40px 0px' }
+      { threshold, rootMargin: '0px 0px -12% 0px' }
     );
 
     observer.observe(el);
@@ -162,5 +182,5 @@ export function staggerDelay(index, baseDelay = 0, staggerInterval = 0.08) {
   return baseDelay + index * staggerInterval;
 }
 
-export { presets };
+export const presets = getPresets(resolveDistance());
 export default useScrollAnimation;

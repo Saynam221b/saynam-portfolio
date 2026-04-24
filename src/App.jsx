@@ -12,25 +12,12 @@ import ScrollToTop from './components/ScrollToTop';
 import { SectionProvider } from './context/SectionContext';
 import 'react-toastify/dist/ReactToastify.css';
 
+const THEME_STORAGE_KEY = 'portfolio-theme';
+
 const theme = {
-  colors: {
-    primary: '#2f6dff',
-    secondary: '#18b6a4',
-    accent: '#b8cbff',
-    background: '#060b1a',
-    surface: '#0d1733',
-    text: '#f6f8ff',
-    textSecondary: '#b6c4e9',
-    textLight: '#7f93c2',
-    border: 'rgba(144, 168, 227, 0.26)',
-  },
-  shadows: {
-    sm: '0 8px 20px rgba(3, 8, 26, 0.28)',
-    md: '0 16px 36px rgba(3, 8, 26, 0.36)',
-    lg: '0 26px 60px rgba(3, 8, 26, 0.48)',
-  },
-  gradients: {
-    primary: 'linear-gradient(135deg, #2f6dff 0%, #18b6a4 100%)',
+  motion: {
+    ease: [0.16, 1, 0.3, 1],
+    softEase: [0.22, 1, 0.36, 1],
   },
   breakpoints: {
     sm: '640px',
@@ -41,15 +28,67 @@ const theme = {
 };
 
 const globalStyles = css`
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap');
+
   :root {
-    --bg: #060b1a;
-    --surface: #0d1733;
-    --surface-soft: rgba(14, 27, 57, 0.56);
-    --border: rgba(144, 168, 227, 0.26);
+    --bg: #07090d;
+    --bg-2: #0b1018;
+    --surface: rgba(13, 18, 27, 0.84);
+    --surface-strong: rgba(18, 25, 37, 0.92);
+    --surface-soft: rgba(255, 255, 255, 0.055);
+    --line: rgba(255, 255, 255, 0.12);
+    --line-soft: rgba(255, 255, 255, 0.075);
+    --border: rgba(255, 255, 255, 0.12);
+    --border-soft: rgba(255, 255, 255, 0.075);
+    --border-strong: rgba(255, 255, 255, 0.2);
     --text: #f6f8ff;
-    --text-muted: #b6c4e9;
-    --accent: #2f6dff;
-    --accent-2: #18b6a4;
+    --text-muted: #b8c1d4;
+    --text-subtle: #7e8aa3;
+    --accent: #72f6d1;
+    --accent-2: #8fb7ff;
+    --accent-3: #ffb86b;
+    --accent-gradient: linear-gradient(135deg, var(--accent), var(--accent-2) 52%, var(--accent-3));
+    --danger-accent: #ff6f91;
+    --button-text: #06100d;
+    --surface-elev: rgba(13, 18, 27, 0.84);
+    --surface-elev-strong: rgba(18, 25, 37, 0.92);
+    --shadow: 0 28px 100px rgba(0, 0, 0, 0.38);
+    --shadow-soft: 0 18px 55px rgba(0, 0, 0, 0.28);
+    --shadow-sm: 0 12px 32px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 22px 70px rgba(0, 0, 0, 0.3);
+    --focus-ring: rgba(114, 246, 209, 0.24);
+    --font-sans: 'Inter', 'Avenir Next', 'Segoe UI', sans-serif;
+    --font-display: 'Newsreader', Georgia, serif;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  :root[data-theme='light'] {
+    --bg: #f5f7fb;
+    --bg-2: #eef3f8;
+    --surface: rgba(255, 255, 255, 0.84);
+    --surface-strong: rgba(255, 255, 255, 0.94);
+    --surface-soft: rgba(7, 9, 13, 0.048);
+    --line: rgba(7, 9, 13, 0.13);
+    --line-soft: rgba(7, 9, 13, 0.08);
+    --border: rgba(7, 9, 13, 0.13);
+    --border-soft: rgba(7, 9, 13, 0.08);
+    --border-strong: rgba(7, 9, 13, 0.2);
+    --text: #08111d;
+    --text-muted: #3d4a5f;
+    --text-subtle: #6b7689;
+    --accent: #007f68;
+    --accent-2: #315ed6;
+    --accent-3: #b45f16;
+    --danger-accent: #bf315a;
+    --button-text: #f8fffd;
+    --surface-elev: rgba(255, 255, 255, 0.84);
+    --surface-elev-strong: rgba(255, 255, 255, 0.94);
+    --shadow: 0 28px 90px rgba(31, 44, 70, 0.16);
+    --shadow-soft: 0 18px 45px rgba(31, 44, 70, 0.12);
+    --shadow-sm: 0 12px 28px rgba(31, 44, 70, 0.1);
+    --shadow-md: 0 22px 60px rgba(31, 44, 70, 0.14);
+    --focus-ring: rgba(0, 127, 104, 0.2);
   }
 
   * {
@@ -60,18 +99,21 @@ const globalStyles = css`
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 84px;
+    scroll-padding-top: 88px;
     background: var(--bg);
   }
 
   body {
-    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-width: 320px;
+    font-family: var(--font-sans);
     background:
-      radial-gradient(circle at 8% -10%, rgba(53, 108, 255, 0.16), transparent 32%),
-      radial-gradient(circle at 92% 0%, rgba(24, 182, 164, 0.14), transparent 32%),
-      var(--bg);
+      linear-gradient(rgba(255, 255, 255, 0.032) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+      radial-gradient(ellipse at 50% -12%, rgba(143, 183, 255, 0.16), transparent 48%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 52%, var(--bg) 100%);
+    background-size: 48px 48px, 48px 48px, auto, auto;
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.5;
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -81,14 +123,32 @@ const globalStyles = css`
   h1,
   h2,
   h3,
+  h4,
+  p,
+  a,
+  button,
+  input,
+  textarea {
+    letter-spacing: 0;
+  }
+
+  h1,
+  h2,
+  h3,
   h4 {
-    letter-spacing: -0.02em;
-    line-height: 1.06;
+    color: var(--text);
+    line-height: 0.98;
   }
 
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
   }
 
   img {
@@ -97,30 +157,30 @@ const globalStyles = css`
   }
 
   ::selection {
-    background: rgba(47, 109, 255, 0.42);
-    color: #fff;
+    background: rgba(114, 246, 209, 0.28);
+    color: var(--text);
   }
 
   .display-serif {
-    font-family: 'Instrument Serif', Georgia, serif;
-    letter-spacing: -0.012em;
-    font-weight: 400;
+    font-family: var(--font-display);
+    font-weight: 650;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    * {
-      animation: none !important;
-      transition: none !important;
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
       scroll-behavior: auto !important;
+      transition-duration: 0.001ms !important;
     }
   }
 `;
-
-const GlobalAtmosphere = styledAtmosphere();
-
-function styledAtmosphere() {
-  return { Layer: motion.div };
-}
 
 export const ThemeContext = createContext();
 
@@ -134,10 +194,15 @@ export const useTheme = () => {
 
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
+  const { isDarkMode } = useTheme();
   const { scrollYProgress } = useScroll();
-  const washY = useTransform(scrollYProgress, [0, 1], ['-10%', '26%']);
-  const washOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.75, 0.32, 0.1]);
-  const gridOpacity = useTransform(scrollYProgress, [0, 1], [0.16, 0.06]);
+  const progressScale = useTransform(scrollYProgress, [0, 1], [0.02, 1]);
+  const atmosphereY = useTransform(scrollYProgress, [0, 1], ['0%', '16%']);
+  const atmosphereOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.78, 0.46, 0.22]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   useEffect(() => {
     const hasSeenLoader = sessionStorage.getItem('portfolio-loader-seen') === 'true';
@@ -149,7 +214,7 @@ function AppContent() {
     const timer = setTimeout(() => {
       sessionStorage.setItem('portfolio-loader-seen', 'true');
       setIsLoading(false);
-    }, 620);
+    }, 760);
 
     return () => clearTimeout(timer);
   }, []);
@@ -157,31 +222,33 @@ function AppContent() {
   return (
     <EmotionThemeProvider theme={theme}>
       <Global styles={globalStyles} />
-      <GlobalAtmosphere.Layer
+      <motion.div
         aria-hidden="true"
         style={{
           position: 'fixed',
           inset: 0,
           pointerEvents: 'none',
           zIndex: 0,
-          y: washY,
-          opacity: washOpacity,
+          y: atmosphereY,
+          opacity: atmosphereOpacity,
           background:
-            'radial-gradient(circle at 76% 18%, rgba(88, 153, 255, 0.28), transparent 34%), radial-gradient(circle at 14% 72%, rgba(35, 183, 170, 0.2), transparent 38%)',
+            'linear-gradient(115deg, transparent 0%, rgba(114, 246, 209, 0.12) 28%, transparent 52%, rgba(255, 184, 107, 0.12) 78%, transparent 100%)',
+          filter: 'blur(28px)',
         }}
       />
-      <GlobalAtmosphere.Layer
+      <motion.div
         aria-hidden="true"
         style={{
           position: 'fixed',
-          inset: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '2px',
+          transformOrigin: '0% 50%',
+          scaleX: progressScale,
+          zIndex: 1600,
+          background: 'linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3))',
           pointerEvents: 'none',
-          zIndex: 0,
-          opacity: gridOpacity,
-          backgroundImage:
-            'linear-gradient(rgba(145, 168, 230, 0.32) 1px, transparent 1px), linear-gradient(90deg, rgba(145, 168, 230, 0.32) 1px, transparent 1px)',
-          backgroundSize: '56px 56px',
-          maskImage: 'radial-gradient(circle at 50% 28%, rgba(0,0,0,0.45), transparent 74%)',
         }}
       />
       <AnimatePresence mode="wait">
@@ -192,7 +259,7 @@ function AppContent() {
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.36 }}
+            transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
             style={{ position: 'relative', zIndex: 1 }}
           >
             <Header />
@@ -205,13 +272,13 @@ function AppContent() {
             <ToastContainer
               position="bottom-right"
               autoClose={3000}
-              hideProgressBar={false}
+              hideProgressBar
               newestOnTop
               closeOnClick
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              theme="dark"
+              theme={isDarkMode ? 'dark' : 'light'}
             />
           </motion.main>
         )}
@@ -221,12 +288,30 @@ function AppContent() {
 }
 
 function App() {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === 'dark') {
+      return true;
+    }
+    if (stored === 'light') {
+      return false;
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(THEME_STORAGE_KEY, isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
   const contextValue = useMemo(
     () => ({
-      isDarkMode: true,
-      toggleTheme: () => {},
+      isDarkMode,
+      toggleTheme: () => setIsDarkMode(prev => !prev),
     }),
-    []
+    [isDarkMode]
   );
 
   return (

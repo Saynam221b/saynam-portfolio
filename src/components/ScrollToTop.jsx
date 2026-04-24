@@ -1,95 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../App';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const ScrollButton = styled(motion.button)`
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: ${props => props.theme.gradients.primary};
-  border: none;
-  color: white;
-  font-size: 1.25rem;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-elev-strong);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   z-index: 99;
-  box-shadow: ${props => props.theme.shadows.lg};
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-  }
-  
-  @media (max-width: 768px) {
-    bottom: 20px;
-    right: 20px;
-    width: 42px;
-    height: 42px;
-    font-size: 1rem;
-  }
-`;
 
-const ArrowIcon = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @media (max-width: 768px) {
+    bottom: 18px;
+    right: 18px;
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { isDarkMode } = useTheme();
-  
+
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show button when page is scrolled down 400px
-      if (window.pageYOffset > 400) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      setIsVisible(window.pageYOffset > 360);
     };
-    
-    window.addEventListener('scroll', toggleVisibility);
-    
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
-  
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
-  
+
   return (
     <AnimatePresence>
       {isVisible && (
         <ScrollButton
           onClick={scrollToTop}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0 }}
-          transition={{ duration: 0.3 }}
-          whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-          whileTap={{ scale: 0.9 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.2 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Scroll to top"
         >
-          <ArrowIcon
-            initial={{ y: 0 }}
-            animate={{ y: [0, -3, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
-            <i className="fas fa-arrow-up"></i>
-          </ArrowIcon>
+          <i className="fas fa-arrow-up" />
         </ScrollButton>
       )}
     </AnimatePresence>
   );
 };
 
-export default ScrollToTop; 
+export default ScrollToTop;
