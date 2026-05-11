@@ -5,23 +5,36 @@ import { useTheme } from '../App';
 
 const HeaderShell = styled.header`
   position: sticky;
-  top: 0;
+  top: 0.8rem;
   z-index: 1000;
-  border-bottom: 1px solid ${props => (props.scrolled ? 'var(--line-soft)' : 'transparent')};
-  background: ${props => (props.scrolled ? 'rgba(7, 9, 13, 0.78)' : 'rgba(7, 9, 13, 0.42)')};
-  backdrop-filter: blur(18px);
-  transition: background 0.24s var(--ease-out), border-color 0.24s var(--ease-out);
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto -4.5rem;
+  border: 1px solid ${props => (props.scrolled ? 'var(--line)' : 'var(--line-soft)')};
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.095), transparent 42%),
+    ${props => (props.scrolled ? 'rgba(7, 9, 13, 0.82)' : 'rgba(7, 9, 13, 0.58)')};
+  box-shadow: ${props => (props.scrolled ? 'var(--shadow-soft)' : '0 12px 38px rgba(0, 0, 0, 0.16)')};
+  backdrop-filter: blur(22px);
+  transition: background 0.24s var(--ease-out), border-color 0.24s var(--ease-out), box-shadow 0.24s var(--ease-out);
 
   :root[data-theme='light'] & {
-    background: ${props => (props.scrolled ? 'rgba(245, 247, 251, 0.82)' : 'rgba(245, 247, 251, 0.54)')};
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.86), transparent 42%),
+      ${props => (props.scrolled ? 'rgba(245, 247, 251, 0.86)' : 'rgba(245, 247, 251, 0.66)')};
+  }
+
+  @media (max-width: 760px) {
+    top: 0.55rem;
+    width: min(100% - 1rem, 640px);
+    margin-bottom: -4.1rem;
   }
 `;
 
 const HeaderInner = styled.div`
-  width: min(1240px, 100%);
-  min-height: 72px;
+  min-height: 58px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 0.56rem 0 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,7 +43,7 @@ const HeaderInner = styled.div`
 
 const Brand = styled.a`
   color: var(--text);
-  font-size: 1rem;
+  font-size: 0.96rem;
   font-weight: 900;
   display: inline-flex;
   align-items: center;
@@ -55,7 +68,11 @@ const Brand = styled.a`
 const DesktopNav = styled.nav`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.16rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.18rem;
 
   @media (max-width: 980px) {
     display: none;
@@ -63,14 +80,21 @@ const DesktopNav = styled.nav`
 `;
 
 const NavLink = styled.a`
-  color: var(--text-muted);
-  font-size: 0.84rem;
+  min-height: 34px;
+  border-radius: 999px;
+  color: ${props => (props.$active ? 'var(--button-text)' : 'var(--text-muted)')};
+  background: ${props => (props.$active ? 'var(--accent)' : 'transparent')};
+  padding: 0 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
   font-weight: 760;
-  transition: color 0.2s var(--ease-out);
+  transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out), transform 0.2s var(--ease-out);
 
   &:hover,
   &:focus-visible {
-    color: var(--text);
+    color: ${props => (props.$active ? 'var(--button-text)' : 'var(--text)')};
+    transform: translateY(-1px);
   }
 `;
 
@@ -81,8 +105,8 @@ const Actions = styled.div`
 `;
 
 const IconButton = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--text);
@@ -94,7 +118,7 @@ const IconButton = styled.button`
 `;
 
 const Pill = styled.a`
-  min-height: 40px;
+  min-height: 38px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: ${props => (props.primary ? 'var(--accent)' : 'var(--surface-soft)')};
@@ -163,6 +187,7 @@ const navItems = [
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('about');
   const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -173,7 +198,17 @@ const Header = () => {
   }, [open]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      const sections = ['about', 'motion', 'projects', 'experience', 'contact'];
+      const current = [...sections].reverse().find(sectionId => {
+        const element = document.getElementById(sectionId);
+        return element ? element.getBoundingClientRect().top <= 160 : false;
+      });
+      if (current) {
+        setActiveSection(current);
+      }
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -189,7 +224,7 @@ const Header = () => {
 
           <DesktopNav aria-label="Primary">
             {navItems.map(item => (
-              <NavLink key={item.label} href={item.href}>
+              <NavLink key={item.label} href={item.href} $active={item.href.endsWith(`#${activeSection}`)}>
                 {item.label}
               </NavLink>
             ))}

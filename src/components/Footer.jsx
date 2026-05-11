@@ -2,18 +2,22 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 const FooterShell = styled.footer`
-  padding: 2rem 1.25rem;
+  padding: clamp(1.55rem, 4vw, 2.2rem) 1.25rem;
   border-top: 1px solid var(--line-soft);
 `;
 
 const Inner = styled.div`
   width: min(1180px, 100%);
   margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  gap: clamp(1rem, 4vw, 2rem);
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
 `;
 
 const Brand = styled.a`
@@ -24,16 +28,29 @@ const Brand = styled.a`
 const Links = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  justify-content: flex-end;
+  gap: 0.75rem 0.95rem;
 
   a {
     color: var(--text-muted);
     font-size: 0.88rem;
     font-weight: 760;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    justify-content: flex-start;
   }
 `;
 
 const Meta = styled.p`
+  max-width: 48ch;
+  margin-top: 0.15rem;
   color: var(--text-subtle);
   font-size: 0.84rem;
 `;

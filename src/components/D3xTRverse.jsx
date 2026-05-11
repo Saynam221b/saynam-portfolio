@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import styled from '@emotion/styled';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import RemotionPreview from './RemotionPreview';
 
 const Page = styled(motion.div)`
   min-height: 100vh;
@@ -112,101 +113,19 @@ const StageShell = styled(motion.div)`
   }
 `;
 
-const BrandStage = styled.div`
+const StagePlayer = styled.div`
   position: relative;
-  min-height: 430px;
-  border: 1px solid var(--line);
-  border-radius: 34px;
-  background:
-    radial-gradient(circle at 18% 16%, color-mix(in srgb, var(--accent-2) 20%, transparent), transparent 34%),
-    radial-gradient(circle at 84% 72%, color-mix(in srgb, var(--accent-3) 18%, transparent), transparent 38%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 34%),
-    var(--surface);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+  z-index: 1;
+
+  > div {
+    min-height: 430px;
+  }
 
   @media (max-width: 560px) {
-    min-height: 340px;
+    > div {
+      min-height: 340px;
+    }
   }
-`;
-
-const BrandGrid = styled.div`
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 42px 42px;
-  opacity: 0.58;
-`;
-
-const BrandPanel = styled.div`
-  position: absolute;
-  border: 1px solid var(--line-soft);
-  border-radius: 24px;
-  background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
-  box-shadow: var(--shadow-soft);
-  padding: 1rem;
-  backdrop-filter: blur(18px);
-`;
-
-const MainPanel = styled(BrandPanel)`
-  left: 8%;
-  top: 18%;
-  width: min(420px, 78%);
-  transform: rotateY(-10deg) rotateX(5deg);
-`;
-
-const SidePanel = styled(BrandPanel)`
-  right: 7%;
-  bottom: 10%;
-  width: min(260px, 46%);
-  transform: rotateY(14deg) rotate(-3deg);
-
-  @media (max-width: 560px) {
-    width: 58%;
-  }
-`;
-
-const BrandLabel = styled.p`
-  color: var(--accent);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
-`;
-
-const BrandTitle = styled.p`
-  margin-top: 0.5rem;
-  color: var(--text);
-  font-size: clamp(1.65rem, 4vw, 3rem);
-  font-weight: 900;
-  line-height: 0.9;
-
-  span {
-    display: block;
-    color: var(--accent-3);
-    font-family: var(--font-display);
-  }
-`;
-
-const BrandCopy = styled.p`
-  margin-top: 0.65rem;
-  color: var(--text-muted);
-  font-size: 0.86rem;
-  line-height: 1.5;
-`;
-
-const SignalBars = styled.div`
-  display: grid;
-  gap: 0.45rem;
-  margin-top: 0.9rem;
-`;
-
-const Signal = styled.div`
-  height: 9px;
-  width: ${props => props.width};
-  border-radius: 999px;
-  background: ${props => props.color || 'var(--accent)'};
 `;
 
 const Grid = styled.section`
@@ -280,25 +199,14 @@ const D3xTRverse = () => {
             style={{ y: stageY, rotateX: stageRotateX, rotateY: stageRotateY }}
             transition={{ duration: 0.72, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
           >
-            <BrandStage aria-label="D3xTRverse layered brand system">
-              <BrandGrid />
-              <MainPanel>
-                <BrandLabel>Creator operating system</BrandLabel>
-                <BrandTitle>
-                  D3x <span>TRverse</span>
-                </BrandTitle>
-                <BrandCopy>Gaming, code experiments, and product ideas held under one sharper brand layer.</BrandCopy>
-                <SignalBars>
-                  <Signal width="86%" />
-                  <Signal width="62%" color="var(--accent-2)" />
-                  <Signal width="74%" color="var(--accent-3)" />
-                </SignalBars>
-              </MainPanel>
-              <SidePanel>
-                <BrandLabel>Signal stack</BrandLabel>
-                <BrandCopy>Competitive play, technical depth, and creator systems moving together.</BrandCopy>
-              </SidePanel>
-            </BrandStage>
+            <StagePlayer>
+              <RemotionPreview
+                variant="d3x"
+                accent="#72f6d1"
+                accentAlt="#8fb7ff"
+                ariaLabel="D3xTRverse cinematic brand system"
+              />
+            </StagePlayer>
           </StageShell>
         </Hero>
 

@@ -8,6 +8,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import MotionLayer from './MotionLayer';
+import RemotionPreview from './RemotionPreview';
 
 const chapters = [
   {
@@ -157,7 +158,7 @@ const ProofStrip = styled.div`
   margin-top: 1.25rem;
 `;
 
-const Proof = styled.span`
+const Proof = styled(motion.span)`
   border: 1px solid var(--line-soft);
   border-radius: 999px;
   background: var(--surface-soft);
@@ -340,6 +341,10 @@ const ChapterRail = styled.div`
   transform: translateY(-50%);
   display: grid;
   gap: 0.5rem;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 const RailDot = styled.button`
@@ -358,16 +363,57 @@ const MobileStack = styled.div`
 
   @media (max-width: 900px) {
     display: grid;
-    gap: 1rem;
+    gap: 1.05rem;
   }
 `;
 
+const MobileRail = styled.div`
+  display: none;
+
+  @media (max-width: 900px) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.42rem;
+    margin-bottom: 0.2rem;
+  }
+`;
+
+const MobileRailDot = styled.span`
+  height: 4px;
+  border-radius: 999px;
+  background: ${props => (props.active ? 'var(--accent)' : 'var(--line-soft)')};
+  box-shadow: ${props => (props.active ? '0 0 22px color-mix(in srgb, var(--accent) 44%, transparent)' : 'none')};
+  transition: background 0.24s var(--ease-out), box-shadow 0.24s var(--ease-out);
+`;
+
 const MobileCard = styled(motion.article)`
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 26px;
-  background: var(--surface);
+  background:
+    radial-gradient(circle at 18% 10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 38%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 34%),
+    var(--surface);
   box-shadow: var(--shadow-soft);
   padding: clamp(1rem, 5vw, 1.35rem);
+  transform-style: preserve-3d;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -22%;
+    top: -40%;
+    width: 70%;
+    height: 130%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: rotate(18deg);
+    pointer-events: none;
+  }
+`;
+
+const MobilePreview = styled.div`
+  margin: -0.1rem 0 1rem;
 `;
 
 const MobileTitle = styled.h2`
@@ -465,6 +511,11 @@ const ScrollFilmStage = () => {
         <Anchor id="projects" style={{ top: '62%' }} />
         <StickyFrame>
           <MobileStack style={{ display: 'grid' }}>
+            <MobileRail aria-hidden="true">
+              {chapters.map((chapter, index) => (
+                <MobileRailDot key={chapter.id} active={activeIndex === index} />
+              ))}
+            </MobileRail>
             {chapters.map(chapter => (
               <MobileCard key={chapter.id}>
                 <Kicker>{chapter.eyebrow}</Kicker>
@@ -620,20 +671,43 @@ const ScrollFilmStage = () => {
         </Inner>
 
         <MobileStack>
+          <MobileRail aria-hidden="true">
+            {chapters.map((chapter, index) => (
+              <MobileRailDot key={chapter.id} active={activeIndex === index} />
+            ))}
+          </MobileRail>
           {chapters.map((chapter, index) => (
             <MobileCard
               key={chapter.id}
-              initial={{ opacity: 0, y: 28, filter: 'blur(10px)' }}
-              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              viewport={{ once: true, amount: 0.28 }}
-              transition={{ duration: 0.65, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 44, scale: 0.96, rotateX: 8, filter: 'blur(14px)', clipPath: 'inset(9% 0 0 0)' }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0, filter: 'blur(0px)', clipPath: 'inset(0 0 0 0)' }}
+              viewport={{ once: true, amount: 0.34 }}
+              transition={{ duration: 0.82, delay: Math.min(index * 0.08, 0.24), ease: [0.16, 1, 0.3, 1] }}
             >
+              {index === 0 && (
+                <MobilePreview>
+                  <RemotionPreview
+                    variant="hero"
+                    accent="#72f6d1"
+                    accentAlt="#8fb7ff"
+                    ariaLabel="Mobile cinematic Saynam OS preview"
+                  />
+                </MobilePreview>
+              )}
               <Kicker>{chapter.eyebrow}</Kicker>
               <MobileTitle>{index === 0 ? 'Saynam Sharma' : chapter.title}</MobileTitle>
               <Copy>{chapter.accent}</Copy>
               <ProofStrip>
-                {chapter.proof.map(item => (
-                  <Proof key={item}>{item}</Proof>
+                {chapter.proof.map((item, proofIndex) => (
+                  <Proof
+                    key={item}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 0.42, delay: 0.16 + proofIndex * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {item}
+                  </Proof>
                 ))}
               </ProofStrip>
               {index === 0 && (

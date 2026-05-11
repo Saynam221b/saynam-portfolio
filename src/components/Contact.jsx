@@ -7,7 +7,7 @@ import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
 
 const Section = styled.section`
   position: relative;
-  padding: clamp(5rem, 9vw, 8rem) 1.25rem clamp(4rem, 7vw, 6rem);
+  padding: clamp(5rem, 9vw, 8rem) 1.25rem clamp(3rem, 6vw, 4.8rem);
 `;
 
 const Inner = styled.div`
@@ -15,11 +15,12 @@ const Inner = styled.div`
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: clamp(1rem, 3vw, 1.7rem);
+  gap: clamp(1.2rem, 3vw, 1.9rem);
   align-items: start;
 
-  @media (max-width: 980px) {
+  @media (max-width: 860px) {
     grid-template-columns: 1fr;
+    gap: 1.05rem;
   }
 `;
 
@@ -27,7 +28,7 @@ const Copy = styled(motion.div)`
   position: sticky;
   top: 110px;
 
-  @media (max-width: 980px) {
+  @media (max-width: 860px) {
     position: relative;
     top: auto;
   }
@@ -52,6 +53,10 @@ const Title = styled.h2`
     font-family: var(--font-display);
     color: var(--accent-3);
   }
+
+  @media (max-width: 560px) {
+    font-size: clamp(2.55rem, 15vw, 4.2rem);
+  }
 `;
 
 const Subtitle = styled.p`
@@ -66,6 +71,10 @@ const LaneGrid = styled.div`
   display: grid;
   gap: 0.65rem;
   margin-top: 1.1rem;
+
+  @media (max-width: 860px) {
+    margin-top: 1rem;
+  }
 `;
 
 const Lane = styled.a`
@@ -109,6 +118,10 @@ const FormShell = styled(motion.div)`
     var(--surface);
   box-shadow: var(--shadow);
   padding: clamp(1rem, 3vw, 1.35rem);
+
+  @media (max-width: 860px) {
+    box-shadow: var(--shadow-soft);
+  }
 `;
 
 const FormTitle = styled.h3`
