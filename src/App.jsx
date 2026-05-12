@@ -236,7 +236,8 @@ function AppContent() {
 
   useEffect(() => {
     const hasSeenLoader = sessionStorage.getItem('portfolio-loader-seen') === 'true';
-    if (hasSeenLoader || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const shouldSkipLoader = new URLSearchParams(window.location.search).has('skipLoader');
+    if (hasSeenLoader || shouldSkipLoader || navigator.webdriver || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setIsLoading(false);
       return;
     }

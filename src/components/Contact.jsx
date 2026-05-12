@@ -8,10 +8,27 @@ import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
 
 const Section = styled.section`
   position: relative;
-  padding: clamp(5rem, 9vw, 8rem) 1.25rem clamp(3rem, 6vw, 4.8rem);
+  padding: clamp(4.4rem, 7vw, 6.4rem) 1.25rem clamp(3.2rem, 6vw, 4.8rem);
+  overflow: hidden;
+  scroll-margin-top: 104px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 8% 1.25rem 10%;
+    border: 1px solid var(--line-soft);
+    border-radius: 34px;
+    background:
+      radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 34%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 36%),
+      color-mix(in srgb, var(--surface) 54%, transparent);
+    pointer-events: none;
+  }
 `;
 
 const Inner = styled.div`
+  position: relative;
+  z-index: 1;
   width: min(1180px, 100%);
   margin: 0 auto;
   display: grid;
@@ -27,7 +44,7 @@ const Inner = styled.div`
 
 const Copy = styled(motion.div)`
   position: sticky;
-  top: 110px;
+  top: 106px;
 
   @media (max-width: 860px) {
     position: relative;
@@ -44,10 +61,10 @@ const Kicker = styled.p`
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2.6rem, 8vw, 7.2rem);
+  font-size: clamp(2.32rem, 5.8vw, 5.3rem);
   font-weight: 900;
-  line-height: 0.88;
-  max-width: 9ch;
+  line-height: 0.9;
+  max-width: 10ch;
 
   span {
     display: block;
@@ -80,8 +97,8 @@ const LaneGrid = styled.div`
 
 const Lane = styled.a`
   border: 1px solid var(--line-soft);
-  border-radius: 18px;
-  background: var(--surface-soft);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
   color: var(--text);
   padding: 0.85rem;
   display: flex;
@@ -118,12 +135,26 @@ const LaneMeta = styled.span`
 
 const FormShell = styled(motion.div)`
   border: 1px solid var(--line);
-  border-radius: 28px;
+  border-radius: 30px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 34%),
-    var(--surface);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    color-mix(in srgb, var(--surface-strong) 82%, transparent);
   box-shadow: var(--shadow);
   padding: clamp(1rem, 3vw, 1.35rem);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 38px 38px;
+    mask-image: linear-gradient(120deg, #000, transparent 76%);
+    pointer-events: none;
+  }
 
   @media (max-width: 860px) {
     box-shadow: var(--shadow-soft);
@@ -131,20 +162,54 @@ const FormShell = styled(motion.div)`
 `;
 
 const FormTitle = styled.h3`
+  position: relative;
+  z-index: 1;
   font-size: clamp(1.35rem, 3vw, 2rem);
   font-weight: 900;
   margin-bottom: 0.25rem;
 `;
 
 const FormCaption = styled.p`
+  position: relative;
+  z-index: 1;
   color: var(--text-muted);
   font-size: 0.9rem;
   margin-bottom: 0.9rem;
 `;
 
 const Form = styled.form`
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 0.7rem;
+`;
+
+const CommandBar = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin-bottom: 0.9rem;
+
+  span {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--line);
+  }
+
+  span:first-of-type {
+    background: var(--accent);
+  }
+
+  span:nth-of-type(2) {
+    background: var(--accent-2);
+  }
+
+  span:nth-of-type(3) {
+    background: var(--accent-3);
+  }
 `;
 
 const Field = styled.input`
@@ -152,7 +217,7 @@ const Field = styled.input`
   min-height: 50px;
   border-radius: 16px;
   border: 1px solid var(--line-soft);
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(255, 255, 255, 0.07);
   color: var(--text);
   padding: 0.8rem 0.9rem;
   outline: none;
@@ -173,7 +238,7 @@ const Textarea = styled.textarea`
   min-height: 150px;
   border-radius: 16px;
   border: 1px solid var(--line-soft);
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(255, 255, 255, 0.07);
   color: var(--text);
   padding: 0.8rem 0.9rem;
   outline: none;
@@ -276,9 +341,9 @@ const Contact = () => {
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Kicker>Contact finale</Kicker>
+          <Kicker>Contact</Kicker>
           <Title>
-            Let us build <span>the clean version.</span>
+            Start with <span>the real context.</span>
           </Title>
           <Subtitle>
             Send the context, timeline, and constraints. I will reply with fit, availability, and the most practical next step.
@@ -307,6 +372,11 @@ const Contact = () => {
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.72, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
         >
+          <CommandBar aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </CommandBar>
           <FormTitle>Project signal</FormTitle>
           <FormCaption>Keep it short. Goals, current problem, deadline, and the outcome you want.</FormCaption>
           <Form ref={formRef} onSubmit={handleSubmit}>

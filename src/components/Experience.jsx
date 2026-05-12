@@ -4,8 +4,9 @@ import { motion } from 'framer-motion';
 
 const Section = styled.section`
   position: relative;
-  padding: clamp(5rem, 10vw, 8.5rem) 1.25rem;
+  padding: clamp(4.2rem, 7vw, 6.2rem) 1.25rem;
   overflow: hidden;
+  scroll-margin-top: 104px;
 
   &::before {
     content: '';
@@ -15,6 +16,15 @@ const Section = styled.section`
     background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 13%, transparent), transparent);
     filter: blur(24px);
     pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line), transparent);
+    opacity: 0.8;
   }
 `;
 
@@ -27,7 +37,7 @@ const Inner = styled.div`
 
 const Intro = styled(motion.div)`
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(260px, 0.42fr);
+  grid-template-columns: minmax(0, 0.76fr) minmax(280px, 0.48fr);
   gap: clamp(1.4rem, 5vw, 4rem);
   align-items: end;
   margin-bottom: clamp(2rem, 5vw, 3.5rem);
@@ -57,10 +67,10 @@ const Kicker = styled.p`
 `;
 
 const Title = styled.h2`
-  max-width: 10ch;
-  font-size: clamp(2.6rem, 8vw, 7.1rem);
+  max-width: 12ch;
+  font-size: clamp(2.24rem, 5.7vw, 5.15rem);
   font-weight: 900;
-  line-height: 0.86;
+  line-height: 0.88;
 
   span {
     display: block;
@@ -78,7 +88,7 @@ const IntroCopy = styled.p`
 
 const Timeline = styled.div`
   display: grid;
-  gap: 0.85rem;
+  gap: clamp(0.85rem, 1.8vw, 1.15rem);
   position: relative;
 
   &::before {
@@ -120,7 +130,7 @@ const DateRail = styled.div`
 
 const Date = styled.p`
   color: var(--accent);
-  font-size: clamp(1.4rem, 4vw, 3rem);
+  font-size: clamp(1.28rem, 3vw, 2.25rem);
   font-weight: 900;
   line-height: 0.92;
 `;
@@ -140,10 +150,10 @@ const Dot = styled.span`
 
 const Panel = styled.div`
   border: 1px solid var(--line);
-  border-radius: 28px;
+  border-radius: 26px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.085), transparent 34%),
-    var(--surface);
+    color-mix(in srgb, var(--surface-strong) 78%, transparent);
   box-shadow: var(--shadow-soft);
   padding: clamp(1rem, 3vw, 1.45rem);
   position: relative;
@@ -175,7 +185,7 @@ const Top = styled.div`
 `;
 
 const Role = styled.h3`
-  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-size: clamp(1.45rem, 3.4vw, 2.55rem);
   font-weight: 900;
   line-height: 0.95;
 `;
@@ -201,7 +211,7 @@ const Body = styled.p`
   color: var(--text-muted);
   font-size: 0.96rem;
   line-height: 1.72;
-  max-width: 80ch;
+  max-width: 76ch;
 `;
 
 const Tags = styled.div`
@@ -261,7 +271,7 @@ const jobs = [
     role: 'Data Engineer II',
     company: 'KPI Partners',
     location: 'Remote - Pune, India',
-    body: 'Architected an end-to-end AWS-based ETL platform ingesting Oracle Fusion BI report data into Snowflake. Built large-scale batch pipelines on Databricks using PySpark, optimizing workloads to achieve 45–60% reduction in pipeline runtime. Led migration of legacy SSIS workflows to a Databricks lakehouse stack.',
+    body: 'Architected an end-to-end AWS-based ETL platform ingesting Oracle Fusion BI report data into Snowflake. Built large-scale batch pipelines on Databricks using PySpark, optimizing workloads to achieve 45-60% reduction in pipeline runtime. Led migration of legacy SSIS workflows to a Databricks lakehouse stack.',
     tech: ['Snowflake', 'dbt', 'Airflow', 'Databricks', 'PySpark', 'AWS', 'SQL'],
     signals: [
       ['System', 'Oracle to Snowflake'],
@@ -297,7 +307,7 @@ const Experience = () => {
           <div>
             <Kicker>Experience timeline</Kicker>
             <Title>
-              Production ownership <span>with a delivery arc.</span>
+              Production work <span>without the noise.</span>
             </Title>
           </div>
           <IntroCopy>

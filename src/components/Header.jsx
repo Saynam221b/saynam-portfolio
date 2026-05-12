@@ -6,12 +6,12 @@ import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
 
 const HeaderShell = styled.header`
   position: sticky;
-  top: 0.8rem;
+  top: 0.7rem;
   z-index: 1000;
-  width: min(1120px, calc(100% - 2rem));
-  margin: 0 auto -4.5rem;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto -4.25rem;
   border: 1px solid var(--line-soft);
-  border-radius: 999px;
+  border-radius: 24px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.095), transparent 42%),
     var(--surface);
@@ -30,7 +30,8 @@ const HeaderShell = styled.header`
   @media (max-width: 760px) {
     top: 0.55rem;
     width: min(100% - 1rem, 640px);
-    margin-bottom: -4.1rem;
+    margin-bottom: -4rem;
+    border-radius: 22px;
   }
 `;
 
@@ -65,6 +66,12 @@ const Brand = styled.a`
     color: var(--text-subtle);
     font-size: 0.76rem;
     font-weight: 700;
+  }
+
+  @media (max-width: 520px) {
+    small {
+      display: none;
+    }
   }
 `;
 
@@ -214,8 +221,8 @@ const MobileLink = styled.a`
 `;
 
 const navItems = [
-  { label: 'Big picture', href: '/#about' },
-  { label: 'Motion', href: '/#motion' },
+  { label: 'Story', href: '/#about' },
+  { label: 'Data', href: '/#motion' },
   { label: 'Builds', href: '/#projects' },
   { label: 'Experience', href: '/#experience' },
   { label: 'Contact', href: '/#contact' },
@@ -240,7 +247,7 @@ const Header = () => {
       const sections = ['about', 'motion', 'projects', 'experience', 'contact'];
       const current = [...sections].reverse().find(sectionId => {
         const element = document.getElementById(sectionId);
-        return element ? element.getBoundingClientRect().top <= 160 : false;
+        return element ? element.getBoundingClientRect().top <= Math.min(360, window.innerHeight * 0.42) : false;
       });
       if (current) {
         setActiveSection(current);
@@ -256,7 +263,7 @@ const Header = () => {
       <HeaderShell className={scrolled ? 'scrolled' : ''}>
         <HeaderInner>
           <Brand href="/#home">
-            Saynam <small>motion portfolio</small>
+            Saynam <small>data / web / creator</small>
           </Brand>
 
           <DesktopNav aria-label="Primary">
@@ -272,7 +279,7 @@ const Header = () => {
               {isDarkMode ? <FiSun size={16} /> : <FiMoon size={16} />}
             </IconButton>
             <Pill hideCompact href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume</Pill>
-            <Pill primary href="/#contact">Start</Pill>
+            <Pill primary hideCompact href="/#contact">Start</Pill>
             <MenuButton type="button" onClick={() => setOpen(prev => !prev)} aria-label={open ? 'Close menu' : 'Open menu'}>
               {open ? <FiX size={18} /> : <FiMenu size={18} />}
             </MenuButton>

@@ -2,8 +2,11 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 const FooterShell = styled.footer`
-  padding: clamp(1.55rem, 4vw, 2.2rem) 1.25rem;
+  padding: clamp(1.35rem, 3vw, 2.1rem) 1.25rem;
   border-top: 1px solid var(--line-soft);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 34%),
+    color-mix(in srgb, var(--surface-soft) 38%, transparent);
 `;
 
 const Inner = styled.div`
@@ -23,6 +26,18 @@ const Inner = styled.div`
 const Brand = styled.a`
   color: var(--text);
   font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.52rem;
+
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
 `;
 
 const Links = styled.div`
@@ -49,7 +64,7 @@ const Links = styled.div`
 `;
 
 const Meta = styled.p`
-  max-width: 48ch;
+  max-width: 58ch;
   margin-top: 0.15rem;
   color: var(--text-subtle);
   font-size: 0.84rem;
@@ -63,7 +78,7 @@ const Footer = () => {
       <Inner>
         <div>
           <Brand href="/#home">Saynam Sharma</Brand>
-          <Meta>Motion portfolio, data systems, product engineering. © {currentYear}</Meta>
+          <Meta>Data engineering by profession. Web development and content creation by passion. © {currentYear}</Meta>
         </div>
         <Links>
           <a href="https://www.linkedin.com/in/saynam-sharma/" target="_blank" rel="noopener noreferrer">LinkedIn</a>

@@ -3,13 +3,40 @@ import styled from '@emotion/styled';
 import AnimatedSection from './AnimatedSection';
 
 const Section = styled.section`
-  padding: 4.1rem 1.35rem 2.6rem;
+  position: relative;
+  padding: clamp(5rem, 8vw, 7.4rem) 1.25rem clamp(3.6rem, 7vw, 6rem);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 78% 12%, color-mix(in srgb, var(--accent-2) 13%, transparent), transparent 34%),
+      linear-gradient(180deg, transparent, color-mix(in srgb, var(--surface-soft) 42%, transparent) 42%, transparent);
+    pointer-events: none;
+  }
 `;
 
 const Container = styled.div`
-  width: 100%;
-  max-width: 1180px;
+  position: relative;
+  z-index: 1;
+  width: min(1180px, 100%);
   margin: 0 auto;
+  display: grid;
+  gap: clamp(0.9rem, 2.1vw, 1.35rem);
+`;
+
+const Intro = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(240px, 0.42fr);
+  gap: clamp(1rem, 4vw, 3rem);
+  align-items: end;
+  margin-bottom: 0.35rem;
+
+  @media (max-width: 820px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Eyebrow = styled.p`
@@ -22,25 +49,71 @@ const Eyebrow = styled.p`
 `;
 
 const Title = styled.h2`
-  font-size: clamp(1.9rem, 4vw, 3.5rem);
+  max-width: 12ch;
+  font-size: clamp(2.35rem, 6.5vw, 5.8rem);
   color: var(--text);
-  margin-bottom: 0.72rem;
+  line-height: 0.9;
+  margin-bottom: 0;
 `;
 
 const Subtitle = styled.p`
-  max-width: 68ch;
+  max-width: 54ch;
   color: var(--text-muted);
   font-size: 0.98rem;
   line-height: 1.72;
-  margin-bottom: 1.35rem;
+`;
+
+const ProofSummary = styled.div`
+  display: grid;
+  gap: 0.52rem;
+`;
+
+const SummaryRow = styled.div`
+  border-top: 1px solid var(--line-soft);
+  padding-top: 0.58rem;
+`;
+
+const SummaryLabel = styled.p`
+  color: var(--text-subtle);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+`;
+
+const SummaryValue = styled.p`
+  margin-top: 0.18rem;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 850;
 `;
 
 const Case = styled.article`
-  border-top: 1px solid var(--border);
-  padding: 1.1rem 0 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 34%),
+    color-mix(in srgb, var(--surface-strong) 76%, transparent);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(1rem, 2.6vw, 1.55rem);
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.95rem;
+  overflow: hidden;
+  position: relative;
+  scroll-margin-top: 110px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.038) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(90deg, #000, transparent 86%);
+    pointer-events: none;
+  }
 
   @media (min-width: 980px) {
     grid-template-columns: 1.02fr 0.98fr;
@@ -87,8 +160,8 @@ const StackRow = styled.div`
 `;
 
 const Stack = styled.span`
-  border: 1px solid var(--border);
-  background: var(--surface-elev);
+  border: 1px solid var(--line-soft);
+  background: var(--surface-soft);
   color: var(--text-muted);
   border-radius: 999px;
   font-size: 0.7rem;
@@ -101,10 +174,12 @@ const Detail = styled.div`
 `;
 
 const DetailCard = styled.div`
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--surface-elev);
-  padding: 0.78rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 18px;
+  background: var(--surface-soft);
+  padding: 0.85rem;
+  position: relative;
+  z-index: 1;
 `;
 
 const DetailLabel = styled.p`
@@ -132,7 +207,7 @@ const LinkRow = styled.div`
 const PrimaryLink = styled.a`
   min-height: 38px;
   border-radius: 999px;
-  background: var(--accent-gradient);
+  background: var(--accent);
   color: var(--button-text);
   padding: 0 0.92rem;
   display: inline-flex;
@@ -147,8 +222,8 @@ const PrimaryLink = styled.a`
 const QuietLink = styled.a`
   min-height: 38px;
   border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface-elev-strong);
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
   color: var(--text);
   padding: 0 0.92rem;
   display: inline-flex;
@@ -165,12 +240,27 @@ const Projects = () => {
     <Section id="projects">
       <Container>
         <AnimatedSection animation="fadeUp">
-          <Eyebrow>Selected Work</Eyebrow>
-          <Title>Case studies across data and product engineering.</Title>
-          <Subtitle>
-            These projects show the same operating principle in different contexts: simplify complexity, build with rigor, and ship outcomes
-            users can immediately feel.
-          </Subtitle>
+          <Intro>
+            <div>
+              <Eyebrow>Proof deck</Eyebrow>
+              <Title>Where the story becomes shipped work.</Title>
+            </div>
+            <div>
+              <Subtitle>
+                Data infrastructure, web products, and creator-led product thinking are grouped as one proof system instead of separate portfolio cards.
+              </Subtitle>
+              <ProofSummary aria-label="Portfolio proof summary">
+                <SummaryRow>
+                  <SummaryLabel>Profession</SummaryLabel>
+                  <SummaryValue>Data engineering systems</SummaryValue>
+                </SummaryRow>
+                <SummaryRow>
+                  <SummaryLabel>Passion</SummaryLabel>
+                  <SummaryValue>Web products and creator output</SummaryValue>
+                </SummaryRow>
+              </ProofSummary>
+            </div>
+          </Intro>
         </AnimatedSection>
 
         <AnimatedSection animation="fadeUp" delay={0.06}>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { FiArrowUp } from 'react-icons/fi';
 
 const ScrollButton = styled(motion.button)`
@@ -41,6 +42,59 @@ const ScrollButton = styled(motion.button)`
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { hash, pathname } = useLocation();
+  const hashTimersRef = useRef([]);
+
+  const clearHashTimers = () => {
+    hashTimersRef.current.forEach(timer => window.clearTimeout(timer));
+    hashTimersRef.current = [];
+  };
+
+  useEffect(() => {
+    clearHashTimers();
+
+    if (!hash) {
+      return;
+    }
+
+    const targetId = decodeURIComponent(hash.slice(1));
+    const scrollToHash = () => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      }
+    };
+    hashTimersRef.current = [80, 260, 620].map(delay => window.setTimeout(scrollToHash, delay));
+
+    return clearHashTimers;
+  }, [hash, pathname]);
+
+  useEffect(() => {
+    const handleAnchorClick = event => {
+      const anchor = event.target.closest?.('a[href*="#"]');
+      if (!anchor) {
+        return;
+      }
+
+      const url = new URL(anchor.href, window.location.href);
+      if (url.pathname !== window.location.pathname || !url.hash) {
+        return;
+      }
+
+      const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+      if (!target) {
+        return;
+      }
+
+      event.preventDefault();
+      clearHashTimers();
+      window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
+      target.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+    return () => document.removeEventListener('click', handleAnchorClick);
+  }, []);
 
   useEffect(() => {
     const toggleVisibility = () => {
