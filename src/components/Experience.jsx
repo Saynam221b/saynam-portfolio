@@ -258,11 +258,11 @@ const SignalValue = styled.p`
 const jobs = [
   {
     date: '2022-now',
-    role: 'Data Engineer I',
+    role: 'Data Engineer II',
     company: 'KPI Partners',
-    location: 'Pune, India',
-    body: 'Owned production data work across Oracle Fusion ingestion, Snowflake transformations, Databricks pipelines, and runtime optimization. The strongest work focused on reliability, observability, and performance in systems that cannot afford messy reruns.',
-    tech: ['Snowflake', 'dbt', 'MWAA', 'Databricks', 'PySpark', 'AWS', 'SQL'],
+    location: 'Remote - Pune, India',
+    body: 'Architected an end-to-end AWS-based ETL platform ingesting Oracle Fusion BI report data into Snowflake. Built large-scale batch pipelines on Databricks using PySpark, optimizing workloads to achieve 45–60% reduction in pipeline runtime. Led migration of legacy SSIS workflows to a Databricks lakehouse stack.',
+    tech: ['Snowflake', 'dbt', 'Airflow', 'Databricks', 'PySpark', 'AWS', 'SQL'],
     signals: [
       ['System', 'Oracle to Snowflake'],
       ['Motion', 'Runtime tuning'],
@@ -270,29 +270,16 @@ const jobs = [
     ],
   },
   {
-    date: '2021',
-    role: 'Python Intern',
-    company: 'Entuple Technologies',
-    location: 'Bangalore, India',
-    body: 'Built and shipped full-stack web app work with Django and React, plus deployment workflows that shortened iteration cycles and improved delivery confidence.',
-    tech: ['Python', 'Django', 'React', 'CI/CD'],
-    signals: [
-      ['System', 'Full-stack delivery'],
-      ['Motion', 'Shorter iteration loops'],
-      ['Proof', 'Deployable web apps'],
-    ],
-  },
-  {
     date: '2022',
     role: 'B.E. Electronics and Communication',
     company: 'Sir M Visvesvaraya Institute of Technology',
     location: 'Bangalore, India',
-    body: 'Engineering foundation with a practical bias toward systems thinking, debugging, and shipping working products.',
-    tech: ['Engineering', 'Systems', 'Product craft'],
+    body: 'Engineering foundation with a practical bias toward systems thinking, scalable data pipelines, and shipping robust solutions.',
+    tech: ['Python', 'Scala', 'Hadoop', 'SQL', 'Docker'],
     signals: [
       ['System', 'Engineering base'],
-      ['Motion', 'Debugging discipline'],
-      ['Proof', 'Product-minded build habit'],
+      ['Motion', 'Systems thinking'],
+      ['Proof', 'Scalable pipelines'],
     ],
   },
 ];

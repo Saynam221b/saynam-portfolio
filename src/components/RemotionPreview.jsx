@@ -1,7 +1,37 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { Player } from '@remotion/player';
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
+import { keyframes } from '@emotion/react';
+
+/**
+ * Lightweight CSS-animated preview that replaces the heavy Remotion player (~280KB saved).
+ * Uses pure CSS animations + minimal JS for intersection-based lazy activation.
+ */
+
+const sweep = keyframes`
+  0% { transform: translateX(-30%); }
+  100% { transform: translateX(130%); }
+`;
+
+const float1 = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+`;
+
+const float2 = keyframes`
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.85; }
+`;
+
+const barGrow = keyframes`
+  0% { width: 40%; }
+  50% { width: 92%; }
+  100% { width: 40%; }
+`;
 
 const Shell = styled.div`
   position: relative;
@@ -22,48 +52,155 @@ const Shell = styled.div`
   }
 `;
 
-const StaticFallback = styled.div`
+const GridBg = styled.div`
   position: absolute;
   inset: 0;
-  padding: clamp(1rem, 4vw, 2rem);
-  display: grid;
-  gap: 0.75rem;
-  align-content: center;
   background:
-    radial-gradient(circle at 22% 20%, ${props => props.accent}28, transparent 36%),
-    radial-gradient(circle at 84% 74%, ${props => props.accentAlt}24, transparent 42%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 36%),
-    #080c12;
+    linear-gradient(rgba(255, 255, 255, 0.052) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at 50% 48%, #000 0%, transparent 78%);
+  opacity: 0.72;
 `;
 
-const StaticFrame = styled.div`
+const ScanLine = styled.div`
+  position: absolute;
+  left: 0;
+  top: 7%;
+  bottom: 7%;
+  width: 118px;
+  transform: skewX(-13deg);
+  background: linear-gradient(90deg, transparent, ${props => props.accent}55, transparent);
+  filter: blur(14px);
+  opacity: 0.78;
+  animation: ${sweep} 4s ease-in-out infinite;
+`;
+
+const ContentFrame = styled.div`
+  position: absolute;
+  inset: 9% 7%;
   border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 24px;
-  padding: clamp(1rem, 4vw, 1.4rem);
-  background: rgba(255, 255, 255, 0.055);
+  border-radius: 36px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 38px 120px rgba(0, 0, 0, 0.38);
 `;
 
-const StaticLabel = styled.p`
+const LeftPanel = styled.div`
+  position: absolute;
+  left: 7%;
+  top: 12%;
+  width: 41%;
+  height: 74%;
+  display: grid;
+  align-content: space-between;
+  color: #f7f9ff;
+`;
+
+const Label = styled.div`
   color: ${props => props.accent};
-  font-size: 0.76rem;
+  font-size: clamp(0.6rem, 1.4vw, 1.1rem);
   font-weight: 900;
   text-transform: uppercase;
 `;
 
-const StaticTitle = styled.p`
-  max-width: 9ch;
-  margin-top: 0.5rem;
-  color: #f7f9ff;
-  font-size: clamp(2rem, 8vw, 4.2rem);
-  font-weight: 900;
+const Headline = styled.div`
+  margin-top: clamp(0.5rem, 1.2vw, 1rem);
+  max-width: 430px;
+  font-size: clamp(1.4rem, 5vw, 4rem);
   line-height: 0.86;
+  font-weight: 900;
+  color: #f7f9ff;
 `;
 
-const StaticLine = styled.div`
-  height: 10px;
+const Subcopy = styled.div`
+  margin-top: clamp(0.5rem, 1.2vw, 1.1rem);
+  max-width: 430px;
+  color: rgba(247, 249, 255, 0.72);
+  font-size: clamp(0.6rem, 1.6vw, 1.25rem);
+  line-height: 1.45;
+`;
+
+const Chips = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(4px, 0.8vw, 10px);
+`;
+
+const Chip = styled.span`
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
-  background: ${props => props.color || 'rgba(255, 255, 255, 0.18)'};
-  width: ${props => props.width || '70%'};
+  padding: clamp(4px, 0.7vw, 9px) clamp(6px, 1vw, 13px);
+  background: ${props => props.$first ? `${props.accent}20` : 'rgba(255, 255, 255, 0.075)'};
+  color: ${props => props.$first ? props.accent : 'rgba(247, 249, 255, 0.78)'};
+  font-size: clamp(0.5rem, 1.2vw, 0.94rem);
+  font-weight: 800;
+`;
+
+const RightPanel = styled.div`
+  position: absolute;
+  right: 7%;
+  top: 12%;
+  width: 42%;
+  height: 74%;
+  transform-style: preserve-3d;
+`;
+
+const FloatingCard = styled.div`
+  position: absolute;
+  left: ${props => props.$index * 34}px;
+  right: ${props => props.$index * 14}px;
+  top: ${props => props.$index * 74}px;
+  min-height: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: clamp(16px, 2.2vw, 28px);
+  padding: clamp(0.6rem, 1.6vw, 1.4rem);
+  background: ${props => props.$index === 0 ? 'rgba(255, 255, 255, 0.13)' : 'rgba(255, 255, 255, 0.07)'};
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  transform: translateZ(${props => (2 - props.$index) * 26}px);
+  animation: ${props => props.$index === 0 ? float1 : float2} ${props => 3.5 + props.$index * 0.8}s ease-in-out infinite;
+  animation-delay: ${props => props.$index * 0.3}s;
+  color: #f7f9ff;
+
+  @media (max-width: 720px) {
+    left: ${props => props.$index * 18}px;
+    right: ${props => props.$index * 8}px;
+    top: ${props => props.$index * 50}px;
+    min-height: 70px;
+  }
+`;
+
+const CardLabel = styled.div`
+  color: ${props => props.$highlight ? props.accent : 'rgba(247, 249, 255, 0.62)'};
+  font-size: clamp(0.5rem, 1.2vw, 0.94rem);
+  font-weight: 900;
+`;
+
+const BarContainer = styled.div`
+  display: grid;
+  gap: clamp(4px, 0.8vw, 10px);
+  margin-top: clamp(0.5rem, 1.4vw, 1.1rem);
+`;
+
+const AnimatedBar = styled.div`
+  height: clamp(6px, 1vw, 12px);
+  border-radius: 999px;
+  background: ${props => props.color};
+  opacity: 0.7;
+  animation: ${pulse} ${props => 2 + props.$offset * 0.5}s ease-in-out infinite;
+  animation-delay: ${props => props.$offset * 0.2}s;
+  width: ${props => props.width};
+`;
+
+const GraphLine = styled.svg`
+  position: absolute;
+  left: 48px;
+  right: 20px;
+  bottom: 22px;
+  width: 76%;
+  height: clamp(60px, 10vw, 120px);
+  overflow: visible;
+  filter: drop-shadow(0 0 18px ${props => props.accent}55);
 `;
 
 const variantMap = {
@@ -117,21 +254,7 @@ const variantMap = {
   },
 };
 
-const useReducedMotion = () => {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduced(media.matches);
-    update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
-  }, []);
-
-  return reduced;
-};
-
-const usePlayerVisibility = () => {
+const useVisibility = () => {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -156,240 +279,71 @@ const usePlayerVisibility = () => {
   return [ref, visible];
 };
 
-const clamp = {
-  extrapolateLeft: 'clamp',
-  extrapolateRight: 'clamp',
-};
-
-const MotionLoop = ({ variant = 'hero', accent = '#72f6d1', accentAlt = '#8fb7ff' }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const scene = variantMap[variant] || variantMap.hero;
-  const loopFrames = fps * 8;
-  const loop = frame % loopFrames;
-  const progress = loop / loopFrames;
-  const enter = interpolate(frame, [0, fps * 1.15], [0, 1], {
-    easing: Easing.bezier(0.16, 1, 0.3, 1),
-    ...clamp,
-  });
-  const scanX = interpolate(progress, [0, 1], [-22, 114], clamp);
-  const panelY = interpolate(progress, [0, 0.5, 1], [0, -34, 0], {
-    easing: Easing.bezier(0.45, 0, 0.55, 1),
-  });
-  const orbit = interpolate(progress, [0, 0.5, 1], [-8, 8, -8], {
-    easing: Easing.bezier(0.45, 0, 0.55, 1),
-  });
-  const glow = interpolate(progress, [0, 0.45, 1], [0.18, 0.78, 0.18], {
-    easing: Easing.bezier(0.45, 0, 0.55, 1),
-  });
-
-  return (
-    <AbsoluteFill
-      style={{
-        background:
-          'linear-gradient(135deg, rgba(255,255,255,0.09), transparent 34%), linear-gradient(180deg, #080c12, #101724)',
-        color: '#f7f9ff',
-        fontFamily: 'Inter, Avenir Next, sans-serif',
-        overflow: 'hidden',
-        opacity: enter,
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background:
-            'linear-gradient(rgba(255,255,255,0.052) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-          maskImage: 'radial-gradient(circle at 50% 48%, #000 0%, transparent 78%)',
-          opacity: 0.72,
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          inset: '9% 7%',
-          border: '1px solid rgba(255,255,255,0.13)',
-          borderRadius: 36,
-          background: 'rgba(255,255,255,0.045)',
-          boxShadow: '0 38px 120px rgba(0,0,0,0.38)',
-          transform: `translateY(${interpolate(enter, [0, 1], [28, 0])}px) rotateX(${orbit * 0.18}deg)`,
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: `${scanX}%`,
-          top: '7%',
-          bottom: '7%',
-          width: 118,
-          transform: 'skewX(-13deg)',
-          background: `linear-gradient(90deg, transparent, ${accent}55, transparent)`,
-          filter: 'blur(14px)',
-          opacity: 0.78,
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: '7%',
-          top: '12%',
-          width: '41%',
-          height: '74%',
-          display: 'grid',
-          alignContent: 'space-between',
-          transform: `translateY(${interpolate(enter, [0, 1], [24, 0])}px)`,
-        }}
-      >
-        <div>
-          <div style={{ color: accent, fontSize: 18, fontWeight: 900, letterSpacing: 0, textTransform: 'uppercase' }}>
-            {scene.label}
-          </div>
-          <div style={{ marginTop: 16, maxWidth: 430, fontSize: 64, lineHeight: 0.86, fontWeight: 900 }}>
-            {scene.headline}
-          </div>
-          <div style={{ marginTop: 18, maxWidth: 430, color: 'rgba(247,249,255,0.72)', fontSize: 20, lineHeight: 1.45 }}>
-            {scene.subcopy}
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          {scene.chips.map((chip, index) => (
-            <div
-              key={chip}
-              style={{
-                border: '1px solid rgba(255,255,255,0.14)',
-                borderRadius: 999,
-                padding: '9px 13px',
-                background: index === 0 ? `${accent}20` : 'rgba(255,255,255,0.075)',
-                color: index === 0 ? accent : 'rgba(247,249,255,0.78)',
-                fontSize: 15,
-                fontWeight: 800,
-              }}
-            >
-              {chip}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          right: '7%',
-          top: '12%',
-          width: '42%',
-          height: '74%',
-          transform: `translateY(${panelY}px) rotateY(${orbit}deg) rotateX(${orbit * -0.26}deg)`,
-          transformStyle: 'preserve-3d',
-        }}
-      >
-        {[0, 1, 2].map(index => (
-          <div
-            key={index}
-            style={{
-              position: 'absolute',
-              left: index * 34,
-              right: index * 14,
-              top: index * 74,
-              minHeight: 152,
-              border: '1px solid rgba(255,255,255,0.14)',
-              borderRadius: 28,
-              padding: 22,
-              background: index === 0 ? 'rgba(255,255,255,0.13)' : 'rgba(255,255,255,0.07)',
-              boxShadow: '0 24px 80px rgba(0,0,0,0.28)',
-              backdropFilter: 'blur(18px)',
-              transform: `translateZ(${(2 - index) * 26}px)`,
-            }}
-          >
-            <div style={{ color: index === 0 ? accent : 'rgba(247,249,255,0.62)', fontSize: 15, fontWeight: 900 }}>
-              {index === 0 ? scene.sideTitle : index === 1 ? 'Live graph' : 'Proof loop'}
-            </div>
-            <div style={{ display: 'grid', gap: 10, marginTop: 18 }}>
-              {scene.bars.map((bar, barIndex) => {
-                const width = interpolate((progress + barIndex * 0.11 + index * 0.06) % 1, [0, 1], [bar * 0.58, bar], {
-                  easing: Easing.bezier(0.45, 0, 0.55, 1),
-                });
-                return (
-                  <div
-                    key={barIndex}
-                    style={{
-                      height: 12,
-                      width: `${width}%`,
-                      borderRadius: 999,
-                      background: barIndex % 3 === 1 ? accentAlt : barIndex % 3 === 2 ? '#ffb86b' : accent,
-                      opacity: 0.56 + glow * 0.34,
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ))}
-        <svg
-          viewBox="0 0 360 140"
-          style={{
-            position: 'absolute',
-            left: 48,
-            right: 20,
-            bottom: 22,
-            width: '76%',
-            height: 120,
-            overflow: 'visible',
-            filter: `drop-shadow(0 0 ${14 + glow * 20}px ${accent}55)`,
-          }}
-        >
-          <polyline
-            points="0,112 48,82 92,96 146,42 196,66 248,24 316,50 360,18"
-            fill="none"
-            stroke={accent}
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeDasharray="420"
-            strokeDashoffset={interpolate(progress, [0, 1], [180, -160])}
-          />
-          {[0, 92, 196, 316].map((x, index) => (
-            <circle key={x} cx={x} cy={[112, 96, 66, 50][index]} r="8" fill={index % 2 ? accentAlt : accent} />
-          ))}
-        </svg>
-      </div>
-    </AbsoluteFill>
-  );
-};
+const barColors = ['var(--accent)', 'var(--accent-2)', 'var(--accent-3)', 'var(--accent)'];
+const cardLabels = ['Portfolio signal', 'Live graph', 'Proof loop'];
 
 const RemotionPreview = memo(({ variant = 'hero', accent = '#72f6d1', accentAlt = '#8fb7ff', ariaLabel }) => {
-  const reducedMotion = useReducedMotion();
-  const [shellRef, visible] = usePlayerVisibility();
-  const inputProps = useMemo(() => ({ variant, accent, accentAlt }), [variant, accent, accentAlt]);
+  const [shellRef, visible] = useVisibility();
   const scene = variantMap[variant] || variantMap.hero;
+  const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
-    <Shell ref={shellRef} aria-label={ariaLabel || `${scene.headline} motion preview`}>
-      {reducedMotion || !visible ? (
-        <StaticFallback accent={accent} accentAlt={accentAlt}>
-          <StaticFrame>
-            <StaticLabel accent={accent}>{scene.label}</StaticLabel>
-            <StaticTitle>{scene.headline}</StaticTitle>
-          </StaticFrame>
-          <StaticLine color={accent} width="46%" />
-          <StaticLine color="rgba(255,255,255,0.22)" width="84%" />
-          <StaticLine color={accentAlt} width="64%" />
-          <StaticLine color="rgba(255,255,255,0.16)" width="74%" />
-        </StaticFallback>
-      ) : (
-        <Player
-          component={MotionLoop}
-          inputProps={inputProps}
-          durationInFrames={240}
-          fps={30}
-          compositionWidth={1280}
-          compositionHeight={800}
-          loop
-          autoPlay
-          muted
-          controls={false}
-          acknowledgeRemotionLicense
-          style={{ width: '100%', height: '100%' }}
-        />
+    <Shell ref={shellRef} role="img" aria-label={ariaLabel || `${scene.headline} motion preview`}>
+      {visible && (
+        <>
+          <GridBg />
+          {!reducedMotion && <ScanLine accent={accent} />}
+          <ContentFrame />
+
+          <LeftPanel>
+            <div>
+              <Label accent={accent}>{scene.label}</Label>
+              <Headline>{scene.headline}</Headline>
+              <Subcopy>{scene.subcopy}</Subcopy>
+            </div>
+            <Chips>
+              {scene.chips.map((chip, i) => (
+                <Chip key={chip} $first={i === 0} accent={accent}>{chip}</Chip>
+              ))}
+            </Chips>
+          </LeftPanel>
+
+          <RightPanel>
+            {[0, 1, 2].map(index => (
+              <FloatingCard key={index} $index={index} style={reducedMotion ? { animation: 'none' } : undefined}>
+                <CardLabel $highlight={index === 0} accent={accent}>
+                  {index === 0 ? scene.sideTitle : cardLabels[index]}
+                </CardLabel>
+                <BarContainer>
+                  {scene.bars.map((bar, barIndex) => (
+                    <AnimatedBar
+                      key={barIndex}
+                      color={barColors[barIndex % barColors.length]}
+                      width={`${bar}%`}
+                      $offset={barIndex + index}
+                      style={reducedMotion ? { animation: 'none' } : undefined}
+                    />
+                  ))}
+                </BarContainer>
+              </FloatingCard>
+            ))}
+
+            <GraphLine accent={accent} viewBox="0 0 360 140">
+              <polyline
+                points="0,112 48,82 92,96 146,42 196,66 248,24 316,50 360,18"
+                fill="none"
+                stroke={accent}
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.7"
+              />
+              {[0, 92, 196, 316].map((x, i) => (
+                <circle key={x} cx={x} cy={[112, 96, 66, 50][i]} r="8" fill={i % 2 ? accentAlt : accent} opacity="0.8" />
+              ))}
+            </GraphLine>
+          </RightPanel>
+        </>
       )}
     </Shell>
   );

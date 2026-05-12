@@ -431,15 +431,12 @@ const SceneText = ({ chapter, index, progress }) => {
   const firstScale = useTransform(progress, [0, end], [1, 1.12]);
   const sceneScale = useTransform(progress, [start, start + 0.12, end], [0.92, 1, 0.96]);
   const rotateX = useTransform(progress, [start, end], [index === 0 ? 6 : -4, index === 0 ? -7 : 5]);
-  const firstFilter = useTransform(progress, [0, end - 0.04, end + 0.035], ['blur(0px)', 'blur(0px)', 'blur(12px)']);
-  const sceneFilter = useTransform(progress, [start, start + 0.08, end - 0.05, end], ['blur(14px)', 'blur(0px)', 'blur(0px)', 'blur(12px)']);
   const opacity = index === 0 ? firstOpacity : sceneOpacity;
   const y = index === 0 ? firstY : sceneY;
   const scale = index === 0 ? firstScale : sceneScale;
-  const filter = index === 0 ? firstFilter : sceneFilter;
 
   return (
-    <SceneCopy style={{ opacity, y, scale, rotateX, filter }}>
+    <SceneCopy style={{ opacity, y, scale, rotateX }}>
       <Kicker>{chapter.eyebrow}</Kicker>
       {index === 0 ? (
         <Title>
@@ -722,7 +719,7 @@ const ScrollFilmStage = () => {
 
         <ChapterRail aria-hidden="true">
           {chapters.map((chapter, index) => (
-            <RailDot key={chapter.id} active={activeIndex === index} tabIndex={-1} />
+            <RailDot key={chapter.id} active={activeIndex === index} tabIndex={-1} aria-label={`Chapter ${index + 1}: ${chapter.eyebrow}`} />
           ))}
         </ChapterRail>
       </StickyFrame>

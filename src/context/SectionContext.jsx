@@ -1,7 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useDocumentTitle } from '../main';
+import React, { createContext, useContext } from 'react';
 
-const SectionContext = createContext();
+/**
+ * Minimal section context — provides a hook interface
+ * for components that need section awareness.
+ * Active section tracking is handled by Header.jsx directly.
+ */
+const SectionContext = createContext({ activeSection: 'home' });
 
 export const useSection = () => {
   const context = useContext(SectionContext);
@@ -12,54 +16,11 @@ export const useSection = () => {
 };
 
 export const SectionProvider = ({ children }) => {
-  const [activeSection, setActiveSection] = useState('home');
-  
-  // Map section IDs to proper titles
-  const sectionTitles = {
-    home: 'Home',
-    about: 'About',
-    skills: 'Skills',
-    experience: 'Experience',
-    projects: 'Projects',
-    contact: 'Contact'
-  };
-  
-  // Update document title based on active section
-  useDocumentTitle(sectionTitles[activeSection] || 'Portfolio');
-  
-  // Function to detect which section is currently in view
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll('section[id]');
-      const scrollPosition = window.scrollY + 100; // Offset for better detection
-      
-      let currentSection = 'home';
-      
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-          currentSection = section.getAttribute('id');
-        }
-      });
-      
-      setActiveSection(currentSection);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-  
   return (
-    <SectionContext.Provider value={{ activeSection, setActiveSection }}>
+    <SectionContext.Provider value={{ activeSection: 'home' }}>
       {children}
     </SectionContext.Provider>
   );
 };
 
-export default SectionContext; 
+export default SectionContext;

@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import emailjs from 'emailjs-com';
+import { FiArrowRight } from 'react-icons/fi';
 import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
 
 const Section = styled.section`
@@ -93,6 +94,11 @@ const Lane = styled.a`
   &:focus-visible {
     transform: translateY(-2px);
     border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 `;
 
@@ -199,6 +205,11 @@ const Submit = styled.button`
     transform: translateY(-2px);
   }
 
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   &:disabled {
     opacity: 0.68;
     cursor: not-allowed;
@@ -278,14 +289,14 @@ const Contact = () => {
                 <LaneTitle>Email directly</LaneTitle>
                 <LaneMeta>saynam1101@gmail.com</LaneMeta>
               </LaneText>
-              <i className="fas fa-arrow-right" />
+              <FiArrowRight size={18} />
             </Lane>
             <Lane href="/resume.pdf" target="_blank" rel="noopener noreferrer">
               <LaneText>
                 <LaneTitle>View resume</LaneTitle>
                 <LaneMeta>Experience and project proof</LaneMeta>
               </LaneText>
-              <i className="fas fa-arrow-right" />
+              <FiArrowRight size={18} />
             </Lane>
           </LaneGrid>
         </Copy>
@@ -304,10 +315,10 @@ const Contact = () => {
             <input type="hidden" name="reply_to" value={formState.email} />
             <input type="hidden" name="user_email" value={formState.email} />
 
-            <Field name="name" value={formState.name} onChange={handleChange} placeholder="Name *" required />
-            <Field type="email" name="email" value={formState.email} onChange={handleChange} placeholder="Email *" required />
-            <Field name="subject" value={formState.subject} onChange={handleChange} placeholder="Subject" />
-            <Textarea name="message" value={formState.message} onChange={handleChange} placeholder="Message *" required />
+            <Field name="name" value={formState.name} onChange={handleChange} placeholder="Name *" required aria-label="Your name" />
+            <Field type="email" name="email" value={formState.email} onChange={handleChange} placeholder="Email *" required aria-label="Your email address" />
+            <Field name="subject" value={formState.subject} onChange={handleChange} placeholder="Subject" aria-label="Message subject" />
+            <Textarea name="message" value={formState.message} onChange={handleChange} placeholder="Message *" required aria-label="Your message" />
             <Submit type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Sending...' : 'Send message'}
             </Submit>

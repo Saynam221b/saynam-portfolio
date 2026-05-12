@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
+import { FiArrowUp } from 'react-icons/fi';
 
 const ScrollButton = styled(motion.button)`
   position: fixed;
@@ -18,6 +19,17 @@ const ScrollButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   z-index: 99;
+  transition: border-color 0.2s var(--ease-out);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 
   @media (max-width: 768px) {
     bottom: 18px;
@@ -58,7 +70,7 @@ const ScrollToTop = () => {
           whileTap={{ scale: 0.95 }}
           aria-label="Scroll to top"
         >
-          <i className="fas fa-arrow-up" />
+          <FiArrowUp size={18} />
         </ScrollButton>
       )}
     </AnimatePresence>

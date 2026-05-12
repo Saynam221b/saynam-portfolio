@@ -65,30 +65,30 @@ const globalStyles = css`
 
   :root[data-theme='light'] {
     --bg: #f5f7fb;
-    --bg-2: #eef3f8;
-    --surface: rgba(255, 255, 255, 0.84);
-    --surface-strong: rgba(255, 255, 255, 0.94);
-    --surface-soft: rgba(7, 9, 13, 0.048);
+    --bg-2: #eef2f8;
+    --surface: rgba(255, 255, 255, 0.88);
+    --surface-strong: rgba(255, 255, 255, 0.96);
+    --surface-soft: rgba(7, 9, 13, 0.05);
     --line: rgba(7, 9, 13, 0.13);
     --line-soft: rgba(7, 9, 13, 0.08);
     --border: rgba(7, 9, 13, 0.13);
     --border-soft: rgba(7, 9, 13, 0.08);
-    --border-strong: rgba(7, 9, 13, 0.2);
+    --border-strong: rgba(7, 9, 13, 0.22);
     --text: #08111d;
-    --text-muted: #3d4a5f;
-    --text-subtle: #6b7689;
+    --text-muted: #374357;
+    --text-subtle: #536179;
     --accent: #007f68;
     --accent-2: #315ed6;
     --accent-3: #b45f16;
     --danger-accent: #bf315a;
     --button-text: #f8fffd;
-    --surface-elev: rgba(255, 255, 255, 0.84);
-    --surface-elev-strong: rgba(255, 255, 255, 0.94);
+    --surface-elev: rgba(255, 255, 255, 0.88);
+    --surface-elev-strong: rgba(255, 255, 255, 0.96);
     --shadow: 0 28px 90px rgba(31, 44, 70, 0.16);
     --shadow-soft: 0 18px 45px rgba(31, 44, 70, 0.12);
     --shadow-sm: 0 12px 28px rgba(31, 44, 70, 0.1);
     --shadow-md: 0 22px 60px rgba(31, 44, 70, 0.14);
-    --focus-ring: rgba(0, 127, 104, 0.2);
+    --focus-ring: rgba(0, 127, 104, 0.22);
   }
 
   * {
@@ -107,17 +107,23 @@ const globalStyles = css`
     min-width: 320px;
     font-family: var(--font-sans);
     background:
-      linear-gradient(rgba(255, 255, 255, 0.032) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
       radial-gradient(ellipse at 50% -12%, rgba(143, 183, 255, 0.16), transparent 48%),
       linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 52%, var(--bg) 100%);
-    background-size: 48px 48px, 48px 48px, auto, auto;
     color: var(--text);
     line-height: 1.5;
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  :root[data-theme='dark'] body {
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.032) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+      radial-gradient(ellipse at 50% -12%, rgba(143, 183, 255, 0.16), transparent 48%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 52%, var(--bg) 100%);
+    background-size: 48px 48px, 48px 48px, auto, auto;
   }
 
   h1,
@@ -159,6 +165,30 @@ const globalStyles = css`
   ::selection {
     background: rgba(114, 246, 209, 0.28);
     color: var(--text);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Skip to content link */
+  .skip-to-content {
+    position: fixed;
+    top: -100%;
+    left: 1rem;
+    z-index: 10000;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--button-text);
+    font-weight: 800;
+    font-size: 0.86rem;
+    transition: top 0.2s var(--ease-out);
+  }
+
+  .skip-to-content:focus {
+    top: 1rem;
   }
 
   .display-serif {
@@ -233,7 +263,6 @@ function AppContent() {
           opacity: atmosphereOpacity,
           background:
             'linear-gradient(115deg, transparent 0%, rgba(114, 246, 209, 0.12) 28%, transparent 52%, rgba(255, 184, 107, 0.12) 78%, transparent 100%)',
-          filter: 'blur(28px)',
         }}
       />
       <motion.div
@@ -257,11 +286,13 @@ function AppContent() {
         ) : (
           <motion.main
             key="content"
+            id="main-content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
             style={{ position: 'relative', zIndex: 1 }}
           >
+            <a className="skip-to-content" href="#main-content">Skip to content</a>
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />

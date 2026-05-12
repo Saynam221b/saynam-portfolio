@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from '../App';
+import { FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
 
 const HeaderShell = styled.header`
   position: sticky;
@@ -9,19 +10,21 @@ const HeaderShell = styled.header`
   z-index: 1000;
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto -4.5rem;
-  border: 1px solid ${props => (props.scrolled ? 'var(--line)' : 'var(--line-soft)')};
+  border: 1px solid var(--line-soft);
   border-radius: 999px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.095), transparent 42%),
-    ${props => (props.scrolled ? 'rgba(7, 9, 13, 0.82)' : 'rgba(7, 9, 13, 0.58)')};
-  box-shadow: ${props => (props.scrolled ? 'var(--shadow-soft)' : '0 12px 38px rgba(0, 0, 0, 0.16)')};
+    var(--surface);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(22px);
   transition: background 0.24s var(--ease-out), border-color 0.24s var(--ease-out), box-shadow 0.24s var(--ease-out);
 
-  :root[data-theme='light'] & {
+  &.scrolled {
+    border-color: var(--line);
     background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.86), transparent 42%),
-      ${props => (props.scrolled ? 'rgba(245, 247, 251, 0.86)' : 'rgba(245, 247, 251, 0.66)')};
+      linear-gradient(135deg, rgba(255, 255, 255, 0.095), transparent 42%),
+      var(--surface-strong);
+    box-shadow: var(--shadow-soft);
   }
 
   @media (max-width: 760px) {
@@ -71,7 +74,7 @@ const DesktopNav = styled.nav`
   gap: 0.16rem;
   border: 1px solid var(--line-soft);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-soft);
   padding: 0.18rem;
 
   @media (max-width: 980px) {
@@ -96,6 +99,11 @@ const NavLink = styled.a`
     color: ${props => (props.$active ? 'var(--button-text)' : 'var(--text)')};
     transform: translateY(-1px);
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 `;
 
 const Actions = styled.div`
@@ -115,6 +123,18 @@ const IconButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: transform 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 `;
 
 const Pill = styled.a`
@@ -129,6 +149,18 @@ const Pill = styled.a`
   justify-content: center;
   font-size: 0.84rem;
   font-weight: 850;
+  transition: transform 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 
   @media (max-width: 1120px) {
     display: ${props => (props.hideCompact ? 'none' : 'inline-flex')};
@@ -150,7 +182,7 @@ const MobileOverlay = styled(motion.div)`
   background: rgba(0, 0, 0, 0.34);
 `;
 
-const MobileSheet = styled(motion.div)`
+const MobileSheet = styled(motion.nav)`
   position: fixed;
   top: 0;
   right: 0;
@@ -174,6 +206,11 @@ const MobileLink = styled.a`
   font-weight: 800;
   display: inline-flex;
   align-items: center;
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
 `;
 
 const navItems = [
@@ -216,7 +253,7 @@ const Header = () => {
 
   return (
     <>
-      <HeaderShell scrolled={scrolled}>
+      <HeaderShell className={scrolled ? 'scrolled' : ''}>
         <HeaderInner>
           <Brand href="/#home">
             Saynam <small>motion portfolio</small>
@@ -232,12 +269,12 @@ const Header = () => {
 
           <Actions>
             <IconButton type="button" onClick={toggleTheme} aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-              <i className={isDarkMode ? 'fas fa-sun' : 'fas fa-moon'} />
+              {isDarkMode ? <FiSun size={16} /> : <FiMoon size={16} />}
             </IconButton>
             <Pill hideCompact href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume</Pill>
             <Pill primary href="/#contact">Start</Pill>
             <MenuButton type="button" onClick={() => setOpen(prev => !prev)} aria-label={open ? 'Close menu' : 'Open menu'}>
-              <i className={open ? 'fas fa-times' : 'fas fa-bars'} />
+              {open ? <FiX size={18} /> : <FiMenu size={18} />}
             </MenuButton>
           </Actions>
         </HeaderInner>
@@ -247,7 +284,13 @@ const Header = () => {
         {open && (
           <>
             <MobileOverlay initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />
-            <MobileSheet initial={{ x: 340 }} animate={{ x: 0 }} exit={{ x: 340 }} transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}>
+            <MobileSheet
+              aria-label="Mobile navigation"
+              initial={{ x: 340 }}
+              animate={{ x: 0 }}
+              exit={{ x: 340 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            >
               {navItems.map(item => (
                 <MobileLink key={item.label} href={item.href} onClick={() => setOpen(false)}>
                   {item.label}
