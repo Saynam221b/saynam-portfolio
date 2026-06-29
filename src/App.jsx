@@ -9,7 +9,6 @@ import D3xTRverse from './components/D3xTRverse';
 import Footer from './components/Footer';
 import Loader from './components/Loader';
 import ScrollToTop from './components/ScrollToTop';
-import { SectionProvider } from './context/SectionContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 const THEME_STORAGE_KEY = 'portfolio-theme';
@@ -362,9 +361,7 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeContext.Provider value={contextValue}>
-        <SectionProvider>
-          <AppContent />
-        </SectionProvider>
+        <AppContent />
       </ThemeContext.Provider>
     </BrowserRouter>
   );

@@ -1,11 +1,15 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="630" fill="url(#paint0_linear)" />
-  <text x="600" y="280" font-family="Poppins, sans-serif" font-size="72" font-weight="700" text-anchor="middle" fill="white">Saynam Sharma</text>
-  <text x="600" y="360" font-family="Poppins, sans-serif" font-size="36" font-weight="400" text-anchor="middle" fill="white">Data Engineer &amp; Full Stack Developer</text>
+  <rect width="1200" height="630" fill="#07090d"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#bgGrad)" opacity="0.9"/>
+  <circle cx="180" cy="120" r="220" fill="#72f6d1" opacity="0.12"/>
+  <circle cx="1020" cy="520" r="280" fill="#8fb7ff" opacity="0.1"/>
+  <text x="80" y="280" font-family="system-ui, sans-serif" font-size="72" font-weight="800" fill="#f4f7fb">Saynam Sharma</text>
+  <text x="80" y="360" font-family="system-ui, sans-serif" font-size="34" font-weight="500" fill="#9aa8bc">Data Engineer · Databricks Certified</text>
+  <text x="80" y="420" font-family="system-ui, sans-serif" font-size="22" font-weight="500" fill="#72f6d1">Oracle · Snowflake · Databricks · DexFlow</text>
   <defs>
-    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7C3AED"/>
-      <stop offset="1" stop-color="#EC4899"/>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0d1219"/>
+      <stop offset="1" stop-color="#07090d"/>
     </linearGradient>
   </defs>
-</svg> 
+</svg>

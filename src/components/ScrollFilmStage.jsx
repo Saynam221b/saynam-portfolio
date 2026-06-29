@@ -15,48 +15,48 @@ const storyChapters = [
     id: 'identity',
     eyebrow: 'Identity layer',
     title: 'Saynam Sharma',
-    copy: 'A data engineer, web builder, and creator working from one command system: calm infrastructure, sharp interfaces, visible proof.',
-    proof: ['Data Engineer', 'Web Developer', 'Creator'],
+    copy: 'Data Engineer with 3.5+ years in production batch and incremental pipelines — calm infrastructure, rerun-safe systems, and proof you can inspect.',
+    proof: ['Data Engineer', '3.5+ years', 'Databricks Certified'],
     visualState: 'identity',
     cta: [
       { label: 'Watch the work', href: '#projects', primary: true },
-      { label: 'Start a build', href: '#contact' },
+      { label: 'See experience', href: '#experience' },
     ],
   },
   {
     id: 'data',
     eyebrow: 'Data systems',
     title: 'Pipelines that stay calm under pressure.',
-    copy: 'Oracle, Snowflake, dbt, Airflow, and PySpark are framed as a reliable operating layer: rerun-safe, observable, and ready for recovery.',
-    proof: ['Oracle Fusion', 'Snowflake', 'dbt checks'],
+    copy: 'Oracle Fusion to Snowflake, Delta Lake merges, and dbt quality checks — idempotent loads, backfill-safe workflows, and observability built into the operating layer.',
+    proof: ['Oracle Fusion', 'Snowflake', 'Rerun-safe'],
     visualState: 'pipeline',
   },
   {
     id: 'product',
     eyebrow: 'Product interfaces',
     title: 'Complex logic becomes visible product flow.',
-    copy: 'SQL lineage, DAGs, dashboards, and debugging surfaces turn dense backend behavior into interfaces people can inspect and trust.',
-    proof: ['D3xTRverse Flow', 'React UI', 'Lineage graphs'],
+    copy: 'DexFlow turns nested SQL into inspectable lineage DAGs with deterministic explanations, AI enrichment, and export-ready debugging surfaces.',
+    proof: ['DexFlow', 'SQL lineage', 'React Flow'],
     visualState: 'interface',
   },
   {
     id: 'creator',
     eyebrow: 'Creator signal',
-    title: 'Technical work becomes a story people can follow.',
-    copy: 'Build notes, explainers, portfolio proof, and creator systems make the engineering signal visible beyond the codebase.',
-    proof: ['Explainers', 'Build logs', 'Brand system'],
+    title: 'Engineering signal beyond the day job.',
+    copy: 'D3xTRverse at d3xtrverse.com holds community and product experiments. DexFlow is the data-tooling sibling — both prove you build past tickets.',
+    proof: ['D3xTRverse', 'd3xtrverse.com', 'Brand system'],
     visualState: 'creator',
   },
   {
     id: 'proof',
     eyebrow: 'Proof layer',
-    title: 'One profile. Three signals. A clear next step.',
-    copy: 'The film resolves into practical proof: production data ownership, product craft, and a direct path to start the next serious build.',
-    proof: ['Experience', 'Selected work', 'Contact path'],
+    title: 'Certified depth. Production proof. Clear next step.',
+    copy: 'Databricks Associate & Professional, KPI Partners platform ownership, and a direct path to discuss the next serious data engineering build.',
+    proof: ['KPI Partners', 'Selected work', 'Contact path'],
     visualState: 'proof',
     cta: [
       { label: 'Start a build', href: '#contact', primary: true },
-      { label: 'See experience', href: '#experience' },
+      { label: 'View resume', href: '/resume.pdf', external: true },
     ],
   },
 ];
@@ -484,7 +484,13 @@ const SceneText = ({ chapter, index, progress }) => {
       {chapter.cta && (
         <Actions>
           {chapter.cta.map(action => (
-            <Button key={action.href} href={action.href} $primary={action.primary}>
+            <Button
+              key={action.href}
+              href={action.href}
+              $primary={action.primary}
+              target={action.external ? '_blank' : undefined}
+              rel={action.external ? 'noopener noreferrer' : undefined}
+            >
               {action.label}
             </Button>
           ))}
@@ -562,7 +568,13 @@ const ScrollFilmStage = () => {
               {chapter.cta && (
                 <Actions>
                   {chapter.cta.map(action => (
-                    <Button key={action.href} href={action.href} $primary={action.primary}>
+                    <Button
+                      key={action.href}
+                      href={action.href}
+                      $primary={action.primary}
+                      target={action.external ? '_blank' : undefined}
+                      rel={action.external ? 'noopener noreferrer' : undefined}
+                    >
                       {action.label}
                     </Button>
                   ))}

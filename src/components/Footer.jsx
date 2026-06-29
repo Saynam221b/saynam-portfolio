@@ -87,11 +87,13 @@ const Footer = () => {
       <Inner>
         <div>
           <Brand href="/#home">Saynam Sharma</Brand>
-          <Meta>Data engineering by profession. Web development and content creation by passion. © {currentYear}</Meta>
+          <Meta>Production data systems. Product experiments on the side. © {currentYear}</Meta>
         </div>
         <Links>
           <a href="https://www.linkedin.com/in/saynam-sharma/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <a href="https://github.com/Saynam221b" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://dex-floww.vercel.app/" target="_blank" rel="noopener noreferrer">DexFlow</a>
+          <a href="https://d3xtrverse.com" target="_blank" rel="noopener noreferrer">D3xTRverse</a>
           <a href="mailto:saynam1101@gmail.com">Email</a>
           <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
         </Links>

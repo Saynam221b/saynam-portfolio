@@ -222,8 +222,8 @@ const variantMap = {
   },
   product: {
     label: 'Product layer',
-    headline: 'D3xTRverse Flow',
-    subcopy: 'Dense SQL logic becomes an inspectable graph for faster analytics debugging.',
+    headline: 'DexFlow',
+    subcopy: 'Dense SQL logic becomes an inspectable lineage graph for faster analytics debugging.',
     sideTitle: 'Graph UX',
     bars: [66, 88, 46, 72],
     chips: ['AST', 'DAG', 'UX'],
@@ -246,8 +246,8 @@ const variantMap = {
   },
   d3x: {
     label: 'Creator OS',
-    headline: 'D3x TRverse',
-    subcopy: 'Competitive play, technical depth, and creator systems held under one sharp brand.',
+    headline: 'D3xTRverse',
+    subcopy: 'Competitive play, technical depth, and creator systems at d3xtrverse.com.',
     sideTitle: 'Signal stack',
     bars: [88, 68, 76, 54],
     chips: ['Gaming', 'Code', 'Brand'],

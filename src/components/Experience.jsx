@@ -300,18 +300,68 @@ const SignalValue = styled.p`
   line-height: 1.35;
 `;
 
+const PlatformGrid = styled.div`
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.72rem;
+  margin-top: 1rem;
+`;
+
+const PlatformCard = styled.div`
+  border: 1px solid var(--line-soft);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-soft) 55%, transparent);
+  padding: 0.85rem 0.95rem;
+`;
+
+const PlatformTitle = styled.h4`
+  font-size: 0.95rem;
+  font-weight: 850;
+  color: var(--text);
+  margin-bottom: 0.45rem;
+  line-height: 1.3;
+`;
+
+const PlatformBody = styled.p`
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin-bottom: 0.55rem;
+`;
+
 const jobs = [
   {
-    date: '2022-now',
+    date: '2022–now',
     role: 'Data Engineer II',
     company: 'KPI Partners',
-    location: 'Remote - Pune, India',
-    body: 'Architected an end-to-end AWS-based ETL platform ingesting Oracle Fusion BI report data into Snowflake. Built large-scale batch pipelines on Databricks using PySpark, optimizing workloads to achieve 45-60% reduction in pipeline runtime. Led migration of legacy SSIS workflows to a Databricks lakehouse stack.',
-    tech: ['Snowflake', 'dbt', 'Airflow', 'Databricks', 'PySpark', 'AWS', 'SQL'],
+    location: 'Remote · Pune, India',
+    body: 'Three production platform streams across enterprise ERP ingestion, Databricks lakehouse processing, and clinical trials data — all built for rerun safety, observability, and durable downstream reporting.',
+    tech: ['Snowflake', 'dbt', 'Airflow', 'MWAA', 'Databricks', 'PySpark', 'Delta Lake', 'AWS', 'SQL'],
     signals: [
       ['System', 'Oracle to Snowflake'],
-      ['Motion', 'Runtime tuning'],
-      ['Proof', '45-60% faster runs'],
+      ['Motion', '45–60% faster runs'],
+      ['Proof', 'SSIS to lakehouse'],
+    ],
+    platforms: [
+      {
+        title: 'Oracle Fusion → Snowflake ETL Platform',
+        body:
+          'Architected AWS-based ingestion from Oracle Fusion BI into Snowflake with MWAA, S3, Python, SQL, and dbt. Built incremental, idempotent loads into dimensional and fact models with dbt data quality checks, schema drift handling, and backfill-safe workflows.',
+        tech: ['AWS', 'MWAA', 'S3', 'Snowflake', 'dbt', 'Python'],
+      },
+      {
+        title: 'Databricks & PySpark Lakehouse Pipelines',
+        body:
+          'Built large-scale PySpark pipelines merging historical DBCS datasets with Fusion data across multi-million-row fact tables. Implemented Delta Lake merge patterns for late-arriving data and schema changes; tuned partitioning and cluster configs for 45–60% runtime reduction.',
+        tech: ['Databricks', 'PySpark', 'Delta Lake', 'Spark SQL'],
+      },
+      {
+        title: 'Clinical Trials Data Platform',
+        body:
+          'Developed SSIS pipelines for clinical trial ingestion, EDC integrations with CTMS/Payments/OPRA, and optimized SQL Server stored procedures. Led migration of legacy SSIS workflows to Databricks, modernizing on-prem architecture into a cloud-native lakehouse.',
+        tech: ['SSIS', 'SQL Server', 'SSMS', 'Databricks'],
+      },
     ],
   },
   {
@@ -320,7 +370,7 @@ const jobs = [
     company: 'Sir M Visvesvaraya Institute of Technology',
     location: 'Bangalore, India',
     body: 'Engineering foundation with a practical bias toward systems thinking, scalable data pipelines, and shipping robust solutions.',
-    tech: ['Python', 'Scala', 'Hadoop', 'SQL', 'Docker'],
+    tech: ['Python', 'SQL', 'Systems Design'],
     signals: [
       ['System', 'Engineering base'],
       ['Motion', 'Systems thinking'],
@@ -372,6 +422,21 @@ const Experience = () => {
                   <Pill>{job.location}</Pill>
                 </Top>
                 <Body>{job.body}</Body>
+                {job.platforms && (
+                  <PlatformGrid>
+                    {job.platforms.map(platform => (
+                      <PlatformCard key={platform.title}>
+                        <PlatformTitle>{platform.title}</PlatformTitle>
+                        <PlatformBody>{platform.body}</PlatformBody>
+                        <Tags>
+                          {platform.tech.map(tech => (
+                            <Tag key={tech}>{tech}</Tag>
+                          ))}
+                        </Tags>
+                      </PlatformCard>
+                    ))}
+                  </PlatformGrid>
+                )}
                 <SignalGrid>
                   {job.signals.map(([label, value]) => (
                     <Signal key={label}>

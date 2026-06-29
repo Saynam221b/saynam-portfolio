@@ -263,6 +263,64 @@ const QuietLink = styled.a`
   overflow-wrap: anywhere;
 `;
 
+const CaseCompact = styled(Case)`
+  opacity: 0.94;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CaseVisual = styled.div`
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--line-soft);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 42%),
+    color-mix(in srgb, var(--surface-soft) 80%, transparent);
+  min-height: 140px;
+  padding: 1rem;
+  display: grid;
+  align-content: center;
+  gap: 0.45rem;
+`;
+
+const VisualLabel = styled.p`
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-subtle);
+  font-weight: 750;
+`;
+
+const VisualTitle = styled.p`
+  font-size: 0.92rem;
+  font-weight: 850;
+  color: var(--text);
+  line-height: 1.35;
+`;
+
+const VisualMeta = styled.p`
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+`;
+
+const PrivateBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px dashed var(--line);
+  color: var(--text-subtle);
+  padding: 0 0.92rem;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+`;
+
 const Projects = () => {
   return (
     <Section id="projects">
@@ -275,16 +333,16 @@ const Projects = () => {
             </div>
             <div>
               <Subtitle>
-                Data infrastructure, web products, and creator-led product thinking are grouped as one proof system instead of separate portfolio cards.
+                Enterprise data platforms first, then product experiments that prove depth beyond day-job delivery.
               </Subtitle>
               <ProofSummary aria-label="Portfolio proof summary">
                 <SummaryRow>
                   <SummaryLabel>Profession</SummaryLabel>
-                  <SummaryValue>Data engineering systems</SummaryValue>
+                  <SummaryValue>Data engineering · KPI Partners</SummaryValue>
                 </SummaryRow>
                 <SummaryRow>
-                  <SummaryLabel>Passion</SummaryLabel>
-                  <SummaryValue>Web products and creator output</SummaryValue>
+                  <SummaryLabel>Signal</SummaryLabel>
+                  <SummaryValue>DexFlow · Automation OS · D3xTRverse</SummaryValue>
                 </SummaryRow>
               </ProofSummary>
             </div>
@@ -294,16 +352,17 @@ const Projects = () => {
         <AnimatedSection animation="fadeUp" delay={0.06}>
           <Case>
             <div>
-              <Type>Data Platform</Type>
-              <CaseTitle>Oracle Fusion to Snowflake ETL Platform</CaseTitle>
+              <Type>Enterprise · KPI Partners</Type>
+              <CaseTitle>Oracle Fusion → Snowflake ETL Platform</CaseTitle>
               <Role>Data Engineer</Role>
               <Scope>
-                Designed an AWS-based ingestion and transformation system from Oracle Fusion BI to Snowflake with idempotent incremental logic
-                and stable downstream model behavior.
+                Architected an AWS-based ETL platform ingesting Oracle Fusion BI data into Snowflake with MWAA Airflow, S3, Python, SQL, and
+                dbt. Designed incremental, idempotent, and rerun-safe loading into dimensional and fact models with embedded data quality
+                checks, schema drift handling, and backfill-safe workflows.
               </Scope>
               <StackRow>
                 <Stack>AWS</Stack>
-                <Stack>Airflow (MWAA)</Stack>
+                <Stack>MWAA</Stack>
                 <Stack>Snowflake</Stack>
                 <Stack>dbt</Stack>
                 <Stack>Python</Stack>
@@ -311,13 +370,18 @@ const Projects = () => {
               </StackRow>
             </div>
             <Detail>
+              <CaseVisual aria-hidden="true">
+                <VisualLabel>Pipeline signal</VisualLabel>
+                <VisualTitle>Oracle Fusion → S3 → MWAA → dbt → Snowflake</VisualTitle>
+                <VisualMeta>Incremental loads · audit columns · query history monitoring · MTTR reduction</VisualMeta>
+              </CaseVisual>
               <DetailCard>
                 <DetailLabel>Outcome</DetailLabel>
-                <DetailBody>Fewer reporting defects through deterministic load behavior and model-level quality checks.</DetailBody>
+                <DetailBody>Fewer downstream reporting failures through deterministic load behavior and model-level quality checks.</DetailBody>
               </DetailCard>
               <DetailCard>
                 <DetailLabel>Impact</DetailLabel>
-                <DetailBody>Faster incident triage with structured logging and query history driven diagnostics.</DetailBody>
+                <DetailBody>Improved observability with structured logging, audit tables, and Snowflake query history monitoring.</DetailBody>
               </DetailCard>
             </Detail>
           </Case>
@@ -327,35 +391,41 @@ const Projects = () => {
           <Case>
             <div>
               <Type>Product + Data Tooling</Type>
-              <CaseTitle>D3xTRverse Flow</CaseTitle>
+              <CaseTitle>DexFlow</CaseTitle>
               <Role>Creator and Lead Engineer</Role>
               <Scope>
-                Built a SQL lineage visualizer that transforms nested SQL into deterministic DAGs with node-level inspection for complex
-                analytics debugging.
+                SQL lineage tool that parses complex queries into interactive DAG-based lineage graphs with deterministic explanations,
+                Groq-based AI enrichment, URL state sharing, rate limiting, caching, and PNG/SVG export.
               </Scope>
               <StackRow>
-                <Stack>Next.js</Stack>
+                <Stack>React</Stack>
+                <Stack>Node.js</Stack>
+                <Stack>node-sql-parser</Stack>
                 <Stack>React Flow</Stack>
-                <Stack>AST Parsing</Stack>
-                <Stack>LLM</Stack>
+                <Stack>Groq API</Stack>
               </StackRow>
               <LinkRow>
                 <PrimaryLink href="https://dex-floww.vercel.app/" target="_blank" rel="noopener noreferrer">
-                  Launch App
+                  Launch DexFlow
                 </PrimaryLink>
-                <QuietLink href="https://github.com/Saynam221b" target="_blank" rel="noopener noreferrer">
+                <QuietLink href="https://github.com/Saynam221b/dex-floww" target="_blank" rel="noopener noreferrer">
                   Source
                 </QuietLink>
               </LinkRow>
             </div>
             <Detail>
+              <CaseVisual aria-hidden="true">
+                <VisualLabel>Lineage graph</VisualLabel>
+                <VisualTitle>AST parse → Dagre layout → inspectable DAG</VisualTitle>
+                <VisualMeta>Table dependencies · transformation flow · query impact across complex SQL workloads</VisualMeta>
+              </CaseVisual>
               <DetailCard>
                 <DetailLabel>Outcome</DetailLabel>
                 <DetailBody>Reduced SQL debugging time by making transformation dependencies immediately visible.</DetailBody>
               </DetailCard>
               <DetailCard>
                 <DetailLabel>Signal</DetailLabel>
-                <DetailBody>Demonstrates productized thinking on top of deep data engineering constraints.</DetailBody>
+                <DetailBody>Productized data engineering thinking — lineage, explainability, and shareable debugging surfaces.</DetailBody>
               </DetailCard>
             </Detail>
           </Case>
@@ -364,12 +434,47 @@ const Projects = () => {
         <AnimatedSection animation="fadeUp" delay={0.14}>
           <Case>
             <div>
-              <Type>Full-Stack Product</Type>
+              <Type>AI Workflow Platform</Type>
+              <CaseTitle>Automation OS</CaseTitle>
+              <Role>Builder</Role>
+              <Scope>
+                Private automation platform for scheduled AI workflows including job discovery, AI-based matching, investment review
+                summaries, and notification routing with workflow run tracking, input validation, and automated tests.
+              </Scope>
+              <StackRow>
+                <Stack>Python</Stack>
+                <Stack>PostgreSQL</Stack>
+                <Stack>Supabase</Stack>
+                <Stack>Docker</Stack>
+                <Stack>Telegram API</Stack>
+                <Stack>Email APIs</Stack>
+              </StackRow>
+              <LinkRow>
+                <PrivateBadge>Private build</PrivateBadge>
+              </LinkRow>
+            </div>
+            <Detail>
+              <DetailCard>
+                <DetailLabel>Outcome</DetailLabel>
+                <DetailBody>Extensible workflow platform with secure access, reusable jobs, and structured execution history.</DetailBody>
+              </DetailCard>
+              <DetailCard>
+                <DetailLabel>Signal</DetailLabel>
+                <DetailBody>Reliability-minded automation — persistence, validation, notifications, and test coverage beyond scripts.</DetailBody>
+              </DetailCard>
+            </Detail>
+          </Case>
+        </AnimatedSection>
+
+        <AnimatedSection animation="fadeUp" delay={0.18}>
+          <CaseCompact>
+            <div>
+              <Type>Creator · D3xTRverse</Type>
               <CaseTitle>D3xTRverse Community</CaseTitle>
               <Role>Full-Stack Developer</Role>
               <Scope>
-                Delivered a tournament and community surface with responsive interaction design and backend primitives built for iterative
-                feature growth.
+                Tournament and community surface with responsive interaction design, Django + Supabase backend, and a brand system that
+                holds competitive play and product experiments under d3xtrverse.com.
               </Scope>
               <StackRow>
                 <Stack>React</Stack>
@@ -378,22 +483,19 @@ const Projects = () => {
                 <Stack>PostgreSQL</Stack>
               </StackRow>
               <LinkRow>
-                <QuietLink href="https://d3xtrverse.vercel.app/" target="_blank" rel="noopener noreferrer">
-                  View Project
+                <QuietLink href="https://d3xtrverse.com" target="_blank" rel="noopener noreferrer">
+                  d3xtrverse.com
                 </QuietLink>
+                <QuietLink href="/d3xtrverse">Brand story</QuietLink>
               </LinkRow>
             </div>
             <Detail>
               <DetailCard>
-                <DetailLabel>Outcome</DetailLabel>
-                <DetailBody>Higher engagement through clearer flows and better visual hierarchy in dense screens.</DetailBody>
-              </DetailCard>
-              <DetailCard>
                 <DetailLabel>Signal</DetailLabel>
-                <DetailBody>End-to-end freelance-grade delivery from architecture to production release.</DetailBody>
+                <DetailBody>Secondary creator proof — full-stack delivery and brand craft alongside the data engineering narrative.</DetailBody>
               </DetailCard>
             </Detail>
-          </Case>
+          </CaseCompact>
         </AnimatedSection>
       </Container>
     </Section>

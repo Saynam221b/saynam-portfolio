@@ -9,7 +9,7 @@ const HeaderShell = styled.header`
   top: 0.7rem;
   z-index: 1000;
   width: min(1180px, calc(100% - 2rem));
-  margin: 0 auto -4.25rem;
+  margin: 0 auto -2.5rem;
   border: 1px solid var(--line-soft);
   border-radius: 24px;
   background:
@@ -231,8 +231,9 @@ const MobileLink = styled.a`
 
 const navItems = [
   { label: 'Story', href: '/#motion' },
-  { label: 'Builds', href: '/#projects' },
+  { label: 'Work', href: '/#projects' },
   { label: 'Experience', href: '/#experience' },
+  { label: 'Profile', href: '/#about' },
   { label: 'Contact', href: '/#contact' },
 ];
 
@@ -252,7 +253,7 @@ const Header = () => {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8);
-      const sections = ['motion', 'projects', 'experience', 'contact'];
+      const sections = ['motion', 'about', 'projects', 'experience', 'skills', 'contact'];
       const current = [...sections].reverse().find(sectionId => {
         const element = document.getElementById(sectionId);
         return element ? element.getBoundingClientRect().top <= Math.min(360, window.innerHeight * 0.42) : false;
@@ -271,7 +272,7 @@ const Header = () => {
       <HeaderShell className={scrolled ? 'scrolled' : ''}>
         <HeaderInner>
           <Brand href="/#home">
-            Saynam <small>data / web / creator</small>
+            Saynam <small>Data Engineer</small>
           </Brand>
 
           <DesktopNav aria-label="Primary">

@@ -180,15 +180,17 @@ const D3xTRverse = () => {
             style={{ y: copyY }}
             transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Kicker>Branded sub-story</Kicker>
+            <Kicker>Creator ecosystem</Kicker>
             <Title>
-              D3x <span>TRverse</span>
+              D3x<span>TRverse</span>
             </Title>
             <Copy>
-              A gaming and coding ecosystem with a sharper cinematic treatment: competitive play, technical depth, and product experiments under one clear brand.
+              A gaming and coding ecosystem with competitive play, technical depth, and product experiments under one brand at d3xtrverse.com.
+              The main portfolio focuses on data engineering — this is the creator annex.
             </Copy>
             <Actions>
-              <Button primary href="https://d3xtrverse.vercel.app/" target="_blank" rel="noopener noreferrer">Visit official site</Button>
+              <Button primary href="https://d3xtrverse.com" target="_blank" rel="noopener noreferrer">Visit d3xtrverse.com</Button>
+              <Button href="https://dex-floww.vercel.app/" target="_blank" rel="noopener noreferrer">DexFlow</Button>
               <Button href="/#projects">Back to work</Button>
             </Actions>
           </motion.div>

@@ -3,7 +3,12 @@ import styled from '@emotion/styled';
 import AnimatedSection from './AnimatedSection';
 
 const Section = styled.section`
-  padding: 4.8rem 1.35rem 2.6rem;
+  padding: clamp(3.2rem, 6vw, 4.8rem) 1.25rem 1.6rem;
+  scroll-margin-top: 104px;
+
+  @media (max-width: 640px) {
+    padding-inline: 1rem;
+  }
 `;
 
 const Container = styled.div`
@@ -49,8 +54,8 @@ const IntroCopy = styled.p`
 `;
 
 const CapabilityGrid = styled.div`
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
   display: grid;
   grid-template-columns: 1fr;
 
@@ -61,14 +66,14 @@ const CapabilityGrid = styled.div`
 
 const Capability = styled.article`
   padding: 1.2rem 0.1rem;
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--line-soft);
 
   @media (min-width: 1020px) {
     border-bottom: none;
     padding: 1.28rem 1rem 1.2rem 0;
 
     &:first-of-type {
-      border-right: 1px solid var(--border-soft);
+      border-right: 1px solid var(--line-soft);
       padding-right: 1.5rem;
     }
 
@@ -122,14 +127,16 @@ const About = () => {
       <Container>
         <IntroGrid>
           <AnimatedSection animation="fadeRight">
-            <Eyebrow>About</Eyebrow>
-            <Title>One operating style across data infrastructure and digital product craft.</Title>
+            <Eyebrow>Profile</Eyebrow>
+            <Title>Production data systems with product-grade execution.</Title>
           </AnimatedSection>
 
           <AnimatedSection animation="fadeLeft" delay={0.08}>
             <IntroCopy>
-              I focus on work where system reliability and interface quality are equally critical. The goal is to remove handoff friction by
-              combining architecture decisions, implementation rigor, and presentation quality in one execution layer.
+              Data Engineer with 3.5+ years building production batch and incremental pipelines across Databricks, AWS, Snowflake, Airflow,
+              and dbt. Experienced in enterprise ERP and clinical data platforms, with a focus on Delta Lake, dimensional modeling, data
+              quality, and pipeline reliability. Reduced pipeline runtimes by 45–60% through Spark optimization. Databricks Certified
+              (Associate & Professional).
             </IntroCopy>
           </AnimatedSection>
         </IntroGrid>
@@ -143,24 +150,24 @@ const About = () => {
                 ETL and lakehouse implementation designed for rerun safety, observability, and durable model behavior.
               </CapabilityBody>
               <PointList>
-                <Point>Incremental ingestion strategy and idempotent load patterns</Point>
-                <Point>Transformation reliability with schema evolution controls</Point>
-                <Point>Performance tuning for cost and runtime efficiency</Point>
+                <Point>Oracle Fusion to Snowflake ETL with MWAA, dbt, and rerun-safe dimensional models</Point>
+                <Point>Delta Lake merge patterns, late-arriving data, and schema evolution at scale</Point>
+                <Point>SSIS to Databricks migration for clinical trials and legacy SQL Server workflows</Point>
               </PointList>
             </Capability>
           </AnimatedSection>
 
           <AnimatedSection animation="fadeUp" delay={0.14}>
             <Capability>
-              <CapabilityLabel>Product Engineering</CapabilityLabel>
-              <CapabilityTitle>High-end interfaces backed by clean architecture</CapabilityTitle>
+              <CapabilityLabel>Engineering Signal</CapabilityLabel>
+              <CapabilityTitle>Product surfaces that prove depth beyond tickets</CapabilityTitle>
               <CapabilityBody>
-                React and Next.js delivery with refined interaction quality, clear hierarchy, and maintainable implementation.
+                Side projects like DexFlow and Automation OS show how data problems become inspectable tools — not separate from the DE narrative.
               </CapabilityBody>
               <PointList>
-                <Point>Editorial visual systems and responsive UX behavior</Point>
-                <Point>Typed component architecture and scalable code structure</Point>
-                <Point>Freelance-ready execution with clean handoff standards</Point>
+                <Point>DexFlow — SQL lineage DAGs, AI explanations, and export-ready debugging surfaces</Point>
+                <Point>Automation OS — scheduled AI workflows with run tracking and notification routing</Point>
+                <Point>D3xTRverse — creator brand and community product at d3xtrverse.com</Point>
               </PointList>
             </Capability>
           </AnimatedSection>
