@@ -5,8 +5,14 @@ const FooterShell = styled.footer`
   padding: clamp(1.35rem, 3vw, 2.1rem) 1.25rem;
   border-top: 1px solid var(--line-soft);
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 34%),
-    color-mix(in srgb, var(--surface-soft) 38%, transparent);
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 32%),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent 38%),
+    color-mix(in srgb, var(--surface-soft) 20%, transparent);
+
+  @media (max-width: 640px) {
+    padding-inline: 1rem;
+    padding-bottom: calc(1.35rem + env(safe-area-inset-bottom));
+  }
 `;
 
 const Inner = styled.div`
@@ -29,6 +35,7 @@ const Brand = styled.a`
   display: inline-flex;
   align-items: center;
   gap: 0.52rem;
+  overflow-wrap: anywhere;
 
   &::before {
     content: '';
@@ -60,6 +67,7 @@ const Links = styled.div`
 
   @media (max-width: 760px) {
     justify-content: flex-start;
+    gap: 0.7rem 0.85rem;
   }
 `;
 
@@ -68,6 +76,7 @@ const Meta = styled.p`
   margin-top: 0.15rem;
   color: var(--text-subtle);
   font-size: 0.84rem;
+  overflow-wrap: anywhere;
 `;
 
 const Footer = () => {

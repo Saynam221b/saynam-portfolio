@@ -6,8 +6,8 @@ import { FiArrowUp } from 'react-icons/fi';
 
 const ScrollButton = styled(motion.button)`
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  right: calc(24px + env(safe-area-inset-right));
   width: 44px;
   height: 44px;
   border-radius: 999px;
@@ -33,8 +33,8 @@ const ScrollButton = styled(motion.button)`
   }
 
   @media (max-width: 768px) {
-    bottom: 18px;
-    right: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    right: calc(18px + env(safe-area-inset-right));
     width: 40px;
     height: 40px;
   }

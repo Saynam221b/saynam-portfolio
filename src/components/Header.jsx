@@ -30,7 +30,7 @@ const HeaderShell = styled.header`
   @media (max-width: 760px) {
     top: 0.55rem;
     width: min(100% - 1rem, 640px);
-    margin-bottom: -4rem;
+    margin-bottom: 0.9rem;
     border-radius: 22px;
   }
 `;
@@ -43,6 +43,11 @@ const HeaderInner = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+
+  @media (max-width: 420px) {
+    gap: 0.6rem;
+    padding-left: 0.82rem;
+  }
 `;
 
 const Brand = styled.a`
@@ -117,6 +122,7 @@ const Actions = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 `;
 
 const IconButton = styled.button`
@@ -195,14 +201,17 @@ const MobileSheet = styled(motion.nav)`
   right: 0;
   width: min(86vw, 340px);
   min-height: 100vh;
+  max-height: 100vh;
   z-index: 1101;
-  padding: 1rem;
+  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
   border-left: 1px solid var(--line);
   background: color-mix(in srgb, var(--bg) 94%, transparent);
   backdrop-filter: blur(24px);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 `;
 
 const MobileLink = styled.a`
@@ -221,8 +230,7 @@ const MobileLink = styled.a`
 `;
 
 const navItems = [
-  { label: 'Story', href: '/#about' },
-  { label: 'Data', href: '/#motion' },
+  { label: 'Story', href: '/#motion' },
   { label: 'Builds', href: '/#projects' },
   { label: 'Experience', href: '/#experience' },
   { label: 'Contact', href: '/#contact' },
@@ -231,7 +239,7 @@ const navItems = [
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('about');
+  const [activeSection, setActiveSection] = useState('motion');
   const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -244,7 +252,7 @@ const Header = () => {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8);
-      const sections = ['about', 'motion', 'projects', 'experience', 'contact'];
+      const sections = ['motion', 'projects', 'experience', 'contact'];
       const current = [...sections].reverse().find(sectionId => {
         const element = document.getElementById(sectionId);
         return element ? element.getBoundingClientRect().top <= Math.min(360, window.innerHeight * 0.42) : false;

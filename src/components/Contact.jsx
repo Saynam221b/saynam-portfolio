@@ -9,20 +9,21 @@ import { EMAIL_CONFIG, initEmailJS, sendAutoReply } from '../utils/emailjs';
 const Section = styled.section`
   position: relative;
   padding: clamp(4.4rem, 7vw, 6.4rem) 1.25rem clamp(3.2rem, 6vw, 4.8rem);
-  overflow: hidden;
+  overflow-x: clip;
   scroll-margin-top: 104px;
 
   &::before {
     content: '';
     position: absolute;
-    inset: 8% 1.25rem 10%;
-    border: 1px solid var(--line-soft);
-    border-radius: 34px;
+    inset: 8% 0 10%;
     background:
       radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 34%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 36%),
-      color-mix(in srgb, var(--surface) 54%, transparent);
+      linear-gradient(135deg, rgba(255, 255, 255, 0.045), transparent 42%);
     pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    padding-inline: 1rem;
   }
 `;
 
@@ -39,6 +40,10 @@ const Inner = styled.div`
   @media (max-width: 860px) {
     grid-template-columns: 1fr;
     gap: 1.05rem;
+  }
+
+  > * {
+    min-width: 0;
   }
 `;
 
@@ -61,10 +66,10 @@ const Kicker = styled.p`
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2.32rem, 5.8vw, 5.3rem);
+  font-size: clamp(2.2rem, 5.2vw, 4.85rem);
   font-weight: 900;
-  line-height: 0.9;
-  max-width: 10ch;
+  line-height: 0.96;
+  max-width: 11ch;
 
   span {
     display: block;
@@ -73,7 +78,8 @@ const Title = styled.h2`
   }
 
   @media (max-width: 560px) {
-    font-size: clamp(2.55rem, 15vw, 4.2rem);
+    max-width: 13ch;
+    font-size: clamp(2rem, 9.8vw, 3.3rem);
   }
 `;
 
@@ -96,11 +102,11 @@ const LaneGrid = styled.div`
 `;
 
 const Lane = styled.a`
-  border: 1px solid var(--line-soft);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: transparent;
   color: var(--text);
-  padding: 0.85rem;
+  padding: 0.9rem 0;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -109,7 +115,7 @@ const Lane = styled.a`
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-2px);
+    transform: translateX(3px);
     border-color: var(--accent);
   }
 
@@ -131,6 +137,7 @@ const LaneTitle = styled.span`
 const LaneMeta = styled.span`
   color: var(--text-subtle);
   font-size: 0.84rem;
+  overflow-wrap: anywhere;
 `;
 
 const FormShell = styled(motion.div)`
@@ -142,7 +149,7 @@ const FormShell = styled(motion.div)`
   box-shadow: var(--shadow);
   padding: clamp(1rem, 3vw, 1.35rem);
   position: relative;
-  overflow: hidden;
+  overflow: clip;
 
   &::before {
     content: '';
@@ -158,6 +165,10 @@ const FormShell = styled(motion.div)`
 
   @media (max-width: 860px) {
     box-shadow: var(--shadow-soft);
+  }
+
+  @media (max-width: 560px) {
+    border-radius: 24px;
   }
 `;
 
@@ -221,6 +232,7 @@ const Field = styled.input`
   color: var(--text);
   padding: 0.8rem 0.9rem;
   outline: none;
+  overflow-wrap: anywhere;
   transition: border-color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
 
   &:focus {
@@ -243,6 +255,7 @@ const Textarea = styled.textarea`
   padding: 0.8rem 0.9rem;
   outline: none;
   resize: vertical;
+  overflow-wrap: anywhere;
   transition: border-color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
 
   &:focus {

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const Section = styled.section`
   position: relative;
   padding: clamp(4.2rem, 7vw, 6.2rem) 1.25rem;
-  overflow: hidden;
+  overflow-x: clip;
   scroll-margin-top: 104px;
 
   &::before {
@@ -26,6 +26,10 @@ const Section = styled.section`
     background: linear-gradient(90deg, transparent, var(--line), transparent);
     opacity: 0.8;
   }
+
+  @media (max-width: 640px) {
+    padding-inline: 1rem;
+  }
 `;
 
 const Inner = styled.div`
@@ -44,6 +48,7 @@ const Intro = styled(motion.div)`
 
   @media (max-width: 820px) {
     grid-template-columns: 1fr;
+    align-items: start;
   }
 `;
 
@@ -68,15 +73,20 @@ const Kicker = styled.p`
 
 const Title = styled.h2`
   max-width: 12ch;
-  font-size: clamp(2.24rem, 5.7vw, 5.15rem);
+  font-size: clamp(2.16rem, 5.2vw, 4.85rem);
   font-weight: 900;
-  line-height: 0.88;
+  line-height: 0.96;
 
   span {
     display: block;
     color: var(--accent-3);
     font-family: var(--font-display);
     font-weight: 650;
+  }
+
+  @media (max-width: 560px) {
+    max-width: 13ch;
+    font-size: clamp(2rem, 9.6vw, 3.2rem);
   }
 `;
 
@@ -118,6 +128,7 @@ const Item = styled(motion.article)`
 
   @media (max-width: 820px) {
     grid-template-columns: 1fr;
+    gap: 0.55rem;
   }
 `;
 
@@ -126,6 +137,10 @@ const DateRail = styled.div`
   align-content: start;
   gap: 0.8rem;
   padding-top: 1rem;
+
+  @media (max-width: 820px) {
+    padding-top: 0;
+  }
 `;
 
 const Date = styled.p`
@@ -133,6 +148,11 @@ const Date = styled.p`
   font-size: clamp(1.28rem, 3vw, 2.25rem);
   font-weight: 900;
   line-height: 0.92;
+
+  @media (max-width: 560px) {
+    font-size: 1.32rem;
+    line-height: 1.05;
+  }
 `;
 
 const Dot = styled.span`
@@ -157,7 +177,7 @@ const Panel = styled.div`
   box-shadow: var(--shadow-soft);
   padding: clamp(1rem, 3vw, 1.45rem);
   position: relative;
-  overflow: hidden;
+  overflow: clip;
 
   &::before {
     content: '';
@@ -170,6 +190,19 @@ const Panel = styled.div`
     mask-image: linear-gradient(90deg, #000, transparent 78%);
     opacity: 0.5;
     pointer-events: none;
+  }
+
+  > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 640px) {
+    border-radius: 0;
+    border-inline: 0;
+    padding: 1rem 0;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-soft) 38%, transparent), transparent 82%);
+    box-shadow: none;
   }
 `;
 
@@ -185,9 +218,9 @@ const Top = styled.div`
 `;
 
 const Role = styled.h3`
-  font-size: clamp(1.45rem, 3.4vw, 2.55rem);
+  font-size: clamp(1.36rem, 3vw, 2.35rem);
   font-weight: 900;
-  line-height: 0.95;
+  line-height: 1.05;
 `;
 
 const Company = styled.p`
@@ -203,6 +236,7 @@ const Pill = styled.p`
   color: var(--text-muted);
   padding: 0.3rem 0.65rem;
   font-size: 0.82rem;
+  overflow-wrap: anywhere;
 `;
 
 const Body = styled.p`
@@ -230,6 +264,7 @@ const Tag = styled.span`
   background: var(--surface-soft);
   padding: 0.28rem 0.58rem;
   font-size: 0.78rem;
+  overflow-wrap: anywhere;
 `;
 
 const SignalGrid = styled.div`

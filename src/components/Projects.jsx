@@ -5,7 +5,8 @@ import AnimatedSection from './AnimatedSection';
 const Section = styled.section`
   position: relative;
   padding: clamp(5rem, 8vw, 7.4rem) 1.25rem clamp(3.6rem, 7vw, 6rem);
-  overflow: hidden;
+  overflow-x: clip;
+  scroll-margin-top: 104px;
 
   &::before {
     content: '';
@@ -13,8 +14,12 @@ const Section = styled.section`
     inset: 0;
     background:
       radial-gradient(circle at 78% 12%, color-mix(in srgb, var(--accent-2) 13%, transparent), transparent 34%),
-      linear-gradient(180deg, transparent, color-mix(in srgb, var(--surface-soft) 42%, transparent) 42%, transparent);
+      linear-gradient(180deg, transparent, color-mix(in srgb, var(--surface-soft) 22%, transparent) 42%, transparent);
     pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    padding-inline: 1rem;
   }
 `;
 
@@ -36,6 +41,7 @@ const Intro = styled.div`
 
   @media (max-width: 820px) {
     grid-template-columns: 1fr;
+    align-items: start;
   }
 `;
 
@@ -50,10 +56,15 @@ const Eyebrow = styled.p`
 
 const Title = styled.h2`
   max-width: 12ch;
-  font-size: clamp(2.35rem, 6.5vw, 5.8rem);
+  font-size: clamp(2.25rem, 5.8vw, 5.35rem);
   color: var(--text);
-  line-height: 0.9;
+  line-height: 0.96;
   margin-bottom: 0;
+
+  @media (max-width: 560px) {
+    max-width: 13ch;
+    font-size: clamp(2.05rem, 10vw, 3.3rem);
+  }
 `;
 
 const Subtitle = styled.p`
@@ -99,7 +110,7 @@ const Case = styled.article`
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.95rem;
-  overflow: hidden;
+  overflow: clip;
   position: relative;
   scroll-margin-top: 110px;
 
@@ -115,9 +126,22 @@ const Case = styled.article`
     pointer-events: none;
   }
 
+  > * {
+    min-width: 0;
+  }
+
   @media (min-width: 980px) {
     grid-template-columns: 1.02fr 0.98fr;
     gap: 1.25rem;
+  }
+
+  @media (max-width: 640px) {
+    border-radius: 0;
+    border-inline: 0;
+    padding: 1.1rem 0;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-soft) 44%, transparent), transparent 80%);
+    box-shadow: none;
   }
 `;
 
@@ -134,6 +158,7 @@ const CaseTitle = styled.h3`
   font-size: clamp(1.28rem, 2.3vw, 1.92rem);
   color: var(--text);
   margin-bottom: 0.32rem;
+  line-height: 1.08;
 `;
 
 const Role = styled.p`
@@ -166,6 +191,7 @@ const Stack = styled.span`
   border-radius: 999px;
   font-size: 0.7rem;
   padding: 0.22rem 0.58rem;
+  overflow-wrap: anywhere;
 `;
 
 const Detail = styled.div`
@@ -174,10 +200,10 @@ const Detail = styled.div`
 `;
 
 const DetailCard = styled.div`
-  border: 1px solid var(--line-soft);
-  border-radius: 18px;
-  background: var(--surface-soft);
-  padding: 0.85rem;
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: transparent;
+  padding: 0.72rem 0 0;
   position: relative;
   z-index: 1;
 `;
@@ -205,7 +231,7 @@ const LinkRow = styled.div`
 `;
 
 const PrimaryLink = styled.a`
-  min-height: 38px;
+  min-height: 44px;
   border-radius: 999px;
   background: var(--accent);
   color: var(--button-text);
@@ -217,10 +243,11 @@ const PrimaryLink = styled.a`
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
+  overflow-wrap: anywhere;
 `;
 
 const QuietLink = styled.a`
-  min-height: 38px;
+  min-height: 44px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--surface-soft);
@@ -233,6 +260,7 @@ const QuietLink = styled.a`
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
+  overflow-wrap: anywhere;
 `;
 
 const Projects = () => {

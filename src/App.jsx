@@ -97,6 +97,12 @@ const globalStyles = css`
     padding: 0;
   }
 
+  *,
+  *::before,
+  *::after {
+    min-width: 0;
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 88px;
@@ -112,9 +118,14 @@ const globalStyles = css`
     color: var(--text);
     line-height: 1.5;
     overflow-x: hidden;
+    overflow-wrap: break-word;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    overflow-x: clip;
   }
 
   :root[data-theme='dark'] body {
@@ -144,6 +155,7 @@ const globalStyles = css`
   h4 {
     color: var(--text);
     line-height: 0.98;
+    overflow-wrap: anywhere;
   }
 
   a {
@@ -155,6 +167,7 @@ const globalStyles = css`
   input,
   textarea {
     font: inherit;
+    min-width: 0;
   }
 
   img {
